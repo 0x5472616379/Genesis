@@ -1,19 +1,22 @@
 ﻿using System.Diagnostics;
+using Genesis.Environment;
 
 namespace Genesis;
 
 public class RSServer
 {
     private bool _isRunning;
-
+    
     public void Run()
     {
         _isRunning = true;
         var stopwatch = StartStopwatch();
+        ConnectionManager.Initialize();
 
         while (_isRunning)
         {
-            Console.WriteLine("Tick");
+            ConnectionManager.AcceptClients();
+            //World.Process();
             SleepIfRequired(stopwatch);
         }
     }
