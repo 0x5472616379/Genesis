@@ -1,3 +1,4 @@
 ﻿using Genesis;
 
-Console.WriteLine("Hello World!");
+RSServer server = new RSServer();
+server.Run();
