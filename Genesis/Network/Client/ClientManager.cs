@@ -26,4 +26,10 @@ public class ClientManager
         player.Session.Index = World.GetPlayerCount();
         Console.WriteLine($"Incoming connection has been assigned to player {player.Session.Username}!");
     }
+
+    public static void Login(Player player)
+    {
+        player.Session.PacketBuilder.BuildNewBuildAreaPacket();
+        player.PerformedTeleport = true;
+    }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ArcticRS.Constants;
 
-public enum PlayerRights
+public enum PlayerRights : byte
 {
     NORMAL,
     MODERATOR,

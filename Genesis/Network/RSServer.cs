@@ -16,7 +16,7 @@ public class RSServer
         while (_isRunning)
         {
             ConnectionManager.AcceptClients();
-            //World.Process();
+            World.Process();
             SleepIfRequired(stopwatch);
         }
     }

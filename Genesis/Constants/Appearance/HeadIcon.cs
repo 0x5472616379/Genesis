@@ -1,6 +1,6 @@
 ﻿namespace ArcticRS.Appearance;
 
-public enum HeadIcon
+public enum HeadIcon : byte
 {
     None = 0,
     Skull = 1,

@@ -29,6 +29,8 @@ public class NetworkSession
     public SessionEncryption InEncryption { get; set; }
     public SessionEncryption OutEncryption { get; set; }
 
+    public PacketBuilder PacketBuilder { get; set; }
+
     // public PacketStore PacketStore { get; set; } = new();
 
     public PacketCache PacketCache { get; set; } = new();
@@ -39,6 +41,7 @@ public class NetworkSession
         NetworkStream = client.GetStream();
         Reader = new RSStream(new byte[ServerConfig.BUFFER_SIZE]);
         Writer = new RSStream(new byte[ServerConfig.BUFFER_SIZE]);
+        PacketBuilder = new PacketBuilder(_owner);
     }
 
     public void Fill(int count)
@@ -68,7 +71,7 @@ public class NetworkSession
             Fill(1);
 
             _opCode = (byte)(Reader.ReadUnsignedByte() - InEncryption.GetNextKey());
-            _packetLength = ServerConstants.INCOMING_SIZES[_opCode];
+            _packetLength = GameConstants.INCOMING_SIZES[_opCode];
 
             _state = _packetLength switch
             {

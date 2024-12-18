@@ -1,4 +1,5 @@
 ﻿using Genesis.Entities;
+using Genesis.Managers;
 
 namespace Genesis.Environment;
 
@@ -9,8 +10,23 @@ public class World
 
     public static void Process()
     {
+        /* 1. Process Actions / Interactions */
+
+        /* 2. Fetch Data */
         CollectPlayerPackets();
+
+        /* 3. Process World Updates (Ground Items etc.) */
+        /* 4. Process NPC Movement */
+        /* 5. Process Player Movement */
+        /* 6. Combat */
+        /* 7. Client Visual Updates */
+        PlayerUpdateManager.Update();
+        /* 8. Flush and Reset */
+        FlushAllPlayers();
+        Reset();
     }
+
+    
 
     private static void CollectPlayerPackets()
     {
@@ -27,7 +43,8 @@ public class World
         {
             if (Players[i] == null)
             {
-                Players[i] = (Player) player;
+                Players[i] = (Player)player;
+                break;
             }
         }
     }
@@ -47,5 +64,24 @@ public class World
         }
     }
 
+    private static void FlushAllPlayers()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            Players[i].Session.Flush();
+        }
+    }
+
+    private static void Reset()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            Players[i].Reset();
+        }
+    }
+    
+    public static Player[] GetPlayers() => Players;
     public static int GetPlayerCount() => Players.Count(x => x != null);
 }
