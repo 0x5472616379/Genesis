@@ -6,41 +6,30 @@ namespace Genesis;
 public class RSServer
 {
     private bool _isRunning;
-    
+
     public void Run()
     {
         _isRunning = true;
-        var stopwatch = StartStopwatch();
         ConnectionManager.Initialize();
+
+        if (!Kernel.TryGetFrequency(out long frequency))
+        {
+            Console.WriteLine("High-resolution performance counter not supported.");
+            return;
+        }
+
+        Kernel.InitializeTick(frequency, ServerConfig.TICK_RATE);
 
         while (_isRunning)
         {
+            Kernel.StartTick();
+
             ConnectionManager.AcceptClients();
+
             World.Process();
-            SleepIfRequired(stopwatch);
+
+            Kernel.WaitForNextTick();
+            Console.WriteLine($"Total tick duration: {Kernel.GetLastTickDurationMs():F2} ms");
         }
-    }
-
-    private Stopwatch StartStopwatch()
-    {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
-        return stopwatch;
-    }
-
-    private void SleepIfRequired(Stopwatch stopwatch)
-    {
-        stopwatch.Stop();
-        var sleepTime = CalculateSleepTime(stopwatch.Elapsed.TotalMilliseconds);
-
-        if (sleepTime > TimeSpan.Zero)
-            Thread.Sleep(sleepTime);
-        else
-            ServerLogger.WarnAboutDeficit(sleepTime, stopwatch.Elapsed.TotalMilliseconds);
-    }
-
-    private TimeSpan CalculateSleepTime(double elapsedMilliseconds)
-    {
-        return TimeSpan.FromMilliseconds(ServerConfig.TICK_RATE - elapsedMilliseconds);
     }
 }

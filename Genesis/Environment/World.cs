@@ -14,8 +14,8 @@ public class World
 
         /* 2. Fetch Data */
         CollectPlayerPackets();
-
-        /* 3. Process World Updates (Ground Items etc.) */
+        
+        /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
         /* 6. Combat */

@@ -308,7 +308,7 @@ public class RSStream
         Buffer[CurrentOffset++] = (byte)i;
     }
 
-    public void WriteBits(int numBits, int value)
+    public void WriteBits(int numBits, int value, int x)
     {
         var bytePos = BitPosition >> 3;
         var bitOffset = 8 - (BitPosition & 7);
@@ -319,7 +319,7 @@ public class RSStream
             Buffer[bytePos++] |= (byte)((value >> (numBits - bitOffset)) & BitMaskOut[bitOffset]);
             numBits -= bitOffset;
         }
-
+    
         if (numBits == bitOffset)
         {
             Buffer[bytePos] &= (byte)~BitMaskOut[bitOffset];
@@ -329,6 +329,33 @@ public class RSStream
         {
             Buffer[bytePos] &= (byte)~(BitMaskOut[numBits] << (bitOffset - numBits));
             Buffer[bytePos] |= (byte)((value & BitMaskOut[numBits]) << (bitOffset - numBits));
+        }
+    }
+    
+    public void WriteBits(int numBits, int value)
+    {
+        int bytePos = BitPosition >> 3;    // Get the starting byte index
+        int bitOffset = BitPosition & 7;   // Get the starting bit offset in the byte
+        BitPosition += numBits;            // Update BitPosition to reflect the number of bits written
+
+        while (numBits > 0)
+        {
+            // Determine the number of bits that can be written in the current byte
+            int bitsAvailable = 8 - bitOffset;
+            // Determine how many bits to write in this byte (say we're at index 6 (0 - 7) and we have 2, we only write 1 and the next goes into the next byte)
+            int bitsToWrite = Math.Min(bitsAvailable, numBits);
+
+            // Create a mask to clear the target bits in the current byte
+            int mask = BitMaskOut[bitsToWrite] << (bitsAvailable - bitsToWrite);
+            Buffer[bytePos] &= (byte)~mask; // Clear the target bits
+
+            // Write the bits from the value into the current byte
+            Buffer[bytePos] |= (byte)((value >> (numBits - bitsToWrite)) << (bitsAvailable - bitsToWrite));
+
+            // Update remaining bits and value
+            numBits -= bitsToWrite;   // Decrease the number of bits left to write
+            bitOffset = 0;            // Reset offset for the next byte (if any)
+            bytePos++;                // Move to the next byte (if required)
         }
     }
 

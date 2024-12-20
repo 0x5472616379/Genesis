@@ -41,7 +41,7 @@ public class ConnectionManager
             RejectLogin(player);
             return;
         }
-            
+        
         if (LoginManager.Handshake(player))
         {
             ClientManager.AssignAvailablePlayerSlot(player);

@@ -158,8 +158,8 @@ public class PlayerUpdateManager
             playerFlagUpdateBlock.WriteByte((byte)mask);
         }
 
-        if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
-        if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
+        // if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
+        // if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);

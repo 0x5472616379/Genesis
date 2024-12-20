@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Environment;
 
@@ -30,6 +31,8 @@ public class ClientManager
     public static void Login(Player player)
     {
         player.Session.PacketBuilder.BuildNewBuildAreaPacket();
+        player.Flags = PlayerUpdateFlags.Appearance;
         player.PerformedTeleport = true;
+        player.Session.PacketBuilder.DisplayWelcomeScreen();
     }
 }

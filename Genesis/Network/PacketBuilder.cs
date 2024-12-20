@@ -26,6 +26,16 @@ public class PacketBuilder
         _player.Session.Writer.WriteWord(_player.Location.CenterChunkY);
     }
 
+    public void DisplayWelcomeScreen()
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.INTF_WELCOME);
+        _player.Session.Writer.WriteByteC(201); //daysSinceRecoveryChange
+        _player.Session.Writer.WriteWordA(1); //unreadMessages
+        _player.Session.Writer.WriteByte(0); //membership
+        _player.Session.Writer.WriteDWordV2(IPAddressConverter.ConvertToInt("127.0.0.1")); //lastAddress
+        _player.Session.Writer.WriteWordA(128); //daysSinceLogin
+    }
+    
     public void SendMessage(string message)
     {
         _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.MSG_SEND);
