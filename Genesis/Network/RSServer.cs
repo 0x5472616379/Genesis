@@ -29,7 +29,7 @@ public class RSServer
             World.Process();
 
             Kernel.WaitForNextTick();
-            Console.WriteLine($"Total tick duration: {Kernel.GetLastTickDurationMs():F2} ms");
+            Kernel.WarnIfTickExceeded();
         }
     }
 }

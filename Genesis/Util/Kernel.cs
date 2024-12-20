@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Genesis;
 
 static class Kernel
 {
@@ -42,6 +43,20 @@ static class Kernel
         }
     }
 
+    public static void WarnIfTickExceeded()
+    {
+        double tickDuration = GetLastTickDurationMs();
+        if ((int)tickDuration > ServerConfig.TICK_RATE)
+        {
+            Console.WriteLine($"Warning: Tick duration exceeded! Took {tickDuration:F2} ms.");
+        }
+    }
+
+    public static void PrintTickDuration()
+    {
+        Console.WriteLine($"Total tick duration: {GetLastTickDurationMs():F2} ms");
+    }
+    
     public static double GetLastTickDurationMs()
     {
         long currentTicks = GetPerformanceCounter();
