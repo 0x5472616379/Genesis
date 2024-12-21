@@ -158,8 +158,8 @@ public class PlayerUpdateManager
             playerFlagUpdateBlock.WriteByte((byte)mask);
         }
 
-        // if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
-        // if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
@@ -172,6 +172,12 @@ public class PlayerUpdateManager
         playerFlagUpdateBlock.WriteDWord(6553600);
     }
 
+    private static void AppendAnimation(Player player, RSStream playerFlagUpdateBlock)
+    {
+        playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentAnimation);
+        playerFlagUpdateBlock.WriteByteC(0); //delay
+    }
+    
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
     {
         // playerFlagUpdateBlock.WriteByte((byte)player.MostRecentDamage.FirstAmount); //hitDamage
@@ -194,12 +200,6 @@ public class PlayerUpdateManager
         // {
         //     updatetempBlock.WriteWordBigEndian(0x00FFFF);
         // }
-    }
-
-    private static void AppendAnimation(Player player, RSStream playerFlagUpdateBlock)
-    {
-        playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentAnimation);
-        playerFlagUpdateBlock.WriteByteC(0); //delay
     }
 
     private static void AppendAppearance(Player player, RSStream playerFlagUpdateBlock)

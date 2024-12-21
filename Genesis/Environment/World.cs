@@ -10,10 +10,12 @@ public class World
 
     public static void Process()
     {
-        /* 1. Process Actions / Interactions */
-
-        /* 2. Fetch Data */
+        /* 1. Fetch Data */
         CollectPlayerPackets();
+        ProcessPackets();
+
+        /* 2. Process Actions / Interactions */
+        ProcessActions();
         
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
@@ -26,14 +28,33 @@ public class World
         Reset();
     }
 
-    
 
     private static void CollectPlayerPackets()
     {
         for (int i = 0; i < Players.Length; i++)
         {
             if (Players[i] == null) continue;
-            Players[i].Session.Fetch();
+
+            for (var n = 0; n < ServerConfig.PACKET_FETCH_LIMIT; n++)
+                Players[i].Session.Fetch();
+        }
+    }
+
+    private static void ProcessPackets()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            Players[i].Session.PacketCache.Process();
+        }
+    }
+
+    private static void ProcessActions()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            Players[i].ActionHandler.ProcessActions();
         }
     }
 
@@ -81,7 +102,7 @@ public class World
             Players[i].Reset();
         }
     }
-    
+
     public static Player[] GetPlayers() => Players;
     public static int GetPlayerCount() => Players.Count(x => x != null);
 }

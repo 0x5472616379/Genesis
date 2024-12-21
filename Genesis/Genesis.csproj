@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <NoWarn>CS8775</NoWarn>
+        
     </PropertyGroup>
-    
+
 </Project>

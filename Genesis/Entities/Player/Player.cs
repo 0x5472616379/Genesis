@@ -1,4 +1,5 @@
-﻿using Genesis.Client;
+﻿using ArcticRS.Actions;
+using Genesis.Client;
 using Genesis.Configuration;
 using Genesis.Managers;
 using Genesis.Movement;
@@ -14,6 +15,7 @@ public class Player : Entity
 
     public bool PerformedTeleport { get; set; }
     public MovementHandler MovementHandler { get; set; }
+    public ActionHandler ActionHandler { get; set; } = new();
     
     public PlayerAttributes Attributes { get; set; }
     public EquipmentManager EquipmentManager { get; set; }
@@ -73,5 +75,20 @@ public class Player : Entity
         MovementHandler.IsRunning = false;
         MovementHandler.IsWalking = false;
         MovementHandler.DiscardMovementQueue = false;
+        
+        CurrentAnimation = -1;
+        CurrentGfx = -1;
+    }
+
+    public override void SetCurrentAnimation(int animationId)
+    {
+        CurrentAnimation = animationId;
+        Flags |= PlayerUpdateFlags.Animation;
+    }
+
+    public override void SetCurrentGfx(int gfx)
+    {
+        CurrentGfx = gfx;
+        Flags |= PlayerUpdateFlags.Graphics;
     }
 }

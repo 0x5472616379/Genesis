@@ -30,10 +30,7 @@ public class NetworkSession
     public SessionEncryption OutEncryption { get; set; }
 
     public PacketBuilder PacketBuilder { get; set; }
-
-    // public PacketStore PacketStore { get; set; } = new();
-
-    public PacketCache PacketCache { get; set; } = new();
+    public PacketCache PacketCache { get; set; }
 
     public void Initialize(TcpClient client)
     {
@@ -42,6 +39,7 @@ public class NetworkSession
         Reader = new RSStream(new byte[ServerConfig.BUFFER_SIZE]);
         Writer = new RSStream(new byte[ServerConfig.BUFFER_SIZE]);
         PacketBuilder = new PacketBuilder(_owner);
+        PacketCache = new PacketCache(_owner);
     }
 
     public void Fill(int count)
@@ -98,10 +96,11 @@ public class NetworkSession
         Fill(_packetLength);
         Console.WriteLine($"[{_opCode}] Packet Received - Length: {_packetLength}");
 
-         var packet = PacketFactory.CreateClientPacket(_opCode, new PacketParameters { OpCode = _opCode, Length = _packetLength, Player = _owner });
+        var packet = PacketFactory.CreateClientPacket(_opCode, new PacketParameters { OpCode = _opCode, Length = _packetLength, Player = _owner });
         
-        PacketCache.Packets.Add(packet);
-        
+        if (packet != null)
+            PacketCache.Add(_opCode, packet);
+
         _state = FetchState.READ_OPCODE;
     }
 

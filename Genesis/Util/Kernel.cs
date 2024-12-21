@@ -1,5 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using Genesis;
+﻿using Genesis;
+using System.Runtime.InteropServices;
 
 static class Kernel
 {

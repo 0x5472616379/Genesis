@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Genesis.Environment;
+﻿using Genesis.Environment;
 
 namespace Genesis;
 
