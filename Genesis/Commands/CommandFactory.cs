@@ -11,6 +11,7 @@ public class CommandFactory
         var commandName = _commandArgs[0];
         return commandName switch
         {
+            "item" => new SpawnItemCommand(player, _commandArgs),
             "admin" => new SetAdminCommand(player, _commandArgs),
             "pos" => new PrintPositionCommand(player, _commandArgs),
             "tele" => new TeleportCommand(player, _commandArgs),
