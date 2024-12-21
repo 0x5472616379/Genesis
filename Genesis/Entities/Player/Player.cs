@@ -1,7 +1,9 @@
-﻿using ArcticRS.Actions;
+﻿using System.ComponentModel;
+using ArcticRS.Actions;
 using Genesis.Client;
 using Genesis.Configuration;
 using Genesis.Managers;
+using Genesis.Model;
 using Genesis.Movement;
 
 namespace Genesis.Entities;
@@ -21,6 +23,7 @@ public class Player : Entity
     public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
+    public RSContainer Inventory { get; set; }
 
     public Player()
     {
@@ -36,6 +39,10 @@ public class Player : Entity
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
+        
+        Inventory = new RSContainer(this, 28);
+        
+        
     }
 
     public void AddLocalPlayer(Entity player)

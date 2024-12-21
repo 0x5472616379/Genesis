@@ -1,5 +1,6 @@
 ﻿using Genesis.Configuration;
 using Genesis.Entities;
+using Genesis.Model;
 
 namespace Genesis;
 
@@ -120,7 +121,33 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndian(barId);
     }
 
+    public void RefreshContainer(RSItem[] container, int containerId)
+    {
+        _player.Session.Writer.CreateFrameVarSizeWord(ServerOpCodes.ITEM_SET);
+        _player.Session.Writer.WriteWord(containerId);
+        _player.Session.Writer.WriteWord(container.Length);
     
+        for (int i = 0; i < container.Length; i++)
+        {
+            var amount = container[i].Amount;
+            var itemId = container[i].Id;
+            if (amount > 254)
+            {
+                _player.Session.Writer.WriteByte(255);
+                _player.Session.Writer.WriteDWordV2(amount);
+            }
+            else
+            {
+                _player.Session.Writer.WriteByte(amount);
+            }
+        
+            if (amount < 1) itemId = 0;
+            if (itemId > ServerConfig.ITEM_LIMIT || itemId < 0) itemId = ServerConfig.ITEM_LIMIT;
+            _player.Session.Writer.WriteWordBigEndianA(itemId <= 0 ? itemId : itemId + 1);
+        }
+    
+        _player.Session.Writer.EndFrameVarSizeWord();
+    }
     
     public void ShowInterface(int i)
     {

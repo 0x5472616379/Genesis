@@ -317,7 +317,7 @@ public class PlayerUpdateManager
     {
         var beard = player.Attributes.Beard;
 
-        if (beard != 0) //|| GameConstants.IsFullHelm(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).ItemId) || GameConstants.IsFullMask(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).ItemId)
+        if (beard != 0) //|| GameConstants.IsFullHelm(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).Id) || GameConstants.IsFullMask(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).Id)
             stream.WriteWord(_appearanceOffset + (int)beard);
         else
             stream.WriteByte(0);
@@ -325,28 +325,28 @@ public class PlayerUpdateManager
 
     private static void WriteFeet(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Boots).ItemId;
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Boots).Id;
         var feetId = player.Attributes.Feet;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteWord(_appearanceOffset + (int)feetId);
     }
 
     private static void WriteHands(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Gloves).ItemId;
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Gloves).Id;
         var handsId = player.Attributes.Hands;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteWord(_appearanceOffset + (int)handsId);
     }
 
     private static void WriteHair(RSStream stream, Player player)
     {
-        var isFullHelmOrMask = GameConstants.IsFullHelm(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).ItemId) ||
-                               GameConstants.IsFullMask(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).ItemId);
+        var isFullHelmOrMask = GameConstants.IsFullHelm(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).Id) ||
+                               GameConstants.IsFullMask(player.EquipmentManager.GetItem(EquipmentSlot.Helmet).Id);
         if (!isFullHelmOrMask)
         {
             var hair = player.Attributes.Hair;
@@ -360,29 +360,29 @@ public class PlayerUpdateManager
 
     private static void WriteLegs(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Legs).ItemId;
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Legs).Id;
         var legsId = player.Attributes.Legs;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteWord(_appearanceOffset + (int)legsId);
     }
 
     private static void WriteShield(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Shield).ItemId;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Shield).Id;
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteByte(0);
     }
 
     private static void WriteBody(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Chest).ItemId;
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Chest).Id;
         var torsoId = player.Attributes.Torso;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteWord(_appearanceOffset + (int)torsoId);
     }
@@ -395,43 +395,43 @@ public class PlayerUpdateManager
             return;
         }
 
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Weapon).ItemId;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Weapon).Id;
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteByte(0);
     }
 
     private static void WriteAmulet(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Amulet).ItemId;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Amulet).Id;
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteByte(0);
     }
 
     private static void WriteCape(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Cape).ItemId;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Cape).Id;
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteByte(0);
     }
 
     private static void WriteHelmet(RSStream stream, Player player)
     {
-        var itemId = player.EquipmentManager.GetItem(EquipmentSlot.Helmet).ItemId;
-        if (itemId > -1)
-            stream.WriteWord(_equipmentOffset + itemId);
+        var Id = player.EquipmentManager.GetItem(EquipmentSlot.Helmet).Id;
+        if (Id > -1)
+            stream.WriteWord(_equipmentOffset + Id);
         else
             stream.WriteByte(0);
     }
 
     private static void WriteArms(RSStream stream, Player player)
     {
-        var isFullBody = GameConstants.IsFullBody(player.EquipmentManager.GetItem(EquipmentSlot.Chest).ItemId);
+        var isFullBody = GameConstants.IsFullBody(player.EquipmentManager.GetItem(EquipmentSlot.Chest).Id);
         if (!isFullBody)
         {
             var arms = player.Attributes.Arms;

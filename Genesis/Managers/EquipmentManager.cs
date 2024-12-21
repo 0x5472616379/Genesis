@@ -14,17 +14,17 @@ public class EquipmentManager
         _player = player;
         Equipment = new Dictionary<EquipmentSlot, RSItem>
         {
-            { EquipmentSlot.Helmet, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Cape, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Amulet, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Weapon, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Chest, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Shield, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Legs, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Gloves, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Boots, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Ring, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Ammo, new RSItem { ItemId = -1, Amount = 0 } }
+            { EquipmentSlot.Helmet, new RSItem (-1, 0) },
+            { EquipmentSlot.Cape, new RSItem (-1, 0) },
+            { EquipmentSlot.Amulet, new RSItem (-1, 0) },
+            { EquipmentSlot.Weapon, new RSItem (-1, 0) },
+            { EquipmentSlot.Chest, new RSItem (-1, 0) },
+            { EquipmentSlot.Shield, new RSItem (-1, 0) },
+            { EquipmentSlot.Legs, new RSItem (-1, 0) },
+            { EquipmentSlot.Gloves, new RSItem (-1, 0) },
+            { EquipmentSlot.Boots, new RSItem (-1, 0) },
+            { EquipmentSlot.Ring, new RSItem (-1, 0) },
+            { EquipmentSlot.Ammo, new RSItem (-1, 0) }
         };
     }
 
@@ -41,11 +41,7 @@ public class EquipmentManager
     public void Unequip(EquipmentSlot slot)
     {
         if (Equipment.ContainsKey(slot))
-            Equipment[slot] = new RSItem
-            {
-                ItemId = -1,
-                Amount = 0
-            };
+            Equipment[slot] = new RSItem(-1 ,0);
     }
 
     public RSItem GetItem(EquipmentSlot slot)
@@ -61,34 +57,34 @@ public class EquipmentManager
         if (GetItem(EquipmentSlot.Weapon) == null)
             return false;
 
-        return Array.Exists(GameConstants.BOWS, i => i == GetItem(EquipmentSlot.Weapon).ItemId);
+        return Array.Exists(GameConstants.BOWS, i => i == GetItem(EquipmentSlot.Weapon).Id);
     }
 
 
-    public EquipmentSlot GetEquipmentSlotByItemId(int itemID)
+    public EquipmentSlot GetEquipmentSlotById(int Id)
     {
-        if (GameConstants.IsItemInArray(itemID, GameConstants.BOWS) ||
-            GameConstants.IsItemInArray(itemID, GameConstants.OTHER_RANGE_WEAPONS))
+        if (GameConstants.IsItemInArray(Id, GameConstants.BOWS) ||
+            GameConstants.IsItemInArray(Id, GameConstants.OTHER_RANGE_WEAPONS))
             return EquipmentSlot.Weapon;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.ARROWS))
+        if (GameConstants.IsItemInArray(Id, GameConstants.ARROWS))
             return EquipmentSlot.Ammo;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.capes))
+        if (GameConstants.IsItemInArray(Id, GameConstants.capes))
             return EquipmentSlot.Cape;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.boots))
+        if (GameConstants.IsItemInArray(Id, GameConstants.boots))
             return EquipmentSlot.Boots;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.gloves))
+        if (GameConstants.IsItemInArray(Id, GameConstants.gloves))
             return EquipmentSlot.Gloves;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.shields))
+        if (GameConstants.IsItemInArray(Id, GameConstants.shields))
             return EquipmentSlot.Shield;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.hats))
+        if (GameConstants.IsItemInArray(Id, GameConstants.hats))
             return EquipmentSlot.Helmet;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.amulets))
+        if (GameConstants.IsItemInArray(Id, GameConstants.amulets))
             return EquipmentSlot.Amulet;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.rings))
+        if (GameConstants.IsItemInArray(Id, GameConstants.rings))
             return EquipmentSlot.Ring;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.body))
+        if (GameConstants.IsItemInArray(Id, GameConstants.body))
             return EquipmentSlot.Chest;
-        if (GameConstants.IsItemInArray(itemID, GameConstants.legs))
+        if (GameConstants.IsItemInArray(Id, GameConstants.legs))
             return EquipmentSlot.Legs;
         // Default to Weapon if no match
         return EquipmentSlot.Weapon;
@@ -98,17 +94,17 @@ public class EquipmentManager
     {
         Equipment = new Dictionary<EquipmentSlot, RSItem>
         {
-            { EquipmentSlot.Helmet, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Cape, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Amulet, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Weapon, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Chest, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Shield, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Legs, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Gloves, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Boots, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Ring, new RSItem { ItemId = -1, Amount = 0 } },
-            { EquipmentSlot.Ammo, new RSItem { ItemId = -1, Amount = 0 } }
+            { EquipmentSlot.Helmet, new RSItem (-1, 0) },
+            { EquipmentSlot.Cape, new RSItem (-1, 0) },
+            { EquipmentSlot.Amulet, new RSItem (-1, 0) },
+            { EquipmentSlot.Weapon, new RSItem (-1, 0) },
+            { EquipmentSlot.Chest, new RSItem (-1, 0) },
+            { EquipmentSlot.Shield, new RSItem (-1, 0) },
+            { EquipmentSlot.Legs, new RSItem (-1, 0) },
+            { EquipmentSlot.Gloves, new RSItem (-1, 0) },
+            { EquipmentSlot.Boots, new RSItem (-1, 0) },
+            { EquipmentSlot.Ring, new RSItem (-1, 0) },
+            { EquipmentSlot.Ammo, new RSItem (-1, 0) }
         };
     }
 
@@ -118,9 +114,9 @@ public class EquipmentManager
          {
              var equipmentSlot = entry.Key;
              var item = entry.Value;
-             var itemId = item.ItemId;
+             var Id = item.Id;
              var amount = item.Amount;
-             _player.Session.PacketBuilder.UpdateSlot((int)equipmentSlot, itemId, amount, GameInterfaces.EquipmentContainer);
+             _player.Session.PacketBuilder.UpdateSlot((int)equipmentSlot, Id, amount, GameInterfaces.EquipmentContainer);
          }
     
          _player.Flags |= PlayerUpdateFlags.Appearance;

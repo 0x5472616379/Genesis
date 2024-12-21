@@ -14,4 +14,6 @@ public class ServerConfig
     public static int SPAWN_LOCATION_X = 3512;
     public static int SPAWN_LOCATION_Y = 3480;
     public static int SPAWN_LOCATION_Z = 0;
+    
+    public static int ITEM_LIMIT = 15000;
 }

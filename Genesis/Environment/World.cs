@@ -21,8 +21,10 @@ public class World
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
         /* 6. Combat */
+        
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
+        
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
