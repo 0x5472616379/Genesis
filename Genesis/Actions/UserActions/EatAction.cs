@@ -2,6 +2,12 @@
 
 namespace ArcticRS.Actions;
 
+enum EatState
+{
+    IDLE,
+    EATING
+}
+
 public class EatAction : RSAction
 {
     private readonly Player _player;
@@ -9,6 +15,8 @@ public class EatAction : RSAction
     public override ActionCategory Category { get; set; } = ActionCategory.EAT;
     public override Func<bool> CanExecute { get; set; }
     public override Func<bool> Execute { get; set; }
+
+    private EatState _currentState;
 
     public EatAction(Player player)
     {
@@ -19,10 +27,27 @@ public class EatAction : RSAction
 
     private bool Invoke()
     {
-        _player.SetCurrentAnimation(829);
-        _player.Session.PacketBuilder.SendMessage("You eat a salmon.");
-        // _player.PacketBuilder.SendMessage($"Eat On Tick: {World.CurrentTick}");
-        return true;
+        switch (_currentState)
+        {
+            case EatState.IDLE:
+                _player.SetCurrentAnimation(829);
+                _player.Session.PacketBuilder.SendMessage("You start eating a salmon.");
+
+                SetDelay(1);
+                _currentState = EatState.EATING;
+                return false;
+
+            case EatState.EATING:
+                if (IsDelayed()) return false;
+
+                _player.Session.PacketBuilder.SendMessage("You finish eating the salmon.");
+
+                _currentState = EatState.IDLE;
+                return true;
+
+            default:
+                throw new InvalidOperationException($"Unhandled state: {_currentState}");
+        }
     }
 
     private bool CanEat()

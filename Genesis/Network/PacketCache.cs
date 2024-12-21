@@ -83,6 +83,6 @@ public class PacketCache
         UserPacketQueue.Enqueue(packet);
         userEventCount++;
 
-        _owner.Session.PacketBuilder.SendMessage("Queued Packet");
+        // _owner.Session.PacketBuilder.SendMessage("Queued Packet");
     }
 }
