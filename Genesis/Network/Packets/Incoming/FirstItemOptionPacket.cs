@@ -4,7 +4,7 @@ using Genesis.Environment;
 
 namespace Genesis.Packets.Incoming;
 
-public class FirstOptionInteractObject : IPacket
+public class FirstItemOptionPacket : IPacket
 {
     private readonly Player _player;
     private readonly int _opcode;
@@ -14,7 +14,7 @@ public class FirstOptionInteractObject : IPacket
     private readonly int _index;
     private readonly int _itemId;
 
-    public FirstOptionInteractObject(PacketParameters parameters)
+    public FirstItemOptionPacket(PacketParameters parameters)
     {
         _player = parameters.Player;
         _opcode = parameters.OpCode;

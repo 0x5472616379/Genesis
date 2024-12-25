@@ -8,26 +8,73 @@ public class World
     private static Player[] Players = new Player[ServerConfig.MAX_PLAYERS];
     private static Entity[] NPCs = new Entity[ServerConfig.MAX_NPCS];
 
+    private static int TICK_COUNT = 0;
+
     public static void Process()
     {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+
+            Players[i].Session.PacketBuilder.SendMessage($"Tick: {TICK_COUNT}");
+        }
+
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
 
         /* 2. Process Actions / Interactions */
         ProcessActions();
+
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            if (Players[i].CurrentInterraction == null) continue;
+            Players[i].CurrentInterraction.Execute();
+        }
         
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
-        /* 6. Combat */
+        ProcessPlayerMovement();
         
+        /* 6. Combat */
+
+        /* Refresh */
+        RefreshPlayer();
+
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
-        
+
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
+
+        if (TICK_COUNT >= 5)
+            TICK_COUNT = 0;
+        
+        TICK_COUNT++;
+    }
+
+
+    private static void ProcessPlayerMovement()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+            Players[i].MovementHandler.Process();
+        }
+    }
+    
+    private static void RefreshPlayer()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+
+            Players[i].EquipmentManager.Refresh();
+            Players[i].InventoryManager.RefreshInventory();
+        }
     }
 
 

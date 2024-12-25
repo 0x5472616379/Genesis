@@ -5,6 +5,20 @@ using Genesis.Model;
 
 namespace Genesis.Managers;
 
+public class EquipmentItem
+{
+    public int Id { get; set; }
+    public int Amount { get; set; }
+    public EquipmentSlot Slot { get; set; }
+
+    public EquipmentItem(int id, int amount)
+    {
+        Id = id;
+        Amount = amount;
+    }
+    
+}
+
 public class EquipmentManager
 {
     private readonly Player _player;
@@ -12,39 +26,43 @@ public class EquipmentManager
     public EquipmentManager(Player player)
     {
         _player = player;
-        Equipment = new Dictionary<EquipmentSlot, RSItem>
+        Equipment = new Dictionary<EquipmentSlot, EquipmentItem>
         {
-            { EquipmentSlot.Helmet, new RSItem (-1, 0) },
-            { EquipmentSlot.Cape, new RSItem (-1, 0) },
-            { EquipmentSlot.Amulet, new RSItem (-1, 0) },
-            { EquipmentSlot.Weapon, new RSItem (-1, 0) },
-            { EquipmentSlot.Chest, new RSItem (-1, 0) },
-            { EquipmentSlot.Shield, new RSItem (-1, 0) },
-            { EquipmentSlot.Legs, new RSItem (-1, 0) },
-            { EquipmentSlot.Gloves, new RSItem (-1, 0) },
-            { EquipmentSlot.Boots, new RSItem (-1, 0) },
-            { EquipmentSlot.Ring, new RSItem (-1, 0) },
-            { EquipmentSlot.Ammo, new RSItem (-1, 0) }
+            { EquipmentSlot.Helmet, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Cape, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Amulet, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Weapon, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Chest, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Shield, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Legs, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Gloves, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Boots, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Ring, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Ammo, new EquipmentItem (-1, 0) }
         };
     }
 
-    public Dictionary<EquipmentSlot, RSItem> Equipment { get; set; } = new();
+    public Dictionary<EquipmentSlot, EquipmentItem> Equipment { get; set; } = new();
 
-    public void Equip(RSItem rsItem, EquipmentSlot slot)
+    public void Equip(RSItem rsItem)
     {
+        var slot = GetEquipmentSlotById(rsItem.Id);
+        
         if (Equipment.ContainsKey(slot))
             Unequip(slot);
 
-        Equipment[slot] = rsItem;
+        Equipment[slot] = new EquipmentItem(rsItem.Id, rsItem.Amount);
+        
+        _player.InventoryManager.Remove(rsItem.Index, rsItem.Amount);
     }
 
     public void Unequip(EquipmentSlot slot)
     {
         if (Equipment.ContainsKey(slot))
-            Equipment[slot] = new RSItem(-1 ,0);
+            Equipment[slot] = new EquipmentItem(-1 ,0);
     }
 
-    public RSItem GetItem(EquipmentSlot slot)
+    public EquipmentItem GetItem(EquipmentSlot slot)
     {
         if (Equipment.ContainsKey(slot))
             return Equipment[slot];
@@ -92,19 +110,19 @@ public class EquipmentManager
 
     public void Clear()
     {
-        Equipment = new Dictionary<EquipmentSlot, RSItem>
+        Equipment = new Dictionary<EquipmentSlot, EquipmentItem>
         {
-            { EquipmentSlot.Helmet, new RSItem (-1, 0) },
-            { EquipmentSlot.Cape, new RSItem (-1, 0) },
-            { EquipmentSlot.Amulet, new RSItem (-1, 0) },
-            { EquipmentSlot.Weapon, new RSItem (-1, 0) },
-            { EquipmentSlot.Chest, new RSItem (-1, 0) },
-            { EquipmentSlot.Shield, new RSItem (-1, 0) },
-            { EquipmentSlot.Legs, new RSItem (-1, 0) },
-            { EquipmentSlot.Gloves, new RSItem (-1, 0) },
-            { EquipmentSlot.Boots, new RSItem (-1, 0) },
-            { EquipmentSlot.Ring, new RSItem (-1, 0) },
-            { EquipmentSlot.Ammo, new RSItem (-1, 0) }
+            { EquipmentSlot.Helmet, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Cape, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Amulet, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Weapon, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Chest, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Shield, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Legs, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Gloves, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Boots, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Ring, new EquipmentItem (-1, 0) },
+            { EquipmentSlot.Ammo, new EquipmentItem (-1, 0) }
         };
     }
 
@@ -121,4 +139,5 @@ public class EquipmentManager
     
          _player.Flags |= PlayerUpdateFlags.Appearance;
      }
+     
 }

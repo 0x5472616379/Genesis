@@ -2,6 +2,7 @@
 using ArcticRS.Actions;
 using Genesis.Client;
 using Genesis.Configuration;
+using Genesis.Interactions;
 using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
@@ -16,14 +17,15 @@ public class Player : Entity
     public Player[] LocalPlayers { get; set; } = new Player[255];
 
     public bool PerformedTeleport { get; set; }
-    public MovementHandler MovementHandler { get; set; }
     public ActionHandler ActionHandler { get; set; } = new();
     
     public PlayerAttributes Attributes { get; set; }
     public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
-    public RSContainer Inventory { get; set; }
+    public InventoryManager InventoryManager { get; set; }
+    
+    public RSInteraction CurrentInterraction { get; set; }
 
     public Player()
     {
@@ -36,14 +38,13 @@ public class Player : Entity
         Flags = PlayerUpdateFlags.None;
         MovementHandler = new MovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
+        InventoryManager = new InventoryManager(this);
+        
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
-        
-        Inventory = new RSContainer(this, 28);
-        
-        
     }
+
 
     public void AddLocalPlayer(Entity player)
     {

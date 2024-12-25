@@ -2,15 +2,19 @@
 
 public class RSItem
 {
-    public int Id { get; private set; }
-    public int Amount { get; private set; }
+    public int Id { get; set; }
+    public int Amount { get; set; }
+    public int Index { get; set; }
+    public bool IsStackable { get; set; }
 
-    public RSItem(int id, int amount)
+    public RSItem(int id, int amount, int index = -1, bool isStackable = false)
     {
         if (amount < 0) throw new ArgumentException("Amount cannot be negative.");
         
         Id = id;
         Amount = amount;
+        Index = index;
+        IsStackable = isStackable;
     }
 
     public void AddAmount(int amount)

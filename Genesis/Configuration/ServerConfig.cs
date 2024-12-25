@@ -16,4 +16,11 @@ public class ServerConfig
     public static int SPAWN_LOCATION_Z = 0;
     
     public static int ITEM_LIMIT = 15000;
+
+    public static int BANK_SIZE = 300;
+    public static int INVENTORY_SIZE = 28;
+
+    public static bool ADDED_REGION_OBJECTS = false;
+    
+    
 }

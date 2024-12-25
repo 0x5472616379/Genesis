@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Environment;
@@ -51,12 +52,20 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(12, GameInterfaces.PlayerControlsInterface);
         player.Session.PacketBuilder.SendSidebarInterface(13, GameInterfaces.MusicInterface);
         
-        for (int i = 0; i <= 3; i++)
-            player.Inventory.AddItem(new RSItem(526, 1));
+         for (int i = 0; i <= 3; i++)
+             player.InventoryManager.AddItem(new RSItem(526, 1));
         
-        for (int i = 4; i <= 7; i++)
-            player.Inventory.AddItem(new RSItem(379, 1));
+         for (int i = 4; i <= 7; i++)
+             player.InventoryManager.AddItem(new RSItem(379, 1));
+         
+         player.InventoryManager.AddItem(new RSItem(544, 1));
+         player.InventoryManager.AddItem(new RSItem(542, 1));
         
-        player.Inventory.Refresh(GameInterfaces.DefaultInventoryContainer);
+         player.InventoryManager.RefreshInventory();
+         player.EquipmentManager.Refresh();
+         
+         
+         // player.EquipmentManager.Equip(new RSItem(544, 1), EquipmentSlot.Chest);
+         // player.EquipmentManager.Equip(new RSItem(542, 1), EquipmentSlot.Legs);
     }
 }

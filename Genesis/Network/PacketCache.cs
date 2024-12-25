@@ -50,11 +50,16 @@ public class PacketCache
     {
         return opCode switch
         {
+            41 => true,
+            
             98 => true,
-            103 => true,
-            164 => true,
             248 => true,
+            164 => true,
+            
+            103 => true,
             122 => true,
+            
+            132 => true,
             _ => false
         };
     }
