@@ -1,5 +1,7 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Cache;
+using Genesis.Entities;
 using Genesis.Interactions;
+using Genesis.Movement;
 
 namespace Genesis.Packets.Incoming;
 
@@ -27,10 +29,19 @@ public class InteractFirstOptionPacket : IPacket
     public void Process()
     {
         _player.Session.PacketBuilder.SendMessage($"Interact First Option: {_objId}");
-        if (_objId == 1530)
+
+        /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
+
+        if (_objId == 1531)
         {
-            _player.CurrentInterraction = new RSInteraction(5, () => { _player.Session.PacketBuilder.SendMessage("Hello, World!"); });
+            _player.Session.PacketBuilder.SendMessage($"Door Interaction: {_x} Y: {_y} Z: {_z} ObjId: {_objId}");
+            _player.Session.PacketBuilder.SendMessage(
+                $"Distance: {MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, _x, _y)}");
+            // _player.Session.PacketBuilder.SendMessage($"Cardinal Adjacent: {IsCardinalAdjacent(_player.Location.X, _player.Location.Y, _x, _y)}");
+
+
+            _player.CurrentInterraction = new SingleDoorInteraction(3,
+                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
         }
-        
     }
 }

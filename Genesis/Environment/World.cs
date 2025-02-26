@@ -12,12 +12,7 @@ public class World
 
     public static void Process()
     {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-
-            Players[i].Session.PacketBuilder.SendMessage($"Tick: {TICK_COUNT}");
-        }
+        // MessageTickCount();
 
         /* 1. Fetch Data */
         CollectPlayerPackets();
@@ -26,18 +21,21 @@ public class World
         /* 2. Process Actions / Interactions */
         ProcessActions();
 
-        for (int i = 0; i < Players.Length; i++)
+        /* Process Interactions */
+        foreach (var player in Players)
         {
-            if (Players[i] == null) continue;
-            if (Players[i].CurrentInterraction == null) continue;
-            Players[i].CurrentInterraction.Execute();
+            if (player == null) continue;
+            if (player.CurrentInterraction == null) continue;
+            
+            if (player.CurrentInterraction.Execute())
+                player.CurrentInterraction = null;
         }
         
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
         ProcessPlayerMovement();
-        
+
         /* 6. Combat */
 
         /* Refresh */
@@ -46,14 +44,26 @@ public class World
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
 
+        
+
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
 
         if (TICK_COUNT >= 5)
             TICK_COUNT = 0;
-        
+
         TICK_COUNT++;
+    }
+
+    private static void MessageTickCount()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+
+            Players[i].Session.PacketBuilder.SendMessage($"Tick: {TICK_COUNT}");
+        }
     }
 
 
@@ -65,7 +75,7 @@ public class World
             Players[i].MovementHandler.Process();
         }
     }
-    
+
     private static void RefreshPlayer()
     {
         for (int i = 0; i < Players.Length; i++)

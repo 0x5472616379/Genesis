@@ -73,6 +73,22 @@ public class Player : Entity
         }
     }
     
+    
+
+    public override void SetCurrentAnimation(int animationId)
+    {
+        CurrentAnimation = animationId;
+        Flags |= PlayerUpdateFlags.Animation;
+    }
+
+    public override void SetCurrentGfx(int gfx)
+    {
+        CurrentGfx = gfx;
+        Flags |= PlayerUpdateFlags.Graphics;
+    }
+
+    public void ClearInteraction() => CurrentInterraction = null;
+    
     public void Reset()
     {
         PerformedTeleport = false;
@@ -86,17 +102,5 @@ public class Player : Entity
         
         CurrentAnimation = -1;
         CurrentGfx = -1;
-    }
-
-    public override void SetCurrentAnimation(int animationId)
-    {
-        CurrentAnimation = animationId;
-        Flags |= PlayerUpdateFlags.Animation;
-    }
-
-    public override void SetCurrentGfx(int gfx)
-    {
-        CurrentGfx = gfx;
-        Flags |= PlayerUpdateFlags.Graphics;
     }
 }
