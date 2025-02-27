@@ -75,7 +75,7 @@ public class Region
         _projectileClips[height][x - regionAbsX][y - regionAbsY] |= shift;
     }
 
-    private int GetClip(int x, int y, int height)
+    public int GetClip(int x, int y, int height)
     {
         int zx;
         int zy;
@@ -481,7 +481,7 @@ public class Region
     public static void AddObject(int objectId, int x, int y, int height, int type, int direction)
     {
         var item = ObjectDefinition.Lookup(objectId);
-        
+
         int xLength;
         int yLength;
 
@@ -1050,7 +1050,7 @@ public class Region
         var diffY = endY - startY;
         var max = Math.Max(Math.Abs(diffX), Math.Abs(diffY));
 
-        for (var ii = 0; ii < max; ii++)
+        for (var step = 0; step < max; step++)
         {
             var currentX = endX - diffX;
             var currentY = endY - diffY;
@@ -1109,10 +1109,11 @@ public class Region
                 }
                 else if (diffX == 0 && diffY > 0)
                 {
+                    Console.WriteLine($"Checking PosX: {currentX + x} PosY: {currentY + y + 1}");
                     if ((GetClipping(currentX + x, currentY + y + 1, height) & 0x1280120) != 0)
                         return false;
                 }
-                else if (diffX == 0 && diffY < 0  && (GetClipping(currentX + x, currentY + y - 1, height) & 0x1280102) != 0)
+                else if (diffX == 0 && diffY < 0 && (GetClipping(currentX + x, currentY + y - 1, height) & 0x1280102) != 0)
                 {
                     return false;
                 }
@@ -1241,7 +1242,8 @@ public class Region
         return true;
     }
 
-    public static bool canInteract(int dstX, int dstY, int absX, int absY, int curX, int curY, int sizeX, int sizeY, int walkToData)
+    public static bool canInteract(int dstX, int dstY, int absX, int absY, int curX, int curY, int sizeX, int sizeY,
+        int walkToData)
     {
         // if ((walkToData & 0x80000000) != 0)
         //     if (curX == dstX && curY == dstY)
@@ -1264,6 +1266,48 @@ public class Region
         return (curY == dstY - 1 && curX >= dstX && curX <= maxX && (clipping & 2) == 0 && (walkToData & 4) == 0)
                || (curY == maxY + 1 && curX >= dstX && curX <= maxX && (clipping & 0x20) == 0
                    && (walkToData & 1) == 0);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="startX">Player PositionRelativeToOffsetChunkX</param>
+    /// <param name="startY">Player PositionRelativeToOffsetChunkY</param>
+    /// <param name="endX">Target PositionRelativeToOffsetChunkX</param>
+    /// <param name="endY">Target PositionRelativeToOffsetChunkY</param>
+    /// <param name="endDistanceX">Target SizeX</param>
+    /// <param name="endDistanceY">Target SizeY</param>
+    /// <param name="surroundings">walkToData(?) 0 for tree</param>
+    /// <returns></returns>
+    public static bool reachedFacingObject(int startX, int startY, int endX, int endY, int endDistanceX,
+        int endDistanceY, int surroundings, int playerAbsX, int playerAbsY, int clipping)
+    {
+        int endX2 = (endX + endDistanceX) - 1;
+        int endY2 = (endY + endDistanceY) - 1;
+
+        Console.WriteLine();
+
+        if (startX >= endX && startX <= endX2 && startY >= endY && startY <= endY2)
+        {
+            return true;
+        }
+
+        if (startX == endX - 1 && startY >= endY && startY <= endY2
+            && (clipping & 8) == 0 && (surroundings & 8) == 0)
+        {
+            return true;
+        }
+
+        if (startX == endX2 + 1 && startY >= endY && startY <= endY2
+            && (clipping & 0x80) == 0 && (surroundings & 2) == 0)
+        {
+            return true;
+        }
+
+        return startY == endY - 1 && startX >= endX && startX <= endX2
+               && (clipping & 2) == 0 && (surroundings & 4) == 0
+               || startY == endY2 + 1 && startX >= endX && startX <= endX2
+               && (clipping & 0x20) == 0 && (surroundings & 1) == 0;
     }
 
     // public static bool canInteract(int dstX, int dstY, int curX, int curY, int entitySizeX, int entitySizeY,

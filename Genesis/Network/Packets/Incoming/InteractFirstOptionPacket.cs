@@ -1,5 +1,6 @@
 ﻿using Genesis.Cache;
 using Genesis.Entities;
+using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Movement;
 
@@ -32,6 +33,25 @@ public class InteractFirstOptionPacket : IPacket
 
         /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
 
+        if (_objId == 1276)
+        {
+            var treeLocation = new Location(_x, _y, _z);
+            treeLocation.Build();
+            
+            //close to working? Maybe working?
+            //var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
+            //var clipping = region.GetClip(_player.Location.X, _player.Location.Y, 0);
+            
+            var region = Region.GetRegion(treeLocation.X, treeLocation.Y);
+            var clipping = region.GetClip(treeLocation.X, treeLocation.Y, 0);
+            
+            _player.CurrentInterraction = new TreeInteraction(
+                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); },
+                _player, 2, _objId, treeLocation, 0);
+            
+            return;
+        }
+        
         if (_objId == 1531)
         {
             _player.Session.PacketBuilder.SendMessage($"Door Interaction: {_x} Y: {_y} Z: {_z} ObjId: {_objId}");
@@ -40,8 +60,8 @@ public class InteractFirstOptionPacket : IPacket
             // _player.Session.PacketBuilder.SendMessage($"Cardinal Adjacent: {IsCardinalAdjacent(_player.Location.X, _player.Location.Y, _x, _y)}");
 
 
-            _player.CurrentInterraction = new SingleDoorInteraction(3,
-                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
+            _player.CurrentInterraction = new SingleDoorInteraction(() => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
+            return;
         }
     }
 }

@@ -10,7 +10,7 @@ public class SingleDoorInteraction : RSInteraction
     private readonly int _ez;
     private readonly Player _player;
 
-    public SingleDoorInteraction(int tick, Action action, int ex, int ey, int ez, Player player) : base(tick, action)
+    public SingleDoorInteraction(Action action, int ex, int ey, int ez, Player player) : base(action)
     {
         _ex = ex;
         _ey = ey;

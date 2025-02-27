@@ -32,6 +32,7 @@ public class ClientManager
 
     public static void Login(Player player)
     {
+        player.Location.Build();
         player.Session.PacketBuilder.BuildNewBuildAreaPacket();
         player.Flags = PlayerUpdateFlags.Appearance;
         player.PerformedTeleport = true;

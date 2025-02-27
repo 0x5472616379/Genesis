@@ -52,7 +52,7 @@ public class TeleportAction : RSAction
                 _player.Location.Z = _toLocation.Z;
 
                 _player.PerformedTeleport = true;
-                _player.Location.Update();
+                _player.Location.Build();
                 _player.Session.PacketBuilder.BuildNewBuildAreaPacket();      // Update the player's new location
                 _player.MovementHandler.DiscardMovementQueue = true; // Clear movement queue
                 

@@ -11,8 +11,8 @@ public class ServerConfig
     public static int BUFFER_SIZE = 4096;
     public const int PACKET_FETCH_LIMIT = 50;
 
-    public static int SPAWN_LOCATION_X = 3512;
-    public static int SPAWN_LOCATION_Y = 3480;
+    public static int SPAWN_LOCATION_X = 3265; //3264 North Tree //3265 TCTG ////3266 STCTG
+    public static int SPAWN_LOCATION_Y = 3230; //3237 North Tree //3230 TCTG ////3229 STCTG
     public static int SPAWN_LOCATION_Z = 0;
     
     public static int ITEM_LIMIT = 15000;
