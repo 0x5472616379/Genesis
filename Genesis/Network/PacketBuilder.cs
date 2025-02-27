@@ -166,4 +166,13 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordA(interfaceId);
         _player.Session.Writer.WriteWord(inventoryId);
     }
+    
+    public void SendInteractionOption(string option, int slot, bool top)
+    {
+        _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.PLAYER_RIGHTCLICK);
+        _player.Session.Writer.WriteByteC(slot);
+        _player.Session.Writer.WriteByteA(top ? 1 : 0);
+        _player.Session.Writer.WriteString(option);
+        _player.Session.Writer.EndFrameVarSize();
+    }
 }

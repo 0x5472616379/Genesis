@@ -80,8 +80,8 @@ public class PlayerUpdateManager
         writer.WriteBits(1, 1); /* Teleported */
 
         var delta = Location.Delta(player.Location, other.Location);
-        writer.WriteBits(5, delta.Y);
-        writer.WriteBits(5, delta.X);
+        writer.WriteBits(5, other.Location.Y - player.Location.Y);
+        writer.WriteBits(5, other.Location.X - player.Location.X);
 
         Console.WriteLine(
             $"Adding PlayerID: {other.Session.Index} To {player.Session.Index}'s LocalPlayerList at DeltaY: {other.Location.Y} - DeltaX: {other.Location.X}");
@@ -227,7 +227,7 @@ public class PlayerUpdateManager
 
         updateBlockBuffer.WriteQWord(player.Session.Username.ToLong());
         updateBlockBuffer.WriteByte(126);
-        updateBlockBuffer.WriteWord(100);
+        updateBlockBuffer.WriteWord(0);
 
         playerFlagUpdateBlock.WriteByteC(updateBlockBuffer.CurrentOffset);
         playerFlagUpdateBlock.WriteBytes(updateBlockBuffer.Buffer, updateBlockBuffer.CurrentOffset, 0);
