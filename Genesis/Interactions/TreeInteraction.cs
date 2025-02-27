@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Cache;
+using Genesis.Entities;
 using Genesis.Environment;
 
 namespace Genesis.Interactions;
@@ -6,15 +7,15 @@ namespace Genesis.Interactions;
 public class TreeInteraction : RSInteraction
 {
     private readonly Player _player;
+    private readonly Objects _treeObject;
     private readonly Location _treeLocation;
     private readonly int _clipping;
 
-    public TreeInteraction(Action action, Player player, int treeSize, int treeId, Location treeLocation,
-        int clipping) : base(action)
+    public TreeInteraction(Action action, Player player, Objects treeObject, Location treeLocation) : base(action)
     {
         _player = player;
+        _treeObject = treeObject;
         _treeLocation = treeLocation;
-        _clipping = clipping;
     }
 
     public override bool Execute()
@@ -44,19 +45,19 @@ public class TreeInteraction : RSInteraction
         var treeRelX2 = _treeLocation.X - _player.Location.CachedBuildAreaStartX;
         var treeRelY2 = _treeLocation.Y - _player.Location.CachedBuildAreaStartY;
         
+        var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
+        var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
+        
         var reachedFacingObject = Region.reachedFacingObject(
             _player.Location.PositionRelativeToOffsetChunkX, 
             _player.Location.PositionRelativeToOffsetChunkY,
             treeRelX2,
             treeRelY2,
-            2, 2, 0,
+            _treeObject.GetSize()[0], _treeObject.GetSize()[1], 0,
             _player.Location.X,
-            _player.Location.Y, 0);
+            _player.Location.Y, clip);
 
         _player.Session.PacketBuilder.SendMessage($"Reached Facing Object: {reachedFacingObject}");
-
-        //var canMove = Region.canMove(_player.Location, _treeLocation, 2,2);
-        //_player.Session.PacketBuilder.SendMessage($"CanReach Object: {canMove}");
 
         return false;
     }
