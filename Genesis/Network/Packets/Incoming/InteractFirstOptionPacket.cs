@@ -42,12 +42,16 @@ public class InteractFirstOptionPacket : IPacket
             //var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
             //var clipping = region.GetClip(_player.Location.X, _player.Location.Y, 0);
             
-            var region = Region.GetRegion(treeLocation.X, treeLocation.Y);
-            var clipping = region.GetClip(treeLocation.X, treeLocation.Y, 0);
+            var treeObj = Region.GetObject(_objId, _x, _y, _z);
+            if (treeObj == null)
+            {
+                _player.Session.PacketBuilder.SendMessage("Tree does not exist.");
+                return;
+            }
             
             _player.CurrentInterraction = new TreeInteraction(
                 () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); },
-                _player, 2, _objId, treeLocation, 0);
+                _player, treeObj, treeLocation);
             
             return;
         }
