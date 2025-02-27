@@ -39,8 +39,8 @@ public class Objects
     public int[] GetSize()
     {
         var def = ObjectDefinition.Lookup(Id);
-        if (def == null) return new[] { 1, 1 };
-        if (Id == 2781) return new[] { 3, 3 };
+        // if (def == null) return new[] { 1, 1 };
+        // if (Id == 2781) return new[] { 3, 3 };
         int xLength;
         int yLength;
         if (Direction != 1 && Direction != 3)

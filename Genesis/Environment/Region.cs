@@ -1285,8 +1285,6 @@ public class Region
         int endX2 = (endX + endDistanceX) - 1;
         int endY2 = (endY + endDistanceY) - 1;
 
-        Console.WriteLine();
-
         if (startX >= endX && startX <= endX2 && startY >= endY && startY <= endY2)
         {
             return true;

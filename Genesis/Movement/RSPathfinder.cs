@@ -19,8 +19,8 @@ public class RSPathfinder
         }
 
         var height = character.Location.Z;
-        destX = destX - 8 * character.Location.OffsetChunkX;
-        destY = destY - 8 * character.Location.OffsetChunkY;
+        destX = destX - 8 * character.Location.CachedBuildAreaSwChunkX;
+        destY = destY - 8 * character.Location.CachedBuildAreaSwChunkY;
 
         var via = new int[104][];
         var cost = new int[104][];
@@ -53,8 +53,8 @@ public class RSPathfinder
         {
             curX = tileQueueX.ElementAt(tail);
             curY = tileQueueY.ElementAt(tail);
-            var curAbsX = character.Location.OffsetChunkX * 8 + curX;
-            var curAbsY = character.Location.OffsetChunkY * 8 + curY;
+            var curAbsX = character.Location.CachedBuildAreaSwChunkX * 8 + curX;
+            var curAbsY = character.Location.CachedBuildAreaSwChunkY * 8 + curY;
 
             if (curX == destX && curY == destY)
             {
@@ -231,16 +231,16 @@ public class RSPathfinder
         }
 
         var size = tail--;
-        var pathX = character.Location.OffsetChunkX * 8 + tileQueueX[tail];
-        var pathY = character.Location.OffsetChunkY * 8 + tileQueueY[tail];
+        var pathX = character.Location.CachedBuildAreaSwChunkX * 8 + tileQueueX[tail];
+        var pathY = character.Location.CachedBuildAreaSwChunkY * 8 + tileQueueY[tail];
 
         character.MovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
 
         for (var i = 1; i < size; i++)
         {
             tail--;
-            pathX = character.Location.OffsetChunkX * 8 + tileQueueX[tail];
-            pathY = character.Location.OffsetChunkY * 8 + tileQueueY[tail];
+            pathX = character.Location.CachedBuildAreaSwChunkX * 8 + tileQueueX[tail];
+            pathY = character.Location.CachedBuildAreaSwChunkY * 8 + tileQueueY[tail];
             character.MovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
         }
     }
@@ -354,16 +354,16 @@ public class RSPathfinder
         tileQueueX.Add(curX);
         tileQueueY.Add(curY);
 
-        destX = destX - 8 * location.OffsetChunkX;
-        destY = destY - 8 * location.OffsetChunkY;
+        destX = destX - 8 * location.CachedBuildAreaSwChunkX;
+        destY = destY - 8 * location.CachedBuildAreaSwChunkY;
 
         while (tail != tileQueueX.Count() && tileQueueX.Count() < 104)
         {
             curX = tileQueueX.ElementAt(tail);
             curY = tileQueueY.ElementAt(tail);
 
-            int curAbsX = location.OffsetChunkX * 8 + curX;
-            int curAbsY = location.OffsetChunkY * 8 + curY;
+            int curAbsX = location.CachedBuildAreaSwChunkX * 8 + curX;
+            int curAbsY = location.CachedBuildAreaSwChunkY * 8 + curY;
 
             if (curX == destX && curY == destY)
             {

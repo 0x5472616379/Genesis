@@ -32,7 +32,7 @@ public class MovementHandler
 
         if (_entity.CurrentHealth <= 0)
             return;
-        
+
         if (waypoints.Count == 0)
             return;
 
@@ -42,7 +42,7 @@ public class MovementHandler
         if (walkPoint != null && walkPoint.Direction != -1)
         {
             /* Check Valid Combat Distance */
-            
+
             // if (EarlyMovementResetCheck(_entity))
             // {
             //     _entity.MovementHandler.Reset();
@@ -57,7 +57,7 @@ public class MovementHandler
         if (runPoint != null && runPoint.Direction != -1)
         {
             /* Check Valid Combat Distance */
-            
+
             // if (EarlyMovementResetCheck(_entity))
             // {
             //     _entity.MovementHandler.Reset();
@@ -73,7 +73,7 @@ public class MovementHandler
         {
             if (_entity.Location.ShouldGenerateNewBuildArea)
             {
-                // _entity.Location.Update();
+                _entity.Location.Build();
                 player.Session.PacketBuilder.BuildNewBuildAreaPacket();
             }
         }

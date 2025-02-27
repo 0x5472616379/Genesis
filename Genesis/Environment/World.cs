@@ -44,8 +44,6 @@ public class World
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
 
-        
-
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();

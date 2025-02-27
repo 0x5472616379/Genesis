@@ -23,8 +23,8 @@ public class PacketBuilder
     public void BuildNewBuildAreaPacket()
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.REGION_LOAD);
-        _player.Session.Writer.WriteWordA(_player.Location.CenterChunkX);
-        _player.Session.Writer.WriteWord(_player.Location.CenterChunkY);
+        _player.Session.Writer.WriteWordA(_player.Location.CachedCenterChunkX);
+        _player.Session.Writer.WriteWord(_player.Location.CachedCenterChunkY);
     }
 
     public void DisplayWelcomeScreen()

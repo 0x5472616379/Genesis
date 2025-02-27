@@ -33,49 +33,5 @@ public class PrintPositionCommand : CommandBase
         {
             Player.Session.PacketBuilder.SendMessage(part);
         }
-        
-        Player.Session.PacketBuilder.SendMessage("========");
-        
-        Player.Session.PacketBuilder.SendMessage($"Current X: {Player.Location.X}");
-        Player.Session.PacketBuilder.SendMessage($"Current Y: {Player.Location.Y}");
-        
-        /* Not used for much more than cache layout */
-        var MapRegion = (((Player.Location.X >> 6) << 8) & 0xFF00) | ((Player.Location.Y >> 6) & 0xFF);
-        Player.Session.PacketBuilder.SendMessage($"Current Map Region: {MapRegion}");
-        
-        //Current ChunkX/Y
-        var currentChunkX = Player.Location.X >> 3;
-        var currentChunkY = Player.Location.Y >> 3;
-        
-        var offsetChunkX = (Player.Location.X >> 3) - 6;
-        var offsetChunkY = (Player.Location.Y >> 3) - 6;
-        
-        Player.Session.PacketBuilder.SendMessage($"Current ChunkX: {currentChunkX}");
-        Player.Session.PacketBuilder.SendMessage($"Current ChunkY: {currentChunkY}");
-        
-        Player.Session.PacketBuilder.SendMessage($"Current OffsetChunkX: {currentChunkX}");
-        Player.Session.PacketBuilder.SendMessage($"Current OffsetChunkY: {currentChunkY}");
-        
-        Player.Session.PacketBuilder.SendMessage($"Chunk Relative To Current OffsetChunkX: {offsetChunkX}");
-        Player.Session.PacketBuilder.SendMessage($"Chunk Relative To Current OffsetChunkY: {offsetChunkY}");
-
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To OffsetChunkX: {Player.Location.X - offsetChunkX * 8}");
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To OffsetChunkY: {Player.Location.Y - offsetChunkY * 8}");
-        
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To CachedOffsetChunkX: {Player.Location.X - Player.Location.CachedBuildAreaSwChunkX * 8}");
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To CachedOffsetChunkY: {Player.Location.Y - Player.Location.CachedBuildAreaSwChunkY * 8}");
-        
-        Player.Session.PacketBuilder.SendMessage($"Cached OffsetChunkX: {Player.Location.CachedBuildAreaSwChunkX}");
-        Player.Session.PacketBuilder.SendMessage($"Cached OffsetChunkY: {Player.Location.CachedBuildAreaSwChunkY}");
-        
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To Cached OffsetChunkX: {Player.Location.X - Player.Location.CachedBuildAreaSwChunkX * 8}");
-        Player.Session.PacketBuilder.SendMessage($"Pos Relative To Cached OffsetChunkY: {Player.Location.Y - Player.Location.CachedBuildAreaSwChunkY * 8}");
-        
-        
-        Player.Session.PacketBuilder.SendMessage($"AbsX Relative To BA-Ax: {Player.Location.X - Player.Location.CachedBuildAreaStartX}");
-        Player.Session.PacketBuilder.SendMessage($"AbsY Relative To BA-Ay: {Player.Location.Y - Player.Location.CachedBuildAreaStartY}");
-
-        var clipData = Region.GetClipping(Player.Location.X, Player.Location.Y, Player.Location.Z);
-        Player.Session.PacketBuilder.SendMessage($"ClipData: {clipData}");
     }
 }

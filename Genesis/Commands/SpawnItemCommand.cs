@@ -40,7 +40,7 @@ public class SpawnItemCommand : CommandBase
 
     protected override void Invoke()
     {
-        // Player.Inventory.AddItem(new RSItem(_id, _amount));
-        // Player.Inventory.Refresh(GameInterfaces.DefaultInventoryContainer);
+        Player.InventoryManager.AddItem(new RSItem(_id, _amount));
+        Player.InventoryManager.RefreshInventory();
     }
 }
