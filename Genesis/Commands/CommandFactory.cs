@@ -15,6 +15,8 @@ public class CommandFactory
             "admin" => new SetAdminCommand(player, _commandArgs),
             "pos" => new PrintPositionCommand(player, _commandArgs),
             "tele" => new TeleportCommand(player, _commandArgs),
+            "play" => new PlaySoundCommand(player, _commandArgs),
+            "song" => new PlaySongCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }

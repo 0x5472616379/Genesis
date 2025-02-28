@@ -3,6 +3,7 @@ using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Movement;
+using Genesis.Skills.Woodcutting;
 
 namespace Genesis.Packets.Incoming;
 
@@ -30,32 +31,29 @@ public class InteractFirstOptionPacket : IPacket
     public void Process()
     {
         _player.Session.PacketBuilder.SendMessage($"Interact First Option: {_objId}");
-
-        /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
-
-        if (_objId == 1276)
+        var gameObject = Region.GetObject(_objId, _x, _y, _z);
+        if (gameObject == null)
+        {
+            _player.Session.PacketBuilder.SendMessage("Object does not exist.");
+            return;
+        }
+        
+        
+        var tree = TreeData.GetTree(_objId);
+        if (tree != null)
         {
             var treeLocation = new Location(_x, _y, _z);
             treeLocation.Build();
             
-            //close to working? Maybe working?
-            //var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
-            //var clipping = region.GetClip(_player.Location.X, _player.Location.Y, 0);
-            
-            var treeObj = Region.GetObject(_objId, _x, _y, _z);
-            if (treeObj == null)
-            {
-                _player.Session.PacketBuilder.SendMessage("Tree does not exist.");
-                return;
-            }
-            
             _player.CurrentInterraction = new TreeInteraction(
-                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); },
-                _player, treeObj, treeLocation);
+                () => { _player.Session.PacketBuilder.SendMessage("Tree Interaction"); },
+                _player, gameObject, treeLocation, tree);
             
             return;
         }
+       
         
+        /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
         if (_objId == 1531)
         {
             _player.Session.PacketBuilder.SendMessage($"Door Interaction: {_x} Y: {_y} Z: {_z} ObjId: {_objId}");

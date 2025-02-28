@@ -190,4 +190,18 @@ public class PacketBuilder
         _player.Session.Writer.WriteDWordV1(exp);
         _player.Session.Writer.WriteByte(boostedLevel);
     }
+    
+    public void SendSound(int trackId, int loop, int delay)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.SOUND_PLAY);
+        _player.Session.Writer.WriteWord(trackId);
+        _player.Session.Writer.WriteByte(loop);
+        _player.Session.Writer.WriteWord(delay);
+    }
+    
+    public void SendSong(int trackId)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.SONG_PLAY);
+        _player.Session.Writer.WriteWordBigEndian(trackId);
+    }
 }

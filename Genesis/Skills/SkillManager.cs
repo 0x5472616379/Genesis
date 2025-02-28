@@ -22,44 +22,52 @@ public class SkillManager
         4842295, 5346332, 5902831, 6517253, 7195629, 7944614, 8771558, 9684577, 10692629, 11805606, 13034431
     ];
 
-    Skill[] _skills = new Skill[SKILL_COUNT];
+    // Skill[] _skills = new Skill[SKILL_COUNT];
+
+    public Skill[] Skills { get; set; } = new Skill[SKILL_COUNT];
 
     public SkillManager(Player player)
     {
         _player = player;
 
-        for (int i = 0; i < _skills.Length; i++)
+        for (int i = 0; i < Skills.Length; i++)
         {
             if ((SkillType)i == SkillType.HITPOINTS)
             {
-                _skills[i] = new Skill((SkillType)i);
-                _skills[i].Level = 10;
-                _skills[i].Experience = EXPERIENCE_TABLE[10];
+                Skills[i] = new Skill((SkillType)i);
+                Skills[i].Level = 10;
+                Skills[i].Experience = EXPERIENCE_TABLE[10];
 
                 continue;
             }
 
-            _skills[i] = new Skill((SkillType)i);
-            _skills[i].Level = 1;
-            _skills[i].Experience = EXPERIENCE_TABLE[1];
+            Skills[i] = new Skill((SkillType)i);
+            Skills[i].Level = 1;
+            Skills[i].Experience = EXPERIENCE_TABLE[1];
         }
 
-        CombatLevel = GetCombatLevel(_skills[(int)SkillType.ATTACK].Level,
-            _skills[(int)SkillType.STRENGTH].Level,
-            _skills[(int)SkillType.MAGIC].Level,
-            _skills[(int)SkillType.RANGED].Level,
-            _skills[(int)SkillType.DEFENCE].Level,
-            _skills[(int)SkillType.HITPOINTS].Level,
-            _skills[(int)SkillType.PRAYER].Level);
+        CombatLevel = GetCombatLevel(Skills[(int)SkillType.ATTACK].Level,
+            Skills[(int)SkillType.STRENGTH].Level,
+            Skills[(int)SkillType.MAGIC].Level,
+            Skills[(int)SkillType.RANGED].Level,
+            Skills[(int)SkillType.DEFENCE].Level,
+            Skills[(int)SkillType.HITPOINTS].Level,
+            Skills[(int)SkillType.PRAYER].Level);
     }
 
     public void RefreshSkills()
     {
         for (int i = 0; i < SKILL_COUNT; i++)
         {
-            var skill = _skills[i];
+            var skill = Skills[i];
             _player.Session.PacketBuilder.SendSkillUpdate(i, skill.Experience, skill.Level);
         }
+    }
+
+    public void RefreshSkill(SkillType type)
+    {
+        var skill = Skills[(int)type];
+        _player.Session.PacketBuilder.SendSkillUpdate((int)type, skill.Experience, skill.Level);
     }
 
     public static int GetCombatLevel(double atk, double str, double mag, double rng, double def, double hp, double pry)
