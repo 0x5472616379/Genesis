@@ -1,4 +1,5 @@
 ﻿using Genesis.Configuration;
+using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Model;
 
@@ -49,6 +50,12 @@ public class PacketBuilder
         _player.Session.Writer.CreateFrame(ServerOpCodes.SIDEBAR_INTF_ASSIGN);
         _player.Session.Writer.WriteWord(_displayId); /* What to display inside that tab */
         _player.Session.Writer.WriteByteA(_tabId); /* Which tab */
+    }
+    
+    public void SendFriendListStatus(FriendListStatus _status)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.FRIENDLIST_STATUS);
+        _player.Session.Writer.WriteByte((byte)_status); /* 0 is loading, 1 is connecting, 2 is loaded. */
     }
 
     public void SendConfig(int _id, int _state)
@@ -174,5 +181,13 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteA(top ? 1 : 0);
         _player.Session.Writer.WriteString(option);
         _player.Session.Writer.EndFrameVarSize();
+    }
+    
+    public void SendSkillUpdate(int skillId, int exp, int boostedLevel)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.PLAYER_SKILL);
+        _player.Session.Writer.WriteByte(skillId);
+        _player.Session.Writer.WriteDWordV1(exp);
+        _player.Session.Writer.WriteByte(boostedLevel);
     }
 }

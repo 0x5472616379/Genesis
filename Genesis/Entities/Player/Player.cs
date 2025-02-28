@@ -6,6 +6,7 @@ using Genesis.Interactions;
 using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
+using Genesis.Skills;
 
 namespace Genesis.Entities;
 
@@ -24,6 +25,7 @@ public class Player : Entity
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public InventoryManager InventoryManager { get; set; }
+    public SkillManager SkillManager { get; set; }
     
     public RSInteraction CurrentInterraction { get; set; }
 
@@ -39,10 +41,13 @@ public class Player : Entity
         MovementHandler = new MovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
         InventoryManager = new InventoryManager(this);
+        SkillManager = new SkillManager(this);
         
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
+        
+        
     }
 
 

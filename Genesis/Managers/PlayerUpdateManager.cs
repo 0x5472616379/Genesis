@@ -226,7 +226,7 @@ public class PlayerUpdateManager
         WriteMovementAnimations(updateBlockBuffer, player);
 
         updateBlockBuffer.WriteQWord(player.Session.Username.ToLong());
-        updateBlockBuffer.WriteByte(126);
+        updateBlockBuffer.WriteByte(player.SkillManager.CombatLevel);
         updateBlockBuffer.WriteWord(0);
 
         playerFlagUpdateBlock.WriteByteC(updateBlockBuffer.CurrentOffset);

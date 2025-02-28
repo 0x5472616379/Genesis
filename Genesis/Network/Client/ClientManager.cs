@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using ArcticRS.Appearance;
 using Genesis.Configuration;
+using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Model;
@@ -57,7 +58,9 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(11, GameInterfaces.SettingsInterface);
         player.Session.PacketBuilder.SendSidebarInterface(12, GameInterfaces.PlayerControlsInterface);
         player.Session.PacketBuilder.SendSidebarInterface(13, GameInterfaces.MusicInterface);
-
+        player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
+        player.SkillManager.RefreshSkills();
+        
         for (int i = 0; i <= 3; i++)
             player.InventoryManager.AddItem(new RSItem(526, 1));
 
