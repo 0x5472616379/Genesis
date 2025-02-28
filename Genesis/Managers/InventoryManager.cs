@@ -1,86 +1,141 @@
-﻿using Genesis.Configuration;
+﻿using Genesis.Cache;
+using Genesis.Configuration;
 using Genesis.Entities;
-using Genesis.Model;
 
 namespace Genesis.Managers;
 
 public class InventoryManager
 {
     private readonly Player _player;
-    
-    RSItem[] DefaultInventory { get; set; } = Enumerable.Range(0, ServerConfig.INVENTORY_SIZE)
-                                                        .Select(index => new RSItem(-1, 0, index))
-                                                        .ToArray();
-    
-    RSItem[] BankInventory { get; set; } = Enumerable.Range(0, ServerConfig.INVENTORY_SIZE)
-                                                     .Select(index => new RSItem(-1, 0, index))
-                                                     .ToArray();
+
+    public const int MAX_SLOTS = 28;
+    private List<Item> InventoryItems = new(new Item[MAX_SLOTS]);
 
     public InventoryManager(Player player)
     {
         _player = player;
     }
 
-    public bool AddItem(RSItem item)
+    public int AddItem(int itemId, int amount = 1)
     {
-        if (item.IsStackable)
+        var itemDefinition = ItemDefinition.Lookup(itemId);
+        if (itemDefinition.Id == -1)
         {
-            for (int i = 0; i < ServerConfig.BANK_SIZE; i++)
-            {
-                if (DefaultInventory[i].Id == item.Id)
-                {
-                    long potentialTotal = (long)DefaultInventory[i].Amount + item.Amount;
-                    if (potentialTotal > int.MaxValue)
-                    {
-                        int amountThatCanBeAdded = int.MaxValue - DefaultInventory[i].Amount;
-                    
-                        // Update both DefaultInventory and BankInventory
-                        DefaultInventory[i].Amount = int.MaxValue;
-                        BankInventory[i].Amount = int.MaxValue;
-                    
-                        item.Amount -= amountThatCanBeAdded;
-                    
-                        // Continue processing the remaining amount
-                        return AddItem(item);
-                    }
+            _player.Session.PacketBuilder.SendMessage("Item not found!");
+            return 0;
+        }
 
-                    DefaultInventory[i].Amount += item.Amount;
-                    BankInventory[i].Amount += item.Amount;
-                    
-                    item.Id = -1;
-                    return true;
+        amount = Math.Min(amount, int.MaxValue);
+        int addedAmount = 0;
+
+        if (itemDefinition.IsStackable())
+        {
+            var existingItemIndex = GetItemIndex(itemId);
+            if (existingItemIndex == -1)
+            {
+                if (NotifyInventoryFull()) return 0;
+
+                if (AddToEmptySlot(new Item(itemId, amount, stackable: true)))
+                {
+                    addedAmount = amount;
+                }
+                else
+                {
+                    _player.Session.PacketBuilder.SendMessage("Failed to add item to inventory!");
+                }
+            }
+            else
+            {
+                var existingItem = GetItemAtIndex(existingItemIndex);
+                var totalAmount = existingItem.Amount + amount;
+
+                var newAmount = Math.Min(totalAmount, int.MaxValue);
+                addedAmount = newAmount - existingItem.Amount;
+                existingItem.Amount = newAmount;
+            }
+        }
+        else
+        {
+            if (NotifyInventoryFull()) return 0;
+            
+            int freeSlots = MAX_SLOTS - GetItemCount();
+            int itemsToAdd = Math.Min(amount, freeSlots);
+
+            if (itemsToAdd <= 0)
+            {
+                _player.Session.PacketBuilder.SendMessage("Not enough space in inventory for that many items!");
+                return 0;
+            }
+
+            for (int i = 0; i < itemsToAdd; i++)
+            {
+                if (AddToEmptySlot(new Item(itemId, amount: 1, stackable: false)))
+                {
+                    addedAmount++;
+                }
+                else
+                {
+                    _player.Session.PacketBuilder.SendMessage("Failed to add some items to inventory.");
+                    break;
                 }
             }
         }
 
-        // For non-stackable items or new stack slots
-        for (int i = 0; i < ServerConfig.BANK_SIZE; i++)
+        return addedAmount;
+    }
+
+    private bool NotifyInventoryFull()
+    {
+        if (GetItemCount() >= MAX_SLOTS)
         {
-            if (DefaultInventory[i].Id == -1)
+            _player.Session.PacketBuilder.SendMessage("Inventory is full!");
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool AddToEmptySlot(Item newItem)
+    {
+        for (int i = 0; i < MAX_SLOTS; i++)
+        {
+            if (InventoryItems[i] == null)
             {
-                DefaultInventory[i] = new RSItem(item.Id, item.Amount, i);
-                BankInventory[i] = new RSItem(item.Id, item.Amount, i);
-            
-                item.Id = -1;
+                InventoryItems[i] = newItem;
                 return true;
             }
         }
 
-        _player.Session.PacketBuilder.SendMessage("Inventory is full.");
         return false;
     }
 
+    public void Clear()
+    {
+        InventoryItems = new List<Item>(new Item[MAX_SLOTS]);
+    }
+
+    public int GetItemIndex(int itemId) => InventoryItems.FindIndex(i => i != null && i.Id == itemId);
+    public Item GetItemAtIndex(int index) => InventoryItems[index];
+
     public void RefreshInventory()
     {
-        _player.Session.PacketBuilder.RefreshContainer(DefaultInventory, GameInterfaces.DefaultInventoryContainer);
+        _player.Session.PacketBuilder.RefreshContainer(InventoryItems, GameInterfaces.DefaultInventoryContainer,
+            GetItemCount());
     }
-    
 
-    public void Remove(int index, int amount)
+    public int GetItemCount() => InventoryItems.Count(i => i != null);
+}
+
+public class Item
+{
+    public int Id { get; }
+    public int Amount { get; set; }
+    public bool Stackable { get; }
+
+    public Item(int id, int amount = 1, bool stackable = false)
     {
-        DefaultInventory[index].Amount -= amount;
-
-        if (DefaultInventory[index].Amount == 0)
-            DefaultInventory[index].Id = -1;
+        Id = id;
+        Amount = amount;
+        Stackable = stackable;
     }
 }

@@ -37,22 +37,25 @@ public class InteractFirstOptionPacket : IPacket
             _player.Session.PacketBuilder.SendMessage("Object does not exist.");
             return;
         }
-        
-        
+
+
         var tree = TreeData.GetTree(_objId);
         if (tree != null)
         {
             var treeLocation = new Location(_x, _y, _z);
             treeLocation.Build();
-            
+
+            _player.SetFaceX(treeLocation.X * 2 + gameObject.GetSize()[0]);
+            _player.SetFaceY(treeLocation.Y * 2 + gameObject.GetSize()[1]);
+
             _player.CurrentInterraction = new TreeInteraction(
                 () => { _player.Session.PacketBuilder.SendMessage("Tree Interaction"); },
                 _player, gameObject, treeLocation, tree);
-            
+
             return;
         }
-       
-        
+
+
         /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
         if (_objId == 1531)
         {
@@ -62,7 +65,8 @@ public class InteractFirstOptionPacket : IPacket
             // _player.Session.PacketBuilder.SendMessage($"Cardinal Adjacent: {IsCardinalAdjacent(_player.Location.X, _player.Location.Y, _x, _y)}");
 
 
-            _player.CurrentInterraction = new SingleDoorInteraction(() => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
+            _player.CurrentInterraction = new SingleDoorInteraction(
+                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
             return;
         }
     }

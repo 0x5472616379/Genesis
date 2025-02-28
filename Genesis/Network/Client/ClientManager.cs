@@ -4,6 +4,7 @@ using Genesis.Configuration;
 using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Managers;
 using Genesis.Model;
 
 namespace Genesis.Client;
@@ -62,13 +63,13 @@ public class ClientManager
         player.SkillManager.RefreshSkills();
         
         for (int i = 0; i <= 3; i++)
-            player.InventoryManager.AddItem(new RSItem(526, 1));
+            player.InventoryManager.AddItem(526);
 
         for (int i = 4; i <= 7; i++)
-            player.InventoryManager.AddItem(new RSItem(379, 1));
+            player.InventoryManager.AddItem(379);
 
-        player.InventoryManager.AddItem(new RSItem(544, 1));
-        player.InventoryManager.AddItem(new RSItem(542, 1));
+        player.InventoryManager.AddItem(544);
+        player.InventoryManager.AddItem(542);
 
         player.InventoryManager.RefreshInventory();
         player.EquipmentManager.Refresh();

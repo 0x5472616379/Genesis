@@ -162,9 +162,11 @@ public class PlayerUpdateManager
         if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
-        // if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
     }
+
+   
 
     private static void AppendGraphics(Player player, RSStream playerFlagUpdateBlock)
     {
@@ -233,6 +235,12 @@ public class PlayerUpdateManager
         playerFlagUpdateBlock.WriteBytes(updateBlockBuffer.Buffer, updateBlockBuffer.CurrentOffset, 0);
     }
 
+    private static void AppendInteractingEntity(Player player, RSStream playerFlagUpdateBlock)
+    {
+        playerFlagUpdateBlock.WriteWordBigEndianA(player.CurrentFaceX);
+        playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentFaceY);
+    }
+    
     private static void UpdateCurrentPlayerMovement()
     {
         _player.Session.Writer.CreateFrameVarSizeWord(ServerOpCodes.PLAYER_UPDATE);

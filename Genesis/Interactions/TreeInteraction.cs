@@ -1,7 +1,9 @@
 ﻿using Genesis.Cache;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Managers;
 using Genesis.Model;
+using Genesis.Movement;
 using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 
@@ -30,6 +32,7 @@ public class TreeInteraction : RSInteraction
     {
         if (!CanExecute()) return false;
 
+        
         _tick++;
         
         if (_tick > 1)
@@ -40,7 +43,7 @@ public class TreeInteraction : RSInteraction
             return false;
 
         _player.SetCurrentAnimation(-1);
-        _player.InventoryManager.AddItem(new RSItem(_tree.LogId, 1));
+        _player.InventoryManager.AddItem(_tree.LogId);
         _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP);
         _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
         return true;

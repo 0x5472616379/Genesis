@@ -7,6 +7,7 @@ var ifs = new IndexedFileSystem("../../../Data/cache", true);
 
 Benchmark(() => { new ObjectDefinitionDecoder(ifs).Run(); }, "Loaded Objects in");
 Benchmark(() => { RegionFactory.Load(ifs); }, "Loaded Regions in");
+Benchmark(() => { new ItemDefinitionDecoder(ifs).Run(); }, "Decoded Item Definitions in");
 
 RSServer server = new RSServer();
 server.Run();

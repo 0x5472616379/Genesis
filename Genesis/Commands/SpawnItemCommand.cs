@@ -1,7 +1,9 @@
 ﻿using ArcticRS.Commands;
 using ArcticRS.Constants;
+using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Entities;
+using Genesis.Managers;
 using Genesis.Model;
 
 namespace Genesis.Commands;
@@ -40,7 +42,6 @@ public class SpawnItemCommand : CommandBase
 
     protected override void Invoke()
     {
-        Player.InventoryManager.AddItem(new RSItem(_id, _amount));
-        Player.InventoryManager.RefreshInventory();
+        var added = Player.InventoryManager.AddItem(_id, _amount);
     }
 }

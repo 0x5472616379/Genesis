@@ -111,7 +111,7 @@ public class ItemDefinition
 
     public bool IsNote() => noteGraphicId != -1 && noteInfoId != -1;
 
-    public bool IsStackable() => Stackable;
+    public bool IsStackable() => Stackable || IsNote();
 
     public void SetStackable(bool stackable) => Stackable = stackable;
 

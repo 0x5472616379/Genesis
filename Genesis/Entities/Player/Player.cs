@@ -91,6 +91,19 @@ public class Player : Entity
         CurrentGfx = gfx;
         Flags |= PlayerUpdateFlags.Graphics;
     }
+    
+    public override void SetFaceX(int x)
+    {
+        CurrentFaceX = x;
+        Flags |= PlayerUpdateFlags.FaceDirection;
+    }
+
+    public override void SetFaceY(int y)
+    {
+        CurrentFaceY = y;
+        Flags |= PlayerUpdateFlags.FaceDirection;
+    }
+
 
     public void ClearInteraction() => CurrentInterraction = null;
     

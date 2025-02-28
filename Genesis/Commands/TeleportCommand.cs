@@ -146,7 +146,7 @@ public class TeleportCommand : CommandBase
         ["drill_deamon_camp"] = (3157, 4822, 0),
         ["HAM_camp"] = (3165, 9629, 0),
         ["Pyramid_under_Sophanem"] = (3277, 9171, 0),
-        ["Juna_the_snake"] = (3251, 9517, 0),
+        ["Juna_the_snake"] = (3251, 9517, 2),
         ["castle_wars"] = (2379, 9489, 0),
         ["castle_wars1"] = (2422, 9525, 0),
         ["Ice_Lair"] = (2867, 9955, 0),

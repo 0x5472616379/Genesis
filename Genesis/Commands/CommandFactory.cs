@@ -17,6 +17,7 @@ public class CommandFactory
             "tele" => new TeleportCommand(player, _commandArgs),
             "play" => new PlaySoundCommand(player, _commandArgs),
             "song" => new PlaySongCommand(player, _commandArgs),
+            "clear" => new ClearInventoryCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }
