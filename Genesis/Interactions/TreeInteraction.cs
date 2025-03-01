@@ -31,7 +31,6 @@ public class TreeInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
-
         
         _tick++;
         

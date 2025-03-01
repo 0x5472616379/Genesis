@@ -1,6 +1,7 @@
 ﻿using Genesis.Configuration;
 using Genesis.Constants;
 using Genesis.Entities;
+using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;
 
@@ -204,5 +205,24 @@ public class PacketBuilder
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.SONG_PLAY);
         _player.Session.Writer.WriteWordBigEndian(trackId);
+    }
+
+    /// <summary>
+    /// Sends the SW X/Y of the Chunk that we will send edits to
+    /// </summary>
+    /// <param name="location"></param>
+    public void SendActiveChunk(int x, int y)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.ACTIVE_CHUNK);
+        _player.Session.Writer.WriteByteC(y);
+        _player.Session.Writer.WriteByteC(x);
+    }
+    
+    public void UpdateObject(int x, int y, WorldObject worldObject)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
+        _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
+        _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
+        _player.Session.Writer.WriteByteS((worldObject.Type << 2) + (worldObject.Face & 3));
     }
 }

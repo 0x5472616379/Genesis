@@ -14,8 +14,8 @@ public class ServerConfig
     public const int SKILL_BONUS_EXP = 100000;
     public const int COMBAT_BONUS_EXP = 1;
 
-    public static int SPAWN_LOCATION_X = 3093;
-    public static int SPAWN_LOCATION_Y = 3244;
+    public static int SPAWN_LOCATION_X = 3200;
+    public static int SPAWN_LOCATION_Y = 3200;
     public static int SPAWN_LOCATION_Z = 0;
     
     public static int ITEM_LIMIT = 15000;

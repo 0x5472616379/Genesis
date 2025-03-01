@@ -18,6 +18,7 @@ public class CommandFactory
             "play" => new PlaySoundCommand(player, _commandArgs),
             "song" => new PlaySongCommand(player, _commandArgs),
             "clear" => new ClearInventoryCommand(player, _commandArgs),
+            "remove" => new RemoveObjectCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }
