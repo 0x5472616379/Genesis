@@ -30,44 +30,35 @@ public class InteractFirstOptionPacket : IPacket
 
     public void Process()
     {
-        _player.Session.PacketBuilder.SendMessage($"Interact First Option: {_objId}");
-        var gameObject = Region.GetObject(_objId, _x, _y, _z);
-        if (gameObject == null)
+        var worldObject = GetWorldObject();
+        if (worldObject == null) return;
+        
+        if (HandleTreeInteraction(worldObject)) return;
+    }
+    
+    private WorldObject? GetWorldObject()
+    {
+        var worldObject = Region.GetObject(_objId, _x, _y, _z);
+        if (worldObject == null)
         {
             _player.Session.PacketBuilder.SendMessage("Object does not exist.");
-            return;
         }
-
-
+        return worldObject;
+    }
+    
+    private bool HandleTreeInteraction(WorldObject worldObject)
+    {
         var tree = TreeData.GetTree(_objId);
-        if (tree != null)
-        {
-            var treeLocation = new Location(_x, _y, _z);
-            treeLocation.Build();
+        if (tree == null) return false;
 
-            _player.SetFaceX(treeLocation.X * 2 + gameObject.GetSize()[0]);
-            _player.SetFaceY(treeLocation.Y * 2 + gameObject.GetSize()[1]);
+        var treeLocation = new Location(_x, _y, _z);
+        treeLocation.Build();
 
-            _player.CurrentInterraction = new TreeInteraction(
-                () => { _player.Session.PacketBuilder.SendMessage("Tree Interaction"); },
-                _player, gameObject, treeLocation, tree);
+        _player.SetFaceX(treeLocation.X * 2 + worldObject.GetSize()[0]);
+        _player.SetFaceY(treeLocation.Y * 2 + worldObject.GetSize()[1]);
 
-            return;
-        }
+        _player.CurrentInterraction = new TreeInteraction(_player, worldObject, treeLocation, tree);
 
-
-        /* Opening and closing a door requires being orthogonally adjacent (N, E, S, W) */
-        if (_objId == 1531)
-        {
-            _player.Session.PacketBuilder.SendMessage($"Door Interaction: {_x} Y: {_y} Z: {_z} ObjId: {_objId}");
-            _player.Session.PacketBuilder.SendMessage(
-                $"Distance: {MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, _x, _y)}");
-            // _player.Session.PacketBuilder.SendMessage($"Cardinal Adjacent: {IsCardinalAdjacent(_player.Location.X, _player.Location.Y, _x, _y)}");
-
-
-            _player.CurrentInterraction = new SingleDoorInteraction(
-                () => { _player.Session.PacketBuilder.SendMessage("Door Interaction"); }, _x, _y, _z, _player);
-            return;
-        }
+        return true;
     }
 }

@@ -28,7 +28,7 @@ public class Region
 
     private int[][][] _clips { get; } = new int[4][][];
     private int[][][] _projectileClips { get; } = new int[4][][];
-    private List<Objects> _realObjects { get; } = new();
+    private List<WorldObject> _realObjects { get; } = new();
 
     public int Id { get; }
 
@@ -533,7 +533,7 @@ public class Region
 
         if (r != null)
         {
-            r._realObjects.Add(new Objects(objectId, x, y, height, direction, type, 0));
+            r._realObjects.Add(new WorldObject(objectId, x, y, height, direction, type, 0));
 
             // if (startUp)
             //     r._realObjects.Add(new Objects(objectId, x, y, height, direction, type, 0));
@@ -723,7 +723,7 @@ public class Region
         }
     }
 
-    public static Objects GetObject(int id, int x, int y, int z)
+    public static WorldObject GetObject(int id, int x, int y, int z)
     {
         var r = GetRegion(x, y);
         if (r == null)
@@ -738,7 +738,7 @@ public class Region
     }
 
 
-    public Objects GetRealObject(Region region, int x, int y, int z, int objId)
+    public WorldObject GetRealObject(Region region, int x, int y, int z, int objId)
     {
         var r = region;
         if (r == null)
@@ -1279,7 +1279,7 @@ public class Region
     /// <param name="endDistanceY">Target SizeY</param>
     /// <param name="surroundings">walkToData(?) 0 for tree</param>
     /// <returns></returns>
-    public static bool reachedFacingObject(int startX, int startY, int endX, int endY, int endDistanceX,
+    public static bool ReachedObject(int startX, int startY, int endX, int endY, int endDistanceX,
         int endDistanceY, int surroundings, int playerAbsX, int playerAbsY, int clipping)
     {
         int endX2 = (endX + endDistanceX) - 1;

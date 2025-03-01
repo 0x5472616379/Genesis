@@ -1,4 +1,5 @@
-﻿using Genesis.Configuration;
+﻿using Genesis.Cache;
+using Genesis.Configuration;
 using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
@@ -217,12 +218,12 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteC(y);
         _player.Session.Writer.WriteByteC(x);
     }
-    
+
     public void UpdateObject(int x, int y, WorldObject worldObject)
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
         _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
         _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
-        _player.Session.Writer.WriteByteS((worldObject.Type << 2) + (worldObject.Face & 3));
+        _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Direction & 3));
     }
 }

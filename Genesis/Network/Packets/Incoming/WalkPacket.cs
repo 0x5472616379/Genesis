@@ -51,6 +51,7 @@ public class WalkPacket : IPacket
         if (_player.CurrentHealth <= 0)
             return;
 
+        _player.ClearInteraction();
         _player.MovementHandler.Reset();
         
         // _player.FollowingEntity = null;

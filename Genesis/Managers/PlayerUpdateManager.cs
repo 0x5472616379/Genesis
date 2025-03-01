@@ -20,7 +20,7 @@ public class PlayerUpdateManager
             if (player == null) continue;
 
             PlayerUpdateBlock = new RSStream(new byte[5000]);
-            
+
             _player = player;
             UpdateCurrentPlayerMovement();
 
@@ -79,9 +79,12 @@ public class PlayerUpdateManager
         writer.WriteBits(1, 1); /* Observed */
         writer.WriteBits(1, 1); /* Teleported */
 
-        var delta = Location.Delta(player.Location, other.Location);
-        writer.WriteBits(5, other.Location.Y - player.Location.Y);
-        writer.WriteBits(5, other.Location.X - player.Location.X);
+
+        var dx = other.Location.X - _player.Location.X;
+        var dy = other.Location.Y - _player.Location.Y;
+
+        writer.WriteBits(5, dy);
+        writer.WriteBits(5, dx);
 
         Console.WriteLine(
             $"Adding PlayerID: {other.Session.Index} To {player.Session.Index}'s LocalPlayerList at DeltaY: {other.Location.Y} - DeltaX: {other.Location.X}");
@@ -166,7 +169,6 @@ public class PlayerUpdateManager
         // if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
     }
 
-   
 
     private static void AppendGraphics(Player player, RSStream playerFlagUpdateBlock)
     {
@@ -179,7 +181,7 @@ public class PlayerUpdateManager
         playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentAnimation);
         playerFlagUpdateBlock.WriteByteC(0); //delay
     }
-    
+
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
     {
         // playerFlagUpdateBlock.WriteByte((byte)player.MostRecentDamage.FirstAmount); //hitDamage
@@ -240,7 +242,7 @@ public class PlayerUpdateManager
         playerFlagUpdateBlock.WriteWordBigEndianA(player.CurrentFaceX);
         playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentFaceY);
     }
-    
+
     private static void UpdateCurrentPlayerMovement()
     {
         _player.Session.Writer.CreateFrameVarSizeWord(ServerOpCodes.PLAYER_UPDATE);

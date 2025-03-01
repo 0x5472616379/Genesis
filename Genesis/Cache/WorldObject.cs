@@ -1,8 +1,8 @@
 ﻿namespace Genesis.Cache;
 
-public class Objects
+public class WorldObject
 {
-    public Objects(int id, int x, int y, int height, int direction, int type, int ticks)
+    public WorldObject(int id, int x, int y, int height, int direction, int type, int ticks)
     {
         Id = id;
         X = x;

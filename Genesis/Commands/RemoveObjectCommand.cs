@@ -1,4 +1,5 @@
 ﻿using ArcticRS.Commands;
+using Genesis.Cache;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
@@ -27,15 +28,7 @@ public class RemoveObjectCommand : CommandBase
             return;
         }
 
-        var treeStrump = new WorldObject
-        {
-            X = dasiesLocation.X,
-            Y = dasiesLocation.Y,
-            Z = dasiesLocation.Z,
-            Type = 10,
-            Face = 0,
-            Id = 7399
-        };
+        var treeStrump = new WorldObject(7399, dasiesLocation.X, dasiesLocation.Y, dasiesLocation.Z, gameObject.Direction, 10, 0);
 
         var relX = dasiesLocation.X - Player.Location.CachedBuildAreaStartX;
         var relY = dasiesLocation.Y - Player.Location.CachedBuildAreaStartY;
