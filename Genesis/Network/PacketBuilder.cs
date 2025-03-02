@@ -208,6 +208,13 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndian(trackId);
     }
 
+    public void ClearChunk(int x, int y)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.FLOORITEM_REMOVE_SPAWNED);
+        _player.Session.Writer.WriteByteC(y);
+        _player.Session.Writer.WriteByteS(x);
+    }
+    
     /// <summary>
     /// Sends the SW X/Y of the Chunk that we will send edits to
     /// </summary>
@@ -218,14 +225,38 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteC(y);
         _player.Session.Writer.WriteByteC(x);
     }
-
-    public void UpdateObject(int x, int y, WorldObject worldObject)
+    
+    public void SendActiveRegion(int x, int y, Player player, List<ModifiedEntity> modifiedEntitiesInBuildArea)
     {
-        _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
-        _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
-        _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
-        _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Direction & 3));
+        _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.REGION_UPDATE);
+        _player.Session.Writer.WriteByte(y);
+        _player.Session.Writer.WriteByteC(x);
+
+        foreach (var modifiedEntity in modifiedEntitiesInBuildArea)
+        {
+            int relX = modifiedEntity.Location.X - player.Location.CachedBuildAreaStartX;
+            int relY = modifiedEntity.Location.Y - player.Location.CachedBuildAreaStartY;
+            int relZoneX = relX & ~0x7;
+            int relZoneY = relY & ~0x7;
+            int inZoneX = relX & 0x7;
+            int inZoneY = relY & 0x7;
+            
+            _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
+            _player.Session.Writer.WriteByteA(((inZoneX & 0x7) << 4) | (inZoneY & 0x7));
+            _player.Session.Writer.WriteWordBigEndian(modifiedEntity.Id);
+            _player.Session.Writer.WriteByteS((modifiedEntity.Type << 2) | (modifiedEntity.Face & 3));
+        }
+        
+        _player.Session.Writer.EndFrameVarSize();
     }
+
+    // public void UpdateObject(int x, int y, WorldObject worldObject)
+    // {
+    //     _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
+    //     _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
+    //     _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
+    //     _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Direction & 3));
+    // }
     
     public void UpdateObject(int x, int y, ModifiedEntity worldObject)
     {
@@ -234,4 +265,22 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
         _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Face & 3));
     }
+
+    public void UpdateAreaObjects(List<Action> actions)
+    {
+        _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.REGION_UPDATE);
+        foreach (var action in actions)
+        {
+            /* Essentially a list of UpdateObject() */
+            action();
+        }
+        _player.Session.Writer.EndFrameVarSize();
+    }
+}
+
+public class WorldUpdate()
+{
+    public ModifiedEntity ModifiedEntity { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
 }

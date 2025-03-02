@@ -744,11 +744,32 @@ public class Region
         if (region == null)
             return null;
 
+        // var amount = region._realObjects.Where(obj => obj.X == x && obj.Y == y && obj.Height == z).ToList();
+        // Console.WriteLine($"Amount at area: {amount.Count}");
         // Loop through all real objects in the region
         foreach (var obj in region._realObjects)
         {
             // Check if the object's coordinates match (x, y, z)
             if (obj.X == x && obj.Y == y)
+                return obj; // Return the first match
+        }
+
+        return null; // No matching object found
+    }
+    
+    
+    public static WorldObject GetExpectedObjectAt(int id, int x, int y, int z)
+    {
+        // Retrieve the region containing the (x, y) coordinates
+        var region = GetRegion(x, y);
+        if (region == null)
+            return null;
+
+        // Loop through all real objects in the region
+        foreach (var obj in region._realObjects)
+        {
+            // Check if the object's coordinates match (x, y, z)
+            if (obj.X == x && obj.Y == y && obj.Id == id)
                 return obj; // Return the first match
         }
 

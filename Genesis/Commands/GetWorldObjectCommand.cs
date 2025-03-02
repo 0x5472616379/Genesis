@@ -18,15 +18,20 @@ public class GetWorldObjectCommand : CommandBase
 
     protected override string ValidateArgs()
     {
-        id = int.Parse(Args[1]);
-        x = int.Parse(Args[2]);
-        y = int.Parse(Args[3]);
+        x = int.Parse(Args[1]);
+        y = int.Parse(Args[2]);
+        // id = int.Parse(Args[3]);
 
         return null;
     }
 
     protected override void Invoke()
     {
+        var worldEntity = Region.GetObjectAt(x, y, Player.Location.Z);
+        if (worldEntity == null)
+            return;
+        
+        Player.Session.PacketBuilder.SendMessage($"Object ID: {worldEntity.Id} at {x}, {y}");
         
     }
 }

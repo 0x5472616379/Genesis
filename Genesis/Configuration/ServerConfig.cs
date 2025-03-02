@@ -8,14 +8,14 @@ public class ServerConfig
     public static int PORT = 43594;
     public static int MAX_PLAYERS = 2048;
     public static int MAX_NPCS = 8192;
-    public static int BUFFER_SIZE = 4096;
+    public static int BUFFER_SIZE = 16384;
     public const int PACKET_FETCH_LIMIT = 50;
     
     public const int SKILL_BONUS_EXP = 100000;
     public const int COMBAT_BONUS_EXP = 1;
 
-    public static int SPAWN_LOCATION_X = 3200;
-    public static int SPAWN_LOCATION_Y = 3200;
+    public static int SPAWN_LOCATION_X = 3266;
+    public static int SPAWN_LOCATION_Y = 3229;
     public static int SPAWN_LOCATION_Z = 0;
     
     public static int ITEM_LIMIT = 15000;

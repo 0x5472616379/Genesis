@@ -56,7 +56,7 @@ public class TreeInteraction : RSInteraction
         if (!_logRecentlyGathered)
         {
             var random = new Random();
-            if (random.Next(1, 6) == 1)
+            if (random.Next(1, 1) == 1)
             {
                 _player.InventoryManager.AddItem(_tree.LogId);
                 _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
@@ -65,12 +65,13 @@ public class TreeInteraction : RSInteraction
 
                 _logRecentlyGathered = true;
 
-                if (random.Next(1, 3) == 1)
+                if (random.Next(1, 1) == 1)
                 {
                     var stumpId = _tree.StumpId;
                     _player.SetCurrentAnimation(-1);
                     EnvironmentBuilder.Add(new ModifiedEntity
                     {
+                        OriginalId = _treeWorldObject.Id,
                         Id = stumpId,
                         Type = _treeWorldObject.Type,
                         Face = _treeWorldObject.Direction,
