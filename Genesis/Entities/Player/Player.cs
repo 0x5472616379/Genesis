@@ -46,10 +46,7 @@ public class Player : Entity
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
-        
-        
     }
-
 
     public void AddLocalPlayer(Entity player)
     {

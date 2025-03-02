@@ -1,5 +1,6 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Managers;
 using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 using WorldObject = Genesis.Cache.WorldObject;
@@ -62,9 +63,19 @@ public class TreeInteraction : RSInteraction
 
                 _logRecentlyGathered = true;
 
-                if (random.Next(1, 6) == 1)
+                if (random.Next(1, 3) == 1)
                 {
+                    var stumpId = _tree.StumpId;
                     _player.SetCurrentAnimation(-1);
+                    EnvironmentBuilder.Add(new ModifiedEntity
+                    {
+                        Id = stumpId,
+                        Type = _treeWorldObject.Type,
+                        Face = _treeWorldObject.Direction,
+                        Location = new Location(_treeLocation.X, _treeLocation.Y, _treeLocation.Z),
+                        Delay = 20
+                    });
+                    
                     return true;
                 }
             }

@@ -34,7 +34,11 @@ public class World
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
-        ProcessPlayerMovement();
+        // WorldObjectManager.Process();
+        
+        /* This will build a new BuildArea which will trigger UpdateBuildArea.UpdateBuildArea() */
+        ProcessPlayerMovement(); 
+        EnvironmentBuilder.Process();
 
         /* 6. Combat */
 
@@ -43,7 +47,7 @@ public class World
 
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
-
+        
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
@@ -162,4 +166,8 @@ public class World
 
     public static Player[] GetPlayers() => Players;
     public static int GetPlayerCount() => Players.Count(x => x != null);
+    public static Player? GetPlayerByHashCode(int hashCode)
+    {
+        return Players.FirstOrDefault(player => player != null && player.GetHashCode() == hashCode);
+    }
 }

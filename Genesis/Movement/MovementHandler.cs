@@ -74,7 +74,9 @@ public class MovementHandler
             if (_entity.Location.ShouldGenerateNewBuildArea)
             {
                 _entity.Location.Build();
-                player.Session.PacketBuilder.BuildNewBuildAreaPacket();
+                // _entity.Location.RefreshObjects(player);
+                EnvironmentBuilder.UpdateBuildArea(player);
+                player.Session.PacketBuilder.SendNewBuildAreaPacket();
             }
         }
     }

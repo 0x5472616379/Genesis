@@ -50,10 +50,12 @@ public class TeleportAction : RSAction
                 _player.Location.X = _toLocation.X;
                 _player.Location.Y = _toLocation.Y;
                 _player.Location.Z = _toLocation.Z;
-
                 _player.PerformedTeleport = true;
+
                 _player.Location.Build();
-                _player.Session.PacketBuilder.BuildNewBuildAreaPacket();      // Update the player's new location
+                _player.Session.PacketBuilder.SendNewBuildAreaPacket();
+                // _player.Location.RefreshObjects(_player);
+                EnvironmentBuilder.UpdateBuildArea(_player);
                 _player.MovementHandler.DiscardMovementQueue = true; // Clear movement queue
                 
                 _currentState = TeleportState.Arrived; // Transition to the final state

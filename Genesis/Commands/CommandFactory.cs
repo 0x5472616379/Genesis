@@ -19,6 +19,8 @@ public class CommandFactory
             "song" => new PlaySongCommand(player, _commandArgs),
             "clear" => new ClearInventoryCommand(player, _commandArgs),
             "remove" => new RemoveObjectCommand(player, _commandArgs),
+            "obj" => new GetWorldObjectCommand(player, _commandArgs),
+            "refresh" => new RefreshBuildAreaObjectsCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }

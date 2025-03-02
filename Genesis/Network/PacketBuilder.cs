@@ -24,7 +24,7 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndianA(_player.Session.Index);
     }
 
-    public void BuildNewBuildAreaPacket()
+    public void SendNewBuildAreaPacket()
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.REGION_LOAD);
         _player.Session.Writer.WriteWordA(_player.Location.CachedCenterChunkX);
@@ -225,5 +225,13 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
         _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
         _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Direction & 3));
+    }
+    
+    public void UpdateObject(int x, int y, ModifiedEntity worldObject)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.OBJ_ADD);
+        _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
+        _player.Session.Writer.WriteWordBigEndian(worldObject.Id);
+        _player.Session.Writer.WriteByteS((worldObject.Type << 2) | (worldObject.Face & 3));
     }
 }

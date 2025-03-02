@@ -79,7 +79,6 @@ public class PlayerUpdateManager
         writer.WriteBits(1, 1); /* Observed */
         writer.WriteBits(1, 1); /* Teleported */
 
-
         var dx = other.Location.X - _player.Location.X;
         var dy = other.Location.Y - _player.Location.Y;
 

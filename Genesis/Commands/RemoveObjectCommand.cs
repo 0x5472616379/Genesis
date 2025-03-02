@@ -28,7 +28,8 @@ public class RemoveObjectCommand : CommandBase
             return;
         }
 
-        var treeStrump = new WorldObject(7399, dasiesLocation.X, dasiesLocation.Y, dasiesLocation.Z, gameObject.Direction, 10, 0);
+        var treeStrump = new WorldObject(1342, dasiesLocation.X, dasiesLocation.Y, dasiesLocation.Z,
+            gameObject.Direction, 10, 0);
 
         var relX = dasiesLocation.X - Player.Location.CachedBuildAreaStartX;
         var relY = dasiesLocation.Y - Player.Location.CachedBuildAreaStartY;
@@ -39,9 +40,26 @@ public class RemoveObjectCommand : CommandBase
         var inZoneX = relX & 0x7;
         var inZoneY = relY & 0x7;
 
+        EnvironmentBuilder.Add(new ModifiedEntity
+        {
+            Id = treeStrump.Id,
+            Type = treeStrump.Type,
+            Face = treeStrump.Direction,
+            Location = dasiesLocation,
+            Delay = 20
+        });
 
-        Player.Session.PacketBuilder.SendActiveChunk(relZoneX, relZoneY);
-        Player.Session.PacketBuilder.UpdateObject(inZoneX, inZoneY, treeStrump);
-        Player.Session.PacketBuilder.SendMessage("Tried to remove object.");
+        // Player.Session.PacketBuilder.SendActiveChunk(relZoneX, relZoneY);
+        // Player.Session.PacketBuilder.UpdateObject(inZoneX, inZoneY, treeStrump);
+        // Player.Session.PacketBuilder.SendMessage("Tried to remove object.");
+
+        // var testObject = new RespawnObject
+        // {
+        //     Original = gameObject,
+        //     ReplaceWith = treeStrump,
+        //     Delay = 20
+        // };
+
+        // WorldObjectManager.Add(testObject);
     }
 }
