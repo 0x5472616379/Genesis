@@ -1,6 +1,7 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
+using Genesis.Movement;
 using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 using WorldObject = Genesis.Cache.WorldObject;
@@ -35,7 +36,7 @@ public class TreeInteraction : RSInteraction
 
         _player.SetFaceX(_treeLocation.X * 2 + _treeWorldObject.GetSize()[0]);
         _player.SetFaceY(_treeLocation.Y * 2 + _treeWorldObject.GetSize()[1]);
-        
+
         if (_player.InventoryManager.GetItemCount() >= 28)
         {
             _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
@@ -50,6 +51,7 @@ public class TreeInteraction : RSInteraction
             _player.Session.PacketBuilder.SendSound(471, 0, 10);
 
         _player.SetCurrentAnimation(875);
+
 
         if (!_logRecentlyGathered)
         {
@@ -75,7 +77,7 @@ public class TreeInteraction : RSInteraction
                         Location = new Location(_treeLocation.X, _treeLocation.Y, _treeLocation.Z),
                         Delay = 20
                     });
-                    
+
                     return true;
                 }
             }

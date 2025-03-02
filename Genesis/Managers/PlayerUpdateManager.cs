@@ -178,7 +178,7 @@ public class PlayerUpdateManager
     private static void AppendAnimation(Player player, RSStream playerFlagUpdateBlock)
     {
         playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentAnimation);
-        playerFlagUpdateBlock.WriteByteC(0); //delay
+        playerFlagUpdateBlock.WriteByteC(0); //delay is x * client tick (20ms)
     }
 
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
