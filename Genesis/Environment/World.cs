@@ -22,14 +22,7 @@ public class World
         ProcessActions();
 
         /* Process Interactions */
-        foreach (var player in Players)
-        {
-            if (player == null) continue;
-            if (player.CurrentInterraction == null) continue;
-            
-            if (player.CurrentInterraction.Execute())
-                player.CurrentInterraction = null;
-        }
+        ProcessPlayerInteractions();
         
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
@@ -56,6 +49,18 @@ public class World
             TICK_COUNT = 0;
 
         TICK_COUNT++;
+    }
+
+    private static void ProcessPlayerInteractions()
+    {
+        foreach (var player in Players)
+        {
+            if (player == null) continue;
+            if (player.CurrentInterraction == null) continue;
+            
+            if (player.CurrentInterraction.Execute())
+                player.CurrentInterraction = null;
+        }
     }
 
     private static void MessageTickCount()

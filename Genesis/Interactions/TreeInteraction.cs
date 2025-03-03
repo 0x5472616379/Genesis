@@ -10,19 +10,20 @@ public class TreeInteraction : RSInteraction
 {
     private readonly Player _player;
     private readonly WorldObject _treeWorldObject;
-    private readonly Location _treeLocation;
     private readonly Tree _tree;
     private readonly int _clipping;
 
     private int axeAnimationId;
 
+    private AxeData.Axe EquippedAxe = null; 
+    Random random = new Random();
+
     private int _tick;
 
-    public TreeInteraction(Player player, WorldObject treeWorldObject, Location treeLocation, Tree tree)
+    public TreeInteraction(Player player, WorldObject treeWorldObject, Tree tree)
     {
         _player = player;
         _treeWorldObject = treeWorldObject;
-        _treeLocation = treeLocation;
         _tree = tree;
     }
 
@@ -32,8 +33,8 @@ public class TreeInteraction : RSInteraction
     {
         if (!CanExecute()) return false;
 
-        _player.SetFaceX(_treeLocation.X * 2 + _treeWorldObject.GetSize()[0]);
-        _player.SetFaceY(_treeLocation.Y * 2 + _treeWorldObject.GetSize()[1]);
+        _player.SetFaceX(_treeWorldObject.X * 2 + _treeWorldObject.GetSize()[0]);
+        _player.SetFaceY(_treeWorldObject.Y * 2 + _treeWorldObject.GetSize()[1]);
 
 
         if (_tick > 0)
@@ -48,7 +49,7 @@ public class TreeInteraction : RSInteraction
             {
                 _player.SetCurrentAnimation(axeAnimationId);
                 var random = new Random();
-                if (random.Next(1, 3) == 1)
+                if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe))
                 {
                     _player.InventoryManager.AddItem(_tree.LogId);
                     _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
@@ -57,7 +58,7 @@ public class TreeInteraction : RSInteraction
 
                     _lastLogGatheredTick = _tick;
 
-                    if (random.Next(1, 8) == 1)
+                    if (random.Next(0, 100) < _tree.DecayChance)
                     {
                         var stumpId = _tree.StumpId;
                         _player.SetCurrentAnimation(-1);
@@ -67,8 +68,8 @@ public class TreeInteraction : RSInteraction
                             Id = stumpId,
                             Type = _treeWorldObject.Type,
                             Face = _treeWorldObject.Direction,
-                            Location = new Location(_treeLocation.X, _treeLocation.Y, _treeLocation.Z),
-                            Delay = 20
+                            Location = new Location(_treeWorldObject.X, _treeWorldObject.Y, _treeWorldObject.Height),
+                            Delay = _tree.RespawnTime
                         });
 
                         return true;
@@ -84,8 +85,8 @@ public class TreeInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var treeRelX2 = _treeLocation.X - _player.Location.CachedBuildAreaStartX;
-        var treeRelY2 = _treeLocation.Y - _player.Location.CachedBuildAreaStartY;
+        var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
+        var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
 
         var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
         var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
@@ -118,6 +119,12 @@ public class TreeInteraction : RSInteraction
 
         return true;
     }
+    
+    public static double GetSuccessRate(Tree tree, AxeData.Axe axe)
+    {
+        return tree.SuccessYield * axe.Multiplier;
+    }
+
 
     private bool HasRequiredWoodcuttingLevel(int playerLevel)
     {
@@ -152,6 +159,7 @@ public class TreeInteraction : RSInteraction
         if (equippedAxe != null && playerLevel >= equippedAxe.RequiredLevel)
         {
             axeAnimationId = equippedAxe.AnimationId;
+            EquippedAxe = equippedAxe;
             return true;
         }
 
@@ -174,6 +182,7 @@ public class TreeInteraction : RSInteraction
         }
 
         axeAnimationId = usableAxe.AnimationId;
+        EquippedAxe = usableAxe;
         return true;
     }
 }

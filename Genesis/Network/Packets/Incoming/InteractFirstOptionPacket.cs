@@ -50,16 +50,11 @@ public class InteractFirstOptionPacket : IPacket
     {
         var tree = TreeData.GetTree(_objId);
         if (tree == null) return false;
-
-        var treeLocation = new Location(_x, _y, _z);
-        treeLocation.Build();
-        EnvironmentBuilder.UpdateBuildArea(_player);
         
-        _player.SetFaceX(treeLocation.X * 2 + worldObject.GetSize()[0]);
-        _player.SetFaceY(treeLocation.Y * 2 + worldObject.GetSize()[1]);
+        _player.SetFaceX(worldObject.X * 2 + worldObject.GetSize()[0]);
+        _player.SetFaceY(worldObject.Y * 2 + worldObject.GetSize()[1]);
         
-        _player.CurrentInterraction = new TreeInteraction(_player, worldObject, treeLocation, tree);
-
+        _player.CurrentInterraction = new TreeInteraction(_player, worldObject, tree);
         return true;
     }
 }

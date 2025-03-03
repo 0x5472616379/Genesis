@@ -6,6 +6,7 @@ using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;
+using Genesis.Skills.Woodcutting;
 
 namespace Genesis.Client;
 
@@ -64,14 +65,17 @@ public class ClientManager
         player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
         player.SkillManager.RefreshSkills();
         
-        for (int i = 0; i <= 3; i++)
-            player.InventoryManager.AddItem(526);
+        // for (int i = 0; i <= 3; i++)
+        //     player.InventoryManager.AddItem(526);
+        //
+        // for (int i = 4; i <= 7; i++)
+        //     player.InventoryManager.AddItem(379);
+        //
+        // player.InventoryManager.AddItem(544);
+        // player.InventoryManager.AddItem(542);
 
-        for (int i = 4; i <= 7; i++)
-            player.InventoryManager.AddItem(379);
-
-        player.InventoryManager.AddItem(544);
-        player.InventoryManager.AddItem(542);
+        for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
+            player.InventoryManager.AddItem(AxeData.GetAllAxeIds()[i]);
 
         player.InventoryManager.RefreshInventory();
         player.EquipmentManager.Refresh();

@@ -2,7 +2,8 @@
 
 
 
-public record Tree(string Name,
+public record Tree(
+    string Name,
     int[] Ids,
     int[]? Entities,
     int Level,
@@ -10,4 +11,5 @@ public record Tree(string Name,
     int LogId,
     int StumpId,
     int RespawnTime,
-    int DecayChance);
+    int DecayChance,
+    double SuccessYield);
