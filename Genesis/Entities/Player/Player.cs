@@ -77,11 +77,14 @@ public class Player : Entity
     
     
 
-    public override void SetCurrentAnimation(int animationId)
+    public int AnimationDelay { get; set; }
+    public override void SetCurrentAnimation(int animationId, int delay = 0)
     {
         CurrentAnimation = animationId;
+        AnimationDelay = delay;
         Flags |= PlayerUpdateFlags.Animation;
     }
+
 
     public override void SetCurrentGfx(int gfx)
     {

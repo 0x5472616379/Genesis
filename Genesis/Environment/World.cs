@@ -37,7 +37,7 @@ public class World
         // WorldObjectManager.Process();
         
         /* This will build a new BuildArea which will trigger UpdateBuildArea.UpdateBuildArea() */
-        ProcessPlayerMovement(); 
+        ProcessPlayerMovement();
         EnvironmentBuilder.Process();
 
         /* 6. Combat */

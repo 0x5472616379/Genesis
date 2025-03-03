@@ -143,3 +143,39 @@ public class RegionUpdateEntry
     public byte Position { get; set; }
     public ModifiedEntity Entity { get; set; }
 }
+
+
+// int buildAreaStartX = Player.Location.CachedBuildAreaStartX;
+// int buildAreaStartY = Player.Location.CachedBuildAreaStartY;
+// int buildAreaEndX = buildAreaStartX + (13 << 3); // 13 chunks * 8 tiles per chunk
+// int buildAreaEndY = buildAreaStartY + (13 << 3);
+//
+// // List to store all tree locations found and corresponding region updates
+// List<Location> treeLocations = new List<Location>();
+// List<RegionUpdate> regionUpdates = new List<RegionUpdate>();
+//
+// // Traverse the build area to locate all trees
+// for (int x = buildAreaStartX; x < buildAreaEndX; x++)
+// {
+//     for (int y = buildAreaStartY; y < buildAreaEndY; y++)
+//     {
+//         // Check the world object at this location
+//         WorldObject worldObject = Region.GetObjectAt(x, y, Player.Location.Z);
+//
+//         // If it's a tree (ID: 1276), add its location to the list
+//         if (worldObject?.Id == 1276)
+//         {
+//             Location treeLocation = new Location(x, y, Player.Location.Z); // Assuming Z-axis is player's Z
+//             treeLocations.Add(treeLocation);
+//             EnvironmentBuilder.Add(new ModifiedEntity
+//             {
+//                 OriginalId = worldObject.Id,
+//                 Id = 1342,
+//                 Type = worldObject.Type,
+//                 Face = worldObject.Direction,
+//                 Location = treeLocation,
+//                 Delay = 30
+//             });
+//         }
+//     }
+// }

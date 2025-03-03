@@ -1,5 +1,5 @@
-﻿using Genesis.Entities;
-using Genesis.Managers;
+﻿using Genesis.Configuration;
+using Genesis.Entities;
 using Genesis.Model;
 
 namespace ArcticRS.Actions;
@@ -36,6 +36,7 @@ public class EquipAction : RSAction
             case EquipState.IDLE:
                 _state = EquipState.EQUIPPING;
                 _player.EquipmentManager.Equip(new RSItem(_item.Id, _item.Amount, _index));
+                _player.Session.PacketBuilder.UpdateSlot(_index, _item.Id, 1, GameInterfaces.DefaultInventoryContainer);
                 return false;
             case EquipState.EQUIPPING:
                 return true;

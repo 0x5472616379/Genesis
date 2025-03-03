@@ -57,7 +57,7 @@ public class InventoryManager
         else
         {
             if (NotifyInventoryFull()) return 0;
-            
+
             int freeSlots = MAX_SLOTS - GetItemCount();
             int itemsToAdd = Math.Min(amount, freeSlots);
 
@@ -109,6 +109,21 @@ public class InventoryManager
         return false;
     }
 
+    public void Remove(int index, int amount = 1)
+    {
+        if (index < 0 || index >= InventoryItems.Count)
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+
+        var item = InventoryItems[index];
+        if (item is null)
+            throw new InvalidOperationException("No item exists at the specified index.");
+
+        if (item.Amount > amount)
+            item.Amount -= amount;
+        else
+            InventoryItems[index] = null;
+    }
+    
     public void Clear()
     {
         InventoryItems = new List<Item>(new Item[MAX_SLOTS]);
@@ -124,6 +139,7 @@ public class InventoryManager
     }
 
     public int GetItemCount() => InventoryItems.Count(i => i != null);
+    public List<Item> GetItems() => InventoryItems.Where(x => x != null).ToList();
 }
 
 public class Item

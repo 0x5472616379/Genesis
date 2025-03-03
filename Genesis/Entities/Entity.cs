@@ -16,7 +16,7 @@ public abstract class Entity
     public int CurrentFaceX { get; set; }
     public int CurrentFaceY { get; set; }
     public int CurrentAnimation { get; set; }
-    public abstract void SetCurrentAnimation(int animationId);
+    public abstract void SetCurrentAnimation(int animationId, int delay);
     public abstract void SetCurrentGfx(int gfx);
     public abstract void SetFaceX(int x);
     public abstract void SetFaceY(int y);

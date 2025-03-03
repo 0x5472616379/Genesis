@@ -53,12 +53,11 @@ public class InteractFirstOptionPacket : IPacket
 
         var treeLocation = new Location(_x, _y, _z);
         treeLocation.Build();
-        // treeLocation.RefreshObjects(_player);
         EnvironmentBuilder.UpdateBuildArea(_player);
         
         _player.SetFaceX(treeLocation.X * 2 + worldObject.GetSize()[0]);
         _player.SetFaceY(treeLocation.Y * 2 + worldObject.GetSize()[1]);
-
+        
         _player.CurrentInterraction = new TreeInteraction(_player, worldObject, treeLocation, tree);
 
         return true;

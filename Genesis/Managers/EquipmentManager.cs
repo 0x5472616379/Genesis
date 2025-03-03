@@ -46,14 +46,14 @@ public class EquipmentManager
 
     public void Equip(RSItem rsItem)
     {
-        // var slot = GetEquipmentSlotById(rsItem.Id);
-        //
-        // if (Equipment.ContainsKey(slot))
-        //     Unequip(slot);
-        //
-        // Equipment[slot] = new EquipmentItem(rsItem.Id, rsItem.Amount);
-        //
-        // _player.InventoryManager.Remove(rsItem.Index, rsItem.Amount);
+         var slot = GetEquipmentSlotById(rsItem.Id);
+        
+         if (Equipment.ContainsKey(slot))
+             Unequip(slot);
+        
+         Equipment[slot] = new EquipmentItem(rsItem.Id, rsItem.Amount);
+        
+         _player.InventoryManager.Remove(rsItem.Index, rsItem.Amount);
     }
 
     public void Unequip(EquipmentSlot slot)
@@ -126,6 +126,8 @@ public class EquipmentManager
         };
     }
 
+    public int GetWeapon() => Equipment.TryGetValue(EquipmentSlot.Weapon, out var equippedWeapon) ? equippedWeapon.Id : -1;
+    
      public void Refresh()
      {
          foreach (var entry in Equipment)

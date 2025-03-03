@@ -1,7 +1,5 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
-using Genesis.Managers;
-using Genesis.Movement;
 using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 using WorldObject = Genesis.Cache.WorldObject;
@@ -16,6 +14,8 @@ public class TreeInteraction : RSInteraction
     private readonly Tree _tree;
     private readonly int _clipping;
 
+    private int axeAnimationId;
+
     private int _tick;
 
     public TreeInteraction(Player player, WorldObject treeWorldObject, Location treeLocation, Tree tree)
@@ -26,68 +26,59 @@ public class TreeInteraction : RSInteraction
         _tree = tree;
     }
 
-    private bool _logRecentlyGathered = false; // Flag for tracking recent log gathering
+    private int _lastLogGatheredTick = -1;
 
     public override bool Execute()
     {
-        /* 1281 Oak | 1276 Tree */
-
         if (!CanExecute()) return false;
 
         _player.SetFaceX(_treeLocation.X * 2 + _treeWorldObject.GetSize()[0]);
         _player.SetFaceY(_treeLocation.Y * 2 + _treeWorldObject.GetSize()[1]);
 
-        if (_player.InventoryManager.GetItemCount() >= 28)
-        {
-            _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
-            _player.ClearInteraction();
-            _player.SetCurrentAnimation(-1);
-            return false;
-        }
 
-        _tick++;
+        if (_tick > 0)
+            _player.SetCurrentAnimation(axeAnimationId);
 
         if (_tick > 1)
             _player.Session.PacketBuilder.SendSound(471, 0, 10);
 
-        _player.SetCurrentAnimation(875);
-
-
-        if (!_logRecentlyGathered)
+        if (_tick > 2)
         {
-            var random = new Random();
-            if (random.Next(1, 1) == 1)
+            if (_lastLogGatheredTick == -1 || _tick - _lastLogGatheredTick > 2)
             {
-                _player.InventoryManager.AddItem(_tree.LogId);
-                _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
-                    .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP);
-                _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
-
-                _logRecentlyGathered = true;
-
-                if (random.Next(1, 1) == 1)
+                _player.SetCurrentAnimation(axeAnimationId);
+                var random = new Random();
+                if (random.Next(1, 3) == 1)
                 {
-                    var stumpId = _tree.StumpId;
-                    _player.SetCurrentAnimation(-1);
-                    EnvironmentBuilder.Add(new ModifiedEntity
-                    {
-                        OriginalId = _treeWorldObject.Id,
-                        Id = stumpId,
-                        Type = _treeWorldObject.Type,
-                        Face = _treeWorldObject.Direction,
-                        Location = new Location(_treeLocation.X, _treeLocation.Y, _treeLocation.Z),
-                        Delay = 20
-                    });
+                    _player.InventoryManager.AddItem(_tree.LogId);
+                    _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
+                        .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP);
+                    _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
 
-                    return true;
+                    _lastLogGatheredTick = _tick;
+
+                    if (random.Next(1, 8) == 1)
+                    {
+                        var stumpId = _tree.StumpId;
+                        _player.SetCurrentAnimation(-1);
+                        EnvironmentBuilder.Add(new ModifiedEntity
+                        {
+                            OriginalId = _treeWorldObject.Id,
+                            Id = stumpId,
+                            Type = _treeWorldObject.Type,
+                            Face = _treeWorldObject.Direction,
+                            Location = new Location(_treeLocation.X, _treeLocation.Y, _treeLocation.Z),
+                            Delay = 20
+                        });
+
+                        return true;
+                    }
                 }
             }
         }
-        else
-        {
-            _logRecentlyGathered = false;
-        }
 
+
+        _tick++;
         return false;
     }
 
@@ -110,6 +101,79 @@ public class TreeInteraction : RSInteraction
             _player.Location.X,
             _player.Location.Y, clip);
 
-        return reachedFacingObject;
+        if (!reachedFacingObject)
+            return false;
+
+        var playerWoodcuttingLevel = _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].Level;
+
+        if (!HasRequiredWoodcuttingLevel(playerWoodcuttingLevel) || !HasEnoughInventorySpace())
+            return false;
+
+        if (!TryUseEquippedAxe(playerWoodcuttingLevel) && !TryUseInventoryAxe(playerWoodcuttingLevel))
+        {
+            _player.Session.PacketBuilder.SendMessage("You need a usable axe equipped or in your inventory to cut this tree.");
+            _player.ClearInteraction();
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool HasRequiredWoodcuttingLevel(int playerLevel)
+    {
+        if (playerLevel < _tree.Level)
+        {
+            _player.Session.PacketBuilder.SendMessage(
+                $"You need a Woodcutting level of {_tree.Level} to cut this tree.");
+            _player.ClearInteraction();
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool HasEnoughInventorySpace()
+    {
+        if (_player.InventoryManager.GetItemCount() >= 28)
+        {
+            _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
+            _player.ClearInteraction();
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryUseEquippedAxe(int playerLevel)
+    {
+        var weaponId = _player.EquipmentManager.GetWeapon();
+        var equippedAxe = AxeData.GetAxe(weaponId);
+
+        if (equippedAxe != null && playerLevel >= equippedAxe.RequiredLevel)
+        {
+            axeAnimationId = equippedAxe.AnimationId;
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryUseInventoryAxe(int playerLevel)
+    {
+        var inventory = _player.InventoryManager.GetItems();
+        var usableAxe = inventory
+            .Select(item => AxeData.GetAxe(item.Id))
+            .Where(axe => axe != null && playerLevel >= axe.RequiredLevel)
+            .OrderByDescending(axe => axe!.RequiredLevel)
+            .FirstOrDefault();
+
+        if (usableAxe == null)
+        {
+            _player.ClearInteraction();
+            return false;
+        }
+
+        axeAnimationId = usableAxe.AnimationId;
+        return true;
     }
 }
