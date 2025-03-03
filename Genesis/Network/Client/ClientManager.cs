@@ -45,8 +45,8 @@ public class ClientManager
         player.Session.PacketBuilder.DisplayWelcomeScreen();
         player.Session.PacketBuilder.SendPlayerStatus();
         
-        player.Session.PacketBuilder.SendInteractionOption("Attack", 2, true);
-        player.Session.PacketBuilder.SendInteractionOption("Follow", 3, false);
+        player.Session.PacketBuilder.SendInteractionOption("Attack", 3, true);
+        player.Session.PacketBuilder.SendInteractionOption("Follow", 5, false);
         player.Session.PacketBuilder.SendInteractionOption("Trade with", 4, false);
 
         player.Session.PacketBuilder.SendSidebarInterface(0, GameInterfaces.WeaponInterface);
