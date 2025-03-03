@@ -1,4 +1,5 @@
 ﻿using ArcticRS.Commands;
+using ArcticRS.Constants;
 using Genesis.Cache;
 using Genesis.Entities;
 using Genesis.Environment;
@@ -6,26 +7,25 @@ using Genesis.Managers;
 
 namespace Genesis.Commands;
 
-public class GetWorldObjectCommand : CommandBase
+public class GetWorldObjectCommand : RSCommand
 {
-    private int id = 0;
     private int x = 0;
     private int y = 0;
 
+    protected override PlayerRights RequiredRights { get; }
     public GetWorldObjectCommand(Player player, string[] args) : base(player, args)
     {
     }
 
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
         x = int.Parse(Args[1]);
         y = int.Parse(Args[2]);
-        // id = int.Parse(Args[3]);
 
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         var worldEntity = Region.GetObjectAt(x, y, Player.Location.Z);
         if (worldEntity == null)

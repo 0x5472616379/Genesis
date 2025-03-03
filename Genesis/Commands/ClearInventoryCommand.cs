@@ -4,7 +4,7 @@ using Genesis.Entities;
 
 namespace Genesis.Commands;
 
-public class ClearInventoryCommand : CommandBase
+public class ClearInventoryCommand : RSCommand
 {
     protected override PlayerRights RequiredRights => PlayerRights.ADMIN;
     public ClearInventoryCommand(Player player, string[] args) : base(player, args)
@@ -12,12 +12,12 @@ public class ClearInventoryCommand : CommandBase
         
     }
 
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         Player.InventoryManager.Clear();
         Player.InventoryManager.RefreshInventory();

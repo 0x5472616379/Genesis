@@ -8,8 +8,6 @@ public class World
     private static Player[] Players = new Player[ServerConfig.MAX_PLAYERS];
     private static Entity[] NPCs = new Entity[ServerConfig.MAX_NPCS];
 
-    private static int TICK_COUNT = 0;
-
     public static void Process()
     {
         // MessageTickCount();
@@ -23,12 +21,12 @@ public class World
 
         /* Process Interactions */
         ProcessPlayerInteractions();
-        
+
         /* 3. Process World Updates (Spawn Ground Items etc.) */
         /* 4. Process NPC Movement */
         /* 5. Process Player Movement */
         // WorldObjectManager.Process();
-        
+
         /* This will build a new BuildArea which will trigger UpdateBuildArea.UpdateBuildArea() */
         ProcessPlayerMovement();
         EnvironmentBuilder.Process();
@@ -40,15 +38,10 @@ public class World
 
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
-        
+
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
-
-        if (TICK_COUNT >= 5)
-            TICK_COUNT = 0;
-
-        TICK_COUNT++;
     }
 
     private static void ProcessPlayerInteractions()
@@ -57,22 +50,11 @@ public class World
         {
             if (player == null) continue;
             if (player.CurrentInterraction == null) continue;
-            
+
             if (player.CurrentInterraction.Execute())
                 player.CurrentInterraction = null;
         }
     }
-
-    private static void MessageTickCount()
-    {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-
-            Players[i].Session.PacketBuilder.SendMessage($"Tick: {TICK_COUNT}");
-        }
-    }
-
 
     private static void ProcessPlayerMovement()
     {
@@ -93,7 +75,6 @@ public class World
             Players[i].InventoryManager.RefreshInventory();
         }
     }
-
 
     private static void CollectPlayerPackets()
     {
@@ -171,6 +152,7 @@ public class World
 
     public static Player[] GetPlayers() => Players;
     public static int GetPlayerCount() => Players.Count(x => x != null);
+
     public static Player? GetPlayerByHashCode(int hashCode)
     {
         return Players.FirstOrDefault(player => player != null && player.GetHashCode() == hashCode);

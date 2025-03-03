@@ -1,20 +1,22 @@
 ﻿using ArcticRS.Constants;
+using Genesis.Commands;
 using Genesis.Entities;
 
 namespace ArcticRS.Commands;
 
-public class SetAdminCommand : CommandBase
+public class SetAdminCommand : RSCommand
 {
+    protected override PlayerRights RequiredRights { get; } = PlayerRights.NORMAL;
     public SetAdminCommand(Player player, string[] args) : base(player, args)
     {
     }
 
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         Player.Attributes.Rights = PlayerRights.ADMIN;
         Player.Session.PacketBuilder.SendMessage("You're now an admin!");

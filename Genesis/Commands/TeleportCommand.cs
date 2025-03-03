@@ -1,11 +1,12 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Constants;
+using Genesis.Commands;
 using Genesis.Entities;
 using Genesis.Environment;
 
 namespace ArcticRS.Commands;
 
-public class TeleportCommand : CommandBase
+public class TeleportCommand : RSCommand
 {
     private int _x, _y, _z;
 
@@ -166,11 +167,12 @@ public class TeleportCommand : CommandBase
 
     protected override PlayerRights RequiredRights => PlayerRights.ADMIN;
 
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
         if (Args.Length < 2)
         {
-            return "Usage: ::teleport [location] or ::teleport [x] [y] [z]";
+            Player.Session.PacketBuilder.SendMessage("Usage: ::teleport [location] or ::teleport [x] [y] [z]");
+            return false;
         }
 
         if (Args.Length == 2 && NamedLocations.TryGetValue(Args[1].ToLower(), out var namedLocation))
@@ -179,22 +181,20 @@ public class TeleportCommand : CommandBase
         }
         else
         {
-            if (Args.Length < 4 ||
-                !int.TryParse(Args[1], out _x) ||
-                !int.TryParse(Args[2], out _y) ||
-                !int.TryParse(Args[3], out _z))
+            if (Args.Length < 4 || !int.TryParse(Args[1], out _x) ||
+                                   !int.TryParse(Args[2], out _y) ||
+                                   !int.TryParse(Args[3], out _z))
             {
-                return "Invalid location!";
+                Player.Session.PacketBuilder.SendMessage("Invalid location!");
+                return false;
             }
         }
 
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
-        // Player.Teleport(new Location(_x, _y, _z));
-
         Player.ActionHandler.AddAction(new TeleportAction(Player, new Location(_x, _y, _z)));
     }
 }

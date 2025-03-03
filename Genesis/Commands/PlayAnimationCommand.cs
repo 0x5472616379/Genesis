@@ -1,27 +1,36 @@
 ﻿using ArcticRS.Commands;
+using ArcticRS.Constants;
 using Genesis.Entities;
 
 namespace Genesis.Commands;
 
-public class PlayAnimationCommand : CommandBase
+public class PlayAnimationCommand : RSCommand
 {
     private int _id;
     public PlayAnimationCommand(Player player, string[] args) : base(player, args)
     {
     }
 
-    protected override string ValidateArgs()
+    protected override PlayerRights RequiredRights { get; }
+
+    public override bool Validate()
     {
         if (Args.Length < 1)
-            return "Invalid syntax! Try ::anim 1";
+        {
+            Player.Session.PacketBuilder.SendMessage("Invalid syntax! Try ::anim 1");
+            return false;
+        }
 
         if (!int.TryParse(Args[1], out _id))
-            return "Invalid song ID! Try ::anim 1";
+        {
+            Player.Session.PacketBuilder.SendMessage("Invalid animation ID! Try ::anim 1");
+            return false;
+        }
 
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         Player.SetCurrentAnimation(_id);
     }

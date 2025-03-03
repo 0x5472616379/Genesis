@@ -1,26 +1,26 @@
 ﻿using ArcticRS.Constants;
+using Genesis.Commands;
 using Genesis.Entities;
 using Genesis.Environment;
 
 namespace ArcticRS.Commands;
 
-public class PrintPositionCommand : CommandBase
+public class PrintPositionCommand : RSCommand
 {
     private readonly bool _debug;
+    protected override PlayerRights RequiredRights => PlayerRights.NORMAL;
 
     public PrintPositionCommand(Player player, string[] args) : base(player, args)
     {
         _debug = args.Length > 1 && args[1].ToLower() == "debug";
     }
 
-    protected override PlayerRights RequiredRights => PlayerRights.NORMAL;
-    
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         var location = Player.Location;
         if (!_debug)

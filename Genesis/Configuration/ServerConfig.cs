@@ -11,7 +11,7 @@ public class ServerConfig
     public static int BUFFER_SIZE = 16384;
     public const int PACKET_FETCH_LIMIT = 50;
     
-    public const int SKILL_BONUS_EXP = 100;
+    public const int SKILL_BONUS_EXP = 100000;
     public const int COMBAT_BONUS_EXP = 1;
 
     public static int SPAWN_LOCATION_X = 3235;

@@ -227,6 +227,15 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteC(x);
     }
     
+    public void SendGroundItem(Item item, int xInZone, int yInZone)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.FLOORITEM_ADD);
+        _player.Session.Writer.WriteWordBigEndianA(item.Id);
+        _player.Session.Writer.WriteWord(item.Amount);
+        
+        _player.Session.Writer.WriteByteA(((xInZone & 0x7) << 4) | (yInZone & 0x7));
+    }
+    
     public void SendActiveRegion(int x, int y, Player player, List<ModifiedEntity> modifiedEntitiesInBuildArea)
     {
         _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.REGION_UPDATE);

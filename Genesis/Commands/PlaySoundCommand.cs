@@ -1,10 +1,11 @@
 ﻿using System.Globalization;
 using ArcticRS.Commands;
+using ArcticRS.Constants;
 using Genesis.Entities;
 
 namespace Genesis.Commands;
 
-public class PlaySoundCommand : CommandBase
+public class PlaySoundCommand : RSCommand
 {
     private readonly Player _player;
     private int _id;
@@ -14,18 +15,26 @@ public class PlaySoundCommand : CommandBase
         _player = player;
     }
 
-    protected override string ValidateArgs()
+    protected override PlayerRights RequiredRights { get; }
+
+    public override bool Validate()
     {
         if (Args.Length < 1)
-            return "Invalid syntax! Try ::play 1";
+        {
+            Player.Session.PacketBuilder.SendMessage("Invalid syntax! Try ::play 1");
+            return false;
+        }
 
         if (!int.TryParse(Args[1], out _id))
-            return "Invalid sound ID! Try ::play 1";
+        {
+            Player.Session.PacketBuilder.SendMessage("Invalid sound ID! Try ::play 1");
+            return false;
+        }
 
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
         Player.Session.PacketBuilder.SendSound(_id, 0, 0);
     }

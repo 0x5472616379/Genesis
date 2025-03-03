@@ -4,24 +4,23 @@ using Genesis.Entities;
 
 namespace Genesis.Commands;
 
-public class NullCommand : CommandBase
+public class NullCommand : RSCommand
 {
-    private readonly string _commandName;
-
-    public NullCommand(Player player, string[] args) : base(player, args)
-    {
-        _commandName = args[0];
-    }
-    
     protected override PlayerRights RequiredRights => PlayerRights.NORMAL;
     
-    protected override string ValidateArgs()
+    private readonly string[] _args;
+    public NullCommand(Player player, string[] args) : base(player, args)
     {
-        return null;
+        _args = args;
     }
 
-    protected override void Invoke()
+    public override bool Validate()
     {
-        Player.Session.PacketBuilder.SendMessage($"Command {_commandName} not recognized.");
+        return true;
+    }
+
+    public override void Invoke()
+    {
+        Player.Session.PacketBuilder.SendMessage($"Command {_args[0]} not recognized.");
     }
 }

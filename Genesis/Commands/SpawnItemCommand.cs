@@ -1,47 +1,38 @@
-﻿using ArcticRS.Commands;
-using ArcticRS.Constants;
-using Genesis.Cache;
-using Genesis.Configuration;
+﻿using ArcticRS.Constants;
 using Genesis.Entities;
-using Genesis.Managers;
-using Genesis.Model;
 
 namespace Genesis.Commands;
 
-public class SpawnItemCommand : CommandBase
+public class SpawnItemCommand : RSCommand
 {
+    protected override PlayerRights RequiredRights => PlayerRights.ADMIN;
+    
     private int _id;
     private int _amount = 1;
+    public SpawnItemCommand(Player player, string[] args) : base(player, args) { }
 
-
-    public SpawnItemCommand(Player player, string[] args) : base(player, args)
-    {
-    }
-
-    protected override PlayerRights RequiredRights => PlayerRights.ADMIN;
-
-    protected override string ValidateArgs()
+    public override bool Validate()
     {
         if (Args.Length < 2)
         {
-            return "Invalid syntax! Try ::item 1";
+            Player.Session.PacketBuilder.SendMessage("Invalid syntax! Try ::item 1");
+            return false;
         }
-
         if (!int.TryParse(Args[1], out _id))
         {
-            return "Invalid item ID! Try ::item 1";
+            Player.Session.PacketBuilder.SendMessage("Invalid item ID! Try ::item 1");
+            return false;
         }
-
         if (Args.Length > 2 && !int.TryParse(Args[2], out _amount))
         {
-            return "Invalid item amount! Try ::item [id] [amount]";
+            Player.Session.PacketBuilder.SendMessage("Invalid item amount! Try ::item [id] [amount]");
+            return false;
         }
-
-        return null;
+        return true;
     }
 
-    protected override void Invoke()
+    public override void Invoke()
     {
-        var added = Player.InventoryManager.AddItem(_id, _amount);
+        Player.InventoryManager.AddItem(_id, _amount);
     }
 }
