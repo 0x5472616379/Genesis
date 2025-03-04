@@ -1,5 +1,7 @@
 ﻿using Genesis.Entities;
 using Genesis.Managers;
+using Genesis.Movement;
+using ICSharpCode.SharpZipLib.Core;
 
 namespace Genesis.Environment;
 
@@ -28,6 +30,21 @@ public class World
         // WorldObjectManager.Process();
 
         /* This will build a new BuildArea which will trigger UpdateBuildArea.UpdateBuildArea() */
+
+
+        foreach (var player in GetPlayers())
+        {
+            if (player == null)
+                continue;
+            if (player.Following == null) continue;
+
+            player.SetFacingEntity(player.Following);
+            
+            player.MovementHandler.Reset();
+            RSPathfinder.MeleeFollow(player, player.Following);
+            player.MovementHandler.Finish();
+        }
+
         ProcessPlayerMovement();
         EnvironmentBuilder.Process();
 

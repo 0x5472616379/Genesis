@@ -460,4 +460,26 @@ public class RSPathfinder
         return false;
     }
     
+    public static void MeleeFollow(Player player, Player leader) {
+        int x = player.Location.X, y = player.Location.Y;
+        int x2 = leader.Location.X, y2 = leader.Location.Y;
+        
+        if (x > x2 && leader.canMove(1, 0)) {
+            FindPath(player, x2 + 1, y2, true, 0, 0);
+        } else if (x < x2 && leader.canMove(-1, 0)) {
+            FindPath(player, x2 - 1, y2, true, 0, 0);
+        } else if (y < y2 && leader.canMove(0, -1)) {
+            FindPath(player, x2, y2 - 1, true, 0, 0);
+        } else {
+            if (leader.canMove(1, 0)) {
+                FindPath(player, x2 + 1, y2, true, 0, 0);
+            } else if (leader.canMove(-1, 0)) {
+                FindPath(player, x2 - 1, y2, true, 0, 0);
+            } else if (leader.canMove(0, -1)) {
+                FindPath(player, x2, y2 - 1, true, 0, 0);
+            } else if (leader.canMove(0, 1)) {
+                FindPath(player, x2, y2 + 1, true, 0, 0);
+            }
+        }
+    }
 }

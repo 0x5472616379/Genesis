@@ -114,8 +114,13 @@ public class Location
         return new Location(b.X - a.X, b.Y - a.Y, b.Z - a.Z);
     }
 
+    public int LastY { get; set; }
+    public int LastX { get; set; }
+    
     internal void Move(int amountX, int amountY)
     {
+        LastX = X;
+        LastY = Y;
         X += amountX;
         Y += amountY;
     }

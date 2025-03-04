@@ -162,7 +162,7 @@ public class PlayerUpdateManager
 
         if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Animation) != 0) AppendAnimation(player, playerFlagUpdateBlock);
-        // if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
         // if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
@@ -191,18 +191,18 @@ public class PlayerUpdateManager
 
     private static void AppendNPCInteract(Player player, RSStream updatetempBlock)
     {
-        // if (player.InteractingEntity is Player target)
-        // {
-        //     updatetempBlock.WriteWordBigEndian(target.Session.Index);
-        // }
+        if (player.FacingEntity is Player target)
+        {
+            updatetempBlock.WriteWordBigEndian(target.Session.Index + 32768);
+        }
         // else if (player.InteractingEntity is NPC npc)
         // {
         //     updatetempBlock.WriteWordBigEndian(npc.Index);
         // }
-        // else
-        // {
-        //     updatetempBlock.WriteWordBigEndian(0x00FFFF);
-        // }
+        else
+        {
+            updatetempBlock.WriteWordBigEndian(0x00FFFF);
+        }
     }
 
     private static void AppendAppearance(Player player, RSStream playerFlagUpdateBlock)

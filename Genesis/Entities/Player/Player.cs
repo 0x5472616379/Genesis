@@ -2,6 +2,7 @@
 using ArcticRS.Actions;
 using Genesis.Client;
 using Genesis.Configuration;
+using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Managers;
 using Genesis.Model;
@@ -26,8 +27,9 @@ public class Player : Entity
     public AnimationManager AnimationManager { get; set; }
     public InventoryManager InventoryManager { get; set; }
     public SkillManager SkillManager { get; set; }
-    
     public RSInteraction CurrentInterraction { get; set; }
+
+    public Player Following { get; set; }
 
     public Player()
     {
@@ -74,8 +76,11 @@ public class Player : Entity
             }
         }
     }
-    
-    
+
+    public bool canMove(int stepsX, int stepsY)
+    {
+        return Region.canMove(Location.X, Location.Y, Location.X + stepsX, Location.Y + stepsY, Location.Z, 1, 1);
+    }
 
     public int AnimationDelay { get; set; }
     public override void SetCurrentAnimation(int animationId, int delay = 0)
@@ -91,7 +96,14 @@ public class Player : Entity
         CurrentGfx = gfx;
         Flags |= PlayerUpdateFlags.Graphics;
     }
-    
+
+    public Entity FacingEntity { get; set; }
+    public void SetFacingEntity(Entity entity)
+    {
+        FacingEntity = entity;
+        Flags |= PlayerUpdateFlags.InteractingEntity;
+    }
+
     public override void SetFaceX(int x)
     {
         CurrentFaceX = x;

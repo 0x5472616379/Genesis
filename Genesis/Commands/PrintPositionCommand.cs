@@ -33,5 +33,16 @@ public class PrintPositionCommand : RSCommand
         {
             Player.Session.PacketBuilder.SendMessage(part);
         }
+
+        for (int idx = 0; idx < World.GetPlayers().Length; idx++)
+        {
+            var player = World.GetPlayers()[idx];
+            if (player == null) continue;
+            if (player == Player)
+            {
+                Player.Session.PacketBuilder.SendMessage($"My Index: {idx}");
+                break;
+            }
+        }
     }
 }

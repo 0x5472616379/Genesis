@@ -16,7 +16,6 @@ public class TreeInteraction : RSInteraction
     private int axeAnimationId;
 
     private AxeData.Axe EquippedAxe = null; 
-    Random random = new Random();
 
     private int _tick;
 

@@ -26,6 +26,10 @@ public static class PacketFactory
                 return new FirstItemOptionPacket(parameters);
             case 132:
                 return new InteractFirstOptionPacket(parameters);
+            case 73:
+                return new AttackPlayerPacket(parameters);
+            case 39:
+                return new FollowPlayerPacket(parameters);
             
             default:
                 Console.WriteLine($"No packet class implementation for opcode {opcode}.");
