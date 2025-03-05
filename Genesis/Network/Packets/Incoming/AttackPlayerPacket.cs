@@ -1,5 +1,6 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Interactions;
 
 namespace Genesis.Packets.Incoming;
 
@@ -20,11 +21,8 @@ public class AttackPlayerPacket : IPacket
 
     public void Process()
     {
-        // _player.Session.PacketBuilder.SendMessage($"Trying to attack player with index: {_index}");
-        // _player.Session.PacketBuilder.SendMessage($"Player server index: {_index - 1}");
-        // _player.Session.PacketBuilder.SendMessage($"Player name: {World.GetPlayers()[_index - 1].Session.Username}");
-        
-        // _player.CurrentInterraction = new TreeInteraction(_player, worldObject, tree);
         _player.Following = World.GetPlayers()[_index - 1];
+        _player.InteractingEntity = World.GetPlayers()[_index - 1];
+        _player.CurrentInterraction = new PlayerAttackInteraction(_player);
     }
 }

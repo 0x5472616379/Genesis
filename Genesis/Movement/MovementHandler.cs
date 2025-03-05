@@ -22,7 +22,6 @@ public class MovementHandler
     public bool IsWalking { get; set; }
     public bool IsRunning { get; set; }
 
-
     public void Process()
     {
         if (DiscardMovementQueue)
@@ -74,11 +73,11 @@ public class MovementHandler
             if (_entity.Location.ShouldGenerateNewBuildArea)
             {
                 _entity.Location.Build();
-                // _entity.Location.RefreshObjects(player);
                 EnvironmentBuilder.UpdateBuildArea(player);
                 player.Session.PacketBuilder.SendNewBuildAreaPacket();
             }
         }
+
     }
 
     private Waypoint GetRunPoint()

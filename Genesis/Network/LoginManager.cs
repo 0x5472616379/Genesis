@@ -37,6 +37,11 @@ public class LoginManager
         var size2 = player.Session.Reader.ReadUnsignedByte();
         var magicNumber2 = player.Session.Reader.ReadUnsignedByte();
 
+        if (size2 == 7 && magicNumber2 == 7)
+        {
+            player.IsBot = true;
+        }
+
         var ISAACSeed = new int[4];
         for (var i = 0; i < ISAACSeed.Length; i++)
             ISAACSeed[i] = player.Session.Reader.ReadDWord();

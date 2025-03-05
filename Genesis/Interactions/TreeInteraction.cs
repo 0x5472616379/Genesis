@@ -15,7 +15,7 @@ public class TreeInteraction : RSInteraction
 
     private int axeAnimationId;
 
-    private AxeData.Axe EquippedAxe = null; 
+    private AxeData.Axe EquippedAxe = null;
 
     private int _tick;
 
@@ -27,28 +27,29 @@ public class TreeInteraction : RSInteraction
     }
 
     private int _lastLogGatheredTick = -1;
+    private int sleepTick = 0;
 
     public override bool Execute()
     {
-        if (!CanExecute()) return false;
-
         _player.SetFaceX(_treeWorldObject.X * 2 + _treeWorldObject.GetSize()[0]);
         _player.SetFaceY(_treeWorldObject.Y * 2 + _treeWorldObject.GetSize()[1]);
-
-
-        if (_tick > 0)
-            _player.SetCurrentAnimation(axeAnimationId);
+        
+        if (!CanExecute()) return false;
+        _tick++;
 
         if (_tick > 1)
-            _player.Session.PacketBuilder.SendSound(471, 0, 10);
+            _player.SetCurrentAnimation(axeAnimationId);
 
         if (_tick > 2)
+            _player.Session.PacketBuilder.SendSound(471, 0, 10);
+
+        if (_tick > 3)
         {
             if (_lastLogGatheredTick == -1 || _tick - _lastLogGatheredTick > 2)
             {
                 _player.SetCurrentAnimation(axeAnimationId);
                 var random = new Random();
-                if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe))
+                if (random.Next(1, 100) < -1) //GetSuccessRate(_tree, EquippedAxe)
                 {
                     _player.InventoryManager.AddItem(_tree.LogId);
                     _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
@@ -77,13 +78,16 @@ public class TreeInteraction : RSInteraction
             }
         }
 
-
-        _tick++;
+        
+        
         return false;
     }
 
     public override bool CanExecute()
     {
+        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
+        if (isMoving) return false;
+        
         var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
         var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
 
@@ -111,14 +115,34 @@ public class TreeInteraction : RSInteraction
 
         if (!TryUseEquippedAxe(playerWoodcuttingLevel) && !TryUseInventoryAxe(playerWoodcuttingLevel))
         {
-            _player.Session.PacketBuilder.SendMessage("You need a usable axe equipped or in your inventory to cut this tree.");
+            _player.Session.PacketBuilder.SendMessage(
+                "You need a usable axe equipped or in your inventory to cut this tree.");
             _player.ClearInteraction();
             return false;
         }
 
+        // if (_player.MovementHandler.IsRunning)
+        // {
+        //     if (sleepTick < 1)
+        //     {
+        //         sleepTick++;
+        //         return false;
+        //     }
+        // }
+        //
+        // if (_player.MovementHandler.IsWalking)
+        // {
+        //     if (sleepTick < 2)
+        //     {
+        //         sleepTick++;
+        //         return false;
+        //     }
+        // }
+        //
+        // sleepTick = 0;
         return true;
     }
-    
+
     public static double GetSuccessRate(Tree tree, AxeData.Axe axe)
     {
         return tree.SuccessYield * axe.Multiplier;

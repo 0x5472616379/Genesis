@@ -17,38 +17,19 @@ public class World
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
-
-        /* 2. Process Actions / Interactions */
-        ProcessActions();
-
-        /* Process Interactions */
-        ProcessPlayerInteractions();
-
-        /* 3. Process World Updates (Spawn Ground Items etc.) */
-        /* 4. Process NPC Movement */
-        /* 5. Process Player Movement */
-        // WorldObjectManager.Process();
-
-        /* This will build a new BuildArea which will trigger UpdateBuildArea.UpdateBuildArea() */
-
-
-        foreach (var player in GetPlayers())
-        {
-            if (player == null)
-                continue;
-            if (player.Following == null) continue;
-
-            player.SetFacingEntity(player.Following);
-            
-            player.MovementHandler.Reset();
-            RSPathfinder.MeleeFollow(player, player.Following);
-            player.MovementHandler.Finish();
-        }
-
         ProcessPlayerMovement();
         EnvironmentBuilder.Process();
 
-        /* 6. Combat */
+        foreach (var player in Players)
+        {
+            if (player == null) continue;
+            var isMoving = (player.MovementHandler.IsWalking || player.MovementHandler.IsRunning);
+            player.Session.PacketBuilder.SendMessage($"IsMoving: {isMoving}");
+        }
+
+        ProcessActions();
+        ProcessPlayerInteractions();
+
 
         /* Refresh */
         RefreshPlayer();

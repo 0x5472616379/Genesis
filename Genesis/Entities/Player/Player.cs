@@ -1,11 +1,9 @@
-﻿using System.ComponentModel;
-using ArcticRS.Actions;
+﻿using ArcticRS.Actions;
 using Genesis.Client;
 using Genesis.Configuration;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Managers;
-using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills;
 
@@ -13,6 +11,8 @@ namespace Genesis.Entities;
 
 public class Player : Entity
 {
+    public bool IsBot { get; set; }
+    
     public NetworkSession Session { get; set; }
     public PlayerUpdateFlags Flags { get; set; }
     
@@ -97,10 +97,10 @@ public class Player : Entity
         Flags |= PlayerUpdateFlags.Graphics;
     }
 
-    public Entity FacingEntity { get; set; }
+    public Entity InteractingEntity { get; set; }
     public void SetFacingEntity(Entity entity)
     {
-        FacingEntity = entity;
+        InteractingEntity = entity;
         Flags |= PlayerUpdateFlags.InteractingEntity;
     }
 

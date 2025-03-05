@@ -85,8 +85,8 @@ public class PlayerUpdateManager
         writer.WriteBits(5, dy);
         writer.WriteBits(5, dx);
 
-        Console.WriteLine(
-            $"Adding PlayerID: {other.Session.Index} To {player.Session.Index}'s LocalPlayerList at DeltaY: {other.Location.Y} - DeltaX: {other.Location.X}");
+        // Console.WriteLine(
+        //     $"Adding PlayerID: {other.Session.Index} To {player.Session.Index}'s LocalPlayerList at DeltaY: {other.Location.Y} - DeltaX: {other.Location.X}");
         player.AddLocalPlayer(other);
     }
 
@@ -191,7 +191,7 @@ public class PlayerUpdateManager
 
     private static void AppendNPCInteract(Player player, RSStream updatetempBlock)
     {
-        if (player.FacingEntity is Player target)
+        if (player.InteractingEntity is Player target)
         {
             updatetempBlock.WriteWordBigEndian(target.Session.Index + 32768);
         }
