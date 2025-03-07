@@ -1,4 +1,5 @@
 ﻿using Genesis.Entities;
+using Genesis.Interactions;
 using Genesis.Movement;
 
 namespace Genesis.Packets.Incoming;
@@ -15,7 +16,7 @@ public class WalkPacket : IPacket
     private readonly Player _player;
     private readonly bool _running;
     private readonly int _waypoints;
-    
+
     public WalkPacket(PacketParameters parameters)
     {
         _player = parameters.Player;
@@ -40,29 +41,28 @@ public class WalkPacket : IPacket
 
         _firstStepY = _player.Session.Reader.ReadSignedWordBigEndian();
         _running = _player.Session.Reader.ReadSignedByteC() == 1;
-        
-        _player.Following = null;
+
         _player.SetFacingEntity(null);
+        _player.MovementHandler.Reset();
         // _player.StartNewTask();
         // _player.ResetInteractingWorldObject();
         // ModalManager.ClearModal(_player);
     }
-    
+
     public void Process()
     {
         if (_player.CurrentHealth <= 0)
             return;
 
-        _player.ClearInteraction();
-        _player.MovementHandler.Reset();
-        
+       
+
         // _player.FollowingEntity = null;
         // _player.SetInteractingEntity(null);
         // _player.MostRecentCombatTarget = null;
         // _player.FollowingEntity = null;
 
         _player.MovementHandler.RunToggled = _running;
-        
+
         _destX = _firstStepX;
         _destY = _firstStepY;
 
@@ -74,9 +74,19 @@ public class WalkPacket : IPacket
             _destX = _path[i, 0];
             _destY = _path[i, 1];
         }
+
+        _player.MovementHandler.TargetDestX = _destX;
+        _player.MovementHandler.TargetDestY = _destY;
         
-        RSPathfinder.FindPath(_player, _destX, _destY, true, 1, 1);
-        _player.MovementHandler.Finish();
+        if (_opCode == 98 || _opCode == 73)
+            return;
+        
+        _player.ClearInteraction();
+        _player.Following = null;
+        
+        // RSPathfinder.FindPath(_player, _destX, _destY, true, 1, 1);
+        // _player.MovementHandler.Finish();
+        
+        _player.CurrentInterraction = new MoveInteraction(_player);
     }
-    
 }

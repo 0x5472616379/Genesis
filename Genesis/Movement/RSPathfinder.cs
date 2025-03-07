@@ -559,6 +559,98 @@ public class RSPathfinder
         }
     }
     
+    public static void MeleeWalk(Player player, Location destination) {
+        int x = player.Location.X, y = player.Location.Y;
+        int x2 = destination.X, y2 = destination.Y;
+        if (x > x2 && player.canMove(1, 0)) {
+            FindPath(player, x2 + 1, y2, true, 0, 0);
+        } else if (x < x2 && player.canMove(-1, 0)) {
+            FindPath(player, x2 - 1, y2, true, 0, 0);
+        } else if (y < y2 && player.canMove(0, -1)) {
+            FindPath(player, x2, y2 - 1, true, 0, 0);
+        } else {
+            if (player.canMove(1, 0)) {
+                FindPath(player, x2 + 1, y2, true, 0, 0);
+            } else if (player.canMove(-1, 0)) {
+                FindPath(player, x2 - 1, y2, true, 0, 0);
+            } else if (player.canMove(0, -1)) {
+                FindPath(player, x2, y2 - 1, true, 0, 0);
+            } else if (player.canMove(0, 1)) {
+                FindPath(player, x2, y2 + 1, true, 0, 0);
+            }
+        }
+    }
+    
+    public static void WalkToObject(Player player, Location pos) {
+        int x = player.Location.X, y = player.Location.Y;
+        int x2 = pos.X, y2 = pos.Y;
+
+        if (x > x2 && player.canMove(1, 0)) {
+            FindPath(player, x2, y2, true, 1, 1);
+        } else if (x < x2 && player.canMove(-1, 0)) {
+            FindPath(player, x2, y2, true, 1, 1);
+        } else if (y < y2 && player.canMove(0, -1)) {
+            FindPath(player, x2, y2, true, 1, 1);
+        } else {
+            if (player.canMove(1, 0)) {
+                FindPath(player, x2, y2, true, 1, 1);
+            } else if (player.canMove(-1, 0)) {
+                FindPath(player, x2, y2, true, 1, 1);
+            } else if (player.canMove(0, -1)) {
+                FindPath(player, x2, y2, true, 1, 1);
+            } else if (player.canMove(0, 1)) {
+                FindPath(player, x2, y2, true, 1, 1);
+            }
+        }
+    }
+    
+    public static void WalkToObject1TileAway(Player player, Location target) {
+        // Current position of the player
+        int currentX = player.Location.X;
+        int currentY = player.Location.Y;
+
+        // Target position
+        int targetX = target.X;
+        int targetY = target.Y;
+
+        // Check if already adjacent (1 tile away horizontally or vertically)
+        if ((Math.Abs(currentX - targetX) == 1 && currentY == targetY) || 
+            (Math.Abs(currentY - targetY) == 1 && currentX == targetX)) {
+            // This check should only pass if the player is *exactly* 1 tile away
+            Console.WriteLine("Player is already 1 tile away from the target.");
+            return;
+        }
+
+        // Directions to move closer (dx, dy) in priority order
+        var directions = new (int dx, int dy)[] {
+            (1, 0),  // Move Right
+            (-1, 0), // Move Left
+            (0, 1),  // Move Down
+            (0, -1)  // Move Up
+        };
+
+        // Loop through each possible direction
+        foreach (var (dx, dy) in directions) {
+            // Calculate the new position after moving one tile in this direction
+            int newX = currentX + dx;
+            int newY = currentY + dy;
+
+            // Check if moving this direction will leave the player 1 tile away from the target
+            if ((Math.Abs(newX - targetX) == 1 && newY == targetY) || 
+                (Math.Abs(newY - targetY) == 1 && newX == targetX)) {
+                if (player.canMove(dx, dy)) {
+                    // If this movement is valid, move the player to the new position
+                    FindPath(player, newX, newY, moveNear: false, xLength: 1, yLength: 1);
+                    return;
+                }
+            }
+        }
+
+        // Fallback if no valid movement leaves the player 1 tile away
+        Console.WriteLine("Player cannot move closer to stop 1 tile away.");
+    }
+
+    
     
      public static bool IsMeleeAccessable(Entity character, int destX, int destY)
      {

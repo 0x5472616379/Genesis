@@ -1,5 +1,6 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Movement;
 using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 using WorldObject = Genesis.Cache.WorldObject;
@@ -28,14 +29,17 @@ public class TreeInteraction : RSInteraction
 
     private int _lastLogGatheredTick = -1;
     private int sleepTick = 0;
+    private bool didWalk = false;
 
     public override bool Execute()
     {
         _player.SetFaceX(_treeWorldObject.X * 2 + _treeWorldObject.GetSize()[0]);
         _player.SetFaceY(_treeWorldObject.Y * 2 + _treeWorldObject.GetSize()[1]);
-        
+
         if (!CanExecute()) return false;
         _tick++;
+
+        _player.Session.PacketBuilder.SendMessage($"Did Walk Here: {didWalk}");
 
         if (_tick > 1)
             _player.SetCurrentAnimation(axeAnimationId);
@@ -78,21 +82,26 @@ public class TreeInteraction : RSInteraction
             }
         }
 
-        
-        
+
         return false;
     }
 
     public override bool CanExecute()
     {
         var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
-        if (isMoving) return false;
-        
+        if (isMoving)
+        {
+            didWalk = false;
+            return false;
+        }
+
         var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
         var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
 
         var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
         var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
+
+        _player.Session.PacketBuilder.SendMessage($"Clip: {clip}");
 
         var reachedFacingObject = Region.ReachedObject(
             _player.Location.PositionRelativeToOffsetChunkX,
@@ -101,12 +110,22 @@ public class TreeInteraction : RSInteraction
             treeRelY2,
             _treeWorldObject.GetSize()[0],
             _treeWorldObject.GetSize()[1],
-            0,
-            _player.Location.X,
-            _player.Location.Y, clip);
+            0, clip);
 
         if (!reachedFacingObject)
+        {
+            _player.MovementHandler.Reset();
+
+            RSPathfinder.WalkToObject(_player, new Location(_player.MovementHandler.TargetDestX,
+                _player.MovementHandler.TargetDestY,
+                _treeWorldObject.Height));
+
+            _player.MovementHandler.Finish();
+
+            _player.MovementHandler.Process();
+            didWalk = true;
             return false;
+        }
 
         var playerWoodcuttingLevel = _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].Level;
 

@@ -19,6 +19,9 @@ public class MovementHandler
     public bool DiscardMovementQueue { get; set; }
     public bool RunToggled { get; set; }
 
+    public int TargetDestX { get; set; }
+    public int TargetDestY { get; set; }
+
     public bool IsWalking { get; set; }
     public bool IsRunning { get; set; }
 
@@ -47,6 +50,7 @@ public class MovementHandler
             //     _entity.MovementHandler.Reset();
             //     return;
             // }
+
 
             MoveToDirection(walkPoint.Direction);
             PrimaryDirection = walkPoint.Direction;
@@ -77,7 +81,6 @@ public class MovementHandler
                 player.Session.PacketBuilder.SendNewBuildAreaPacket();
             }
         }
-
     }
 
     private Waypoint GetRunPoint()

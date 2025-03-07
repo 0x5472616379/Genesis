@@ -1317,7 +1317,7 @@ public class Region
     /// <param name="endDistanceY">Target SizeY</param>
     /// <param name="surroundings">walkToData(?) 0 for tree</param>
     /// <returns></returns>
-    public static bool ReachedObject(int startX, int startY, int endX, int endY, int endDistanceX, int endDistanceY, int surroundings, int playerAbsX, int playerAbsY, int clipping)
+    public static bool ReachedObject(int startX, int startY, int endX, int endY, int endDistanceX, int endDistanceY, int surroundings,int clipping)
     {
         int endX2 = (endX + endDistanceX) - 1;
         int endY2 = (endY + endDistanceY) - 1;
