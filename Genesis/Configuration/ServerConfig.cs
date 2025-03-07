@@ -11,11 +11,11 @@ public class ServerConfig
     public static int BUFFER_SIZE = 16384;
     public const int PACKET_FETCH_LIMIT = 50;
     
-    public const int SKILL_BONUS_EXP = 100000;
+    public const int SKILL_BONUS_EXP = 100;
     public const int COMBAT_BONUS_EXP = 1;
 
-    public static int SPAWN_LOCATION_X = 3259;
-    public static int SPAWN_LOCATION_Y = 3221;
+    public static int SPAWN_LOCATION_X = 2398;
+    public static int SPAWN_LOCATION_Y = 4841;
     public static int SPAWN_LOCATION_Z = 0;
     
     public static int ITEM_LIMIT = 15000;

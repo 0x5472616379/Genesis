@@ -40,7 +40,7 @@ public class TreeInteraction : RSInteraction
         _tick++;
 
         _player.Session.PacketBuilder.SendMessage($"Did Walk Here: {didWalk}");
-
+        
         if (_tick > 1)
             _player.SetCurrentAnimation(axeAnimationId);
 
@@ -53,7 +53,7 @@ public class TreeInteraction : RSInteraction
             {
                 _player.SetCurrentAnimation(axeAnimationId);
                 var random = new Random();
-                if (random.Next(1, 100) < -1) //GetSuccessRate(_tree, EquippedAxe)
+                if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe)) //GetSuccessRate(_tree, EquippedAxe)
                 {
                     _player.InventoryManager.AddItem(_tree.LogId);
                     _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]

@@ -12,6 +12,7 @@ public class CommandFactory
         return commandName switch
         {
             "tele" => new TeleportCommand(player, _commandArgs),
+            "gfx" => new PlayGfxCommand(player, _commandArgs),
             "getobj" => new GetWorldObjectCommand(player, _commandArgs),
             "worldobj" => new SpawnWorldObjectCommand(player, _commandArgs),
             "anim" => new PlayAnimationCommand(player, _commandArgs),

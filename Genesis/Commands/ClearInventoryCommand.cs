@@ -20,6 +20,10 @@ public class ClearInventoryCommand : RSCommand
     public override void Invoke()
     {
         Player.InventoryManager.Clear();
+
+        Player.InventoryManager.AddItem(1462);
+        Player.InventoryManager.AddItem(1436, 27);
+        
         Player.InventoryManager.RefreshInventory();
     }
 }

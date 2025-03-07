@@ -2,7 +2,6 @@
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Interactions;
-using Genesis.Movement;
 using Genesis.Skills.Woodcutting;
 
 namespace Genesis.Packets.Incoming;
@@ -32,10 +31,11 @@ public class InteractFirstOptionPacket : IPacket
     {
         var worldObject = GetWorldObject();
         if (worldObject == null) return;
-        
-        if (HandleTreeInteraction(worldObject)) return;
+
+        HandleTreeInteraction(worldObject);
+        HandleRunecraftingInteraction(worldObject);
     }
-    
+
     private WorldObject? GetWorldObject()
     {
         var worldObject = Region.GetObject(_objId, _x, _y, _z);
@@ -43,17 +43,24 @@ public class InteractFirstOptionPacket : IPacket
         {
             _player.Session.PacketBuilder.SendMessage("Object does not exist.");
         }
+
         return worldObject;
     }
-    
+
+    private void HandleRunecraftingInteraction(WorldObject worldObject)
+    {
+        _player.CurrentInterraction = new RunecraftingInteraction(_player, worldObject);
+    }
+
+
     private bool HandleTreeInteraction(WorldObject worldObject)
     {
         var tree = TreeData.GetTree(_objId);
         if (tree == null) return false;
-        
+
         _player.SetFaceX(worldObject.X * 2 + worldObject.GetSize()[0]);
         _player.SetFaceY(worldObject.Y * 2 + worldObject.GetSize()[1]);
-        
+
         _player.CurrentInterraction = new TreeInteraction(_player, worldObject, tree);
         return true;
     }

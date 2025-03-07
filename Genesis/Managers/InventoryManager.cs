@@ -124,6 +124,22 @@ public class InventoryManager
             InventoryItems[index] = null;
     }
     
+    public int RemoveItemsWithId(int itemId)
+    {
+        var indicesToRemove = InventoryItems
+            .Select((item, index) => new { Item = item, Index = index })
+            .Where(x => x.Item != null && x.Item.Id == itemId)
+            .Select(x => x.Index)
+            .ToList();
+
+        foreach (var index in indicesToRemove)
+        {
+            InventoryItems[index] = null;
+        }
+
+        return indicesToRemove.Count;
+    }
+    
     public void Clear()
     {
         InventoryItems = new List<Item>(new Item[MAX_SLOTS]);
