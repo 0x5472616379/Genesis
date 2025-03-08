@@ -2,6 +2,7 @@
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Interactions;
+using Genesis.Skills.Runecrafting;
 using Genesis.Skills.Woodcutting;
 
 namespace Genesis.Packets.Incoming;
@@ -33,7 +34,7 @@ public class InteractFirstOptionPacket : IPacket
         if (worldObject == null) return;
 
         if (HandleTreeInteraction(worldObject)) return;
-        HandleRunecraftingInteraction(worldObject);
+        if (HandleRunecraftingInteraction(worldObject)) return;
     }
 
     private WorldObject? GetWorldObject()
@@ -47,9 +48,14 @@ public class InteractFirstOptionPacket : IPacket
         return worldObject;
     }
 
-    private void HandleRunecraftingInteraction(WorldObject worldObject)
+    private bool HandleRunecraftingInteraction(WorldObject worldObject)
     {
+        var altar = RunecraftingAltarData.GetAltar(worldObject.Id);
+        if (altar == null)
+            return false;
+
         _player.CurrentInterraction = new RunecraftingInteraction(_player, worldObject);
+        return true;
     }
 
 

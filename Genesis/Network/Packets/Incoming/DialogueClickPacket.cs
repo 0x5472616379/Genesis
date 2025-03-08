@@ -17,13 +17,10 @@ public class DialogueClickPacket : IPacket
 
         _interfaceId = _player.Session.Reader.ReadSignedWord();
     }
+
     public void Process()
     {
-        switch (_interfaceId)
-        {
-            case 4270:
-                _player.Session.PacketBuilder.ClearAllInterfaces();
-                break;
-        }
+        if (_player.DialogueManager.NextDialogue == -1)
+            _player.Session.PacketBuilder.ClearAllInterfaces();
     }
 }

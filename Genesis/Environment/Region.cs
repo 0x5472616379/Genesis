@@ -757,6 +757,16 @@ public class Region
         return null; // No matching object found
     }
     
+    public static List<WorldObject> GetAllObjectsAt(int x, int y, int z)
+    {
+        // Retrieve the region containing the (x, y) coordinates
+        var region = GetRegion(x, y);
+        if (region == null)
+            return null;
+
+        var objects = region._realObjects.Where(obj => obj.X == x && obj.Y == y && obj.Height == z).ToList();
+        return objects; // No matching object found
+    }
     
     public static WorldObject GetExpectedObjectAt(int id, int x, int y, int z)
     {

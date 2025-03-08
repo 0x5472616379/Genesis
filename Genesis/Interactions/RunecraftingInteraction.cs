@@ -106,14 +106,13 @@ public class RunecraftingInteraction : RSInteraction
         var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
         var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
 
-        var reachedFacingObject = Region.ReachedObject(
-            _player.Location.PositionRelativeToOffsetChunkX,
-            _player.Location.PositionRelativeToOffsetChunkY,
-            treeRelX2,
-            treeRelY2,
-            _runecraftingAltar.GetSize()[0],
-            _runecraftingAltar.GetSize()[1],
-            0, clip);
+        var reachedFacingObject = Region.ReachedObject(_player.Location.PositionRelativeToOffsetChunkX,
+                                                            _player.Location.PositionRelativeToOffsetChunkY,
+                                                            treeRelX2,
+                                                            treeRelY2,
+                                                            _runecraftingAltar.GetSize()[0],
+                                                            _runecraftingAltar.GetSize()[1],
+                                                            0, clip);
 
         if (!reachedFacingObject)
         {

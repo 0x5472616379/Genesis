@@ -10,7 +10,7 @@ public class TeleportCommand : RSCommand
 {
     private int _x, _y, _z;
 
-    private static readonly Dictionary<string, (int, int, int)> NamedLocations = new(StringComparer.OrdinalIgnoreCase)
+    public static readonly Dictionary<string, (int, int, int)> NamedLocations = new(StringComparer.OrdinalIgnoreCase)
     {
         ["Big_water_fall"] = (2534, 3511, 0),
         ["Very_back_of_wild"] = (3100, 3957, 0),
