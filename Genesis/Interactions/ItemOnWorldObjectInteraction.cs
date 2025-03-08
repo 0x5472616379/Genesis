@@ -25,21 +25,13 @@ public class ItemOnWorldObjectInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
+        
+        if (RunecraftEntranceChecker.TryHandleRunecraftingInteraction(_player, _worldObject)) return true;
 
-        
-        if (_worldObject.WorldLocDataBits == 2452 && _worldObject.SelectedObjectId == 1438)
-        {
-            var loc = TeleportCommand.NamedLocations.TryGetValue("air_rune_altar", out var namedLocation);
-            if (!loc) return false;
-            
-            _player.ActionHandler.AddAction(new TeleportAction(_player, new Location(namedLocation.Item1, namedLocation.Item2, namedLocation.Item3)));
-            return true;
-        }
-        
-        _player.Session.PacketBuilder.SendMessage($"Nothing interesting happens.");
-        
+        _player.Session.PacketBuilder.SendMessage("Nothing interesting happens.");
         return true;
     }
+
 
     public override bool CanExecute()
     {

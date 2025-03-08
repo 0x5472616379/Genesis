@@ -8,4 +8,5 @@ public record RunecraftingAltar(
     double XpPerRune,
     int TalismanId,
     int TiaraId,
+    int EntranceAltarId,
     Dictionary<int, int> Multipliers);
