@@ -1,7 +1,10 @@
-﻿using Genesis.Cache;
+﻿using ArcticRS.Appearance;
+using Genesis.Cache;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Movement;
+using Genesis.Skills;
+using Genesis.Skills.Runecrafting;
 
 namespace Genesis.Interactions;
 
@@ -10,38 +13,81 @@ public class RunecraftingInteraction : RSInteraction
     private readonly Player _player;
     private readonly WorldObject _runecraftingAltar;
     private int _tick;
+    private readonly Skill _skill;
 
     public RunecraftingInteraction(Player player, WorldObject runecraftingAltar)
     {
         _player = player;
         _runecraftingAltar = runecraftingAltar;
+        _skill = _player.SkillManager.Skills[(int)SkillType.RUNECRAFTING];
     }
 
     public override bool Execute()
     {
-        _player.SetFaceX(_runecraftingAltar.X * 2 + _runecraftingAltar.GetSize()[0]);
-        _player.SetFaceY(_runecraftingAltar.Y * 2 + _runecraftingAltar.GetSize()[1]);
+        SetPlayerFacing();
 
         if (!CanExecute()) return false;
+
         _tick++;
 
         if (_tick == 1)
         {
-            _player.SetCurrentGfx(186);
-            _player.SetCurrentAnimation(791);
-            _player.Session.PacketBuilder.SendSound(481, 0, 10);
-            
-            if (_runecraftingAltar.Id == 2486)
+            var altar = RunecraftingAltarData.GetAltar(_runecraftingAltar.Id);
+            if (altar == null)
             {
-                var removed = _player.InventoryManager.RemoveItemsWithId(1436);
-                _player.InventoryManager.AddItem(561, removed);
-                _player.InventoryManager.RefreshInventory();
+                _player.Session.PacketBuilder.SendMessage("Unknown altar.");
+                return false;
             }
 
+            if (_skill.Level < altar.RequiredLevel)
+            {
+                _player.Session.PacketBuilder.SendMessage("You need a Runecrafting level of " + altar.RequiredLevel + " to craft this rune.");
+                return false;
+            }
+
+            var hasTalisman = _player.InventoryManager.HasItem(altar.TalismanId);
+            var tiara = _player.EquipmentManager.GetItem(EquipmentSlot.Helmet)?.Id;
+            if (!hasTalisman && tiara != altar.TiaraId)
+            {
+                _player.Session.PacketBuilder.SendMessage("You need to wear the required tiara or bring a talisman.");
+                return false;
+            }
+
+            var removedEssenceCount = _player.InventoryManager.RemoveItemsWithId(1436);
+            if (removedEssenceCount <= 0)
+            {
+                _player.Session.PacketBuilder.SendMessage("You don't have enough rune essence.");
+                return false;
+            }
+
+            int multiplier = RunecraftingAltarData.GetMultiplierForLevel(altar.Multipliers, _skill.Level);
+
+            int totalRunes = removedEssenceCount * multiplier;
+
+            _player.InventoryManager.AddItem(altar.RuneId, totalRunes);
+            _player.InventoryManager.RefreshInventory();
+
+            _skill.AddExperience((int)(removedEssenceCount * altar.XpPerRune) * ServerConfig.SKILL_BONUS_EXP);
+            _player.SkillManager.RefreshSkill(SkillType.RUNECRAFTING);
+
+            PlayRunecraftingEffects();
             return true;
         }
 
         return false;
+    }
+
+    private void SetPlayerFacing()
+    {
+        _player.SetFaceX(_runecraftingAltar.X * 2 + _runecraftingAltar.GetSize()[0]);
+        _player.SetFaceY(_runecraftingAltar.Y * 2 + _runecraftingAltar.GetSize()[1]);
+    }
+
+    private void PlayRunecraftingEffects()
+    {
+        _player.SetCurrentGfx(186);
+        _player.SetCurrentAnimation(791);
+        _player.Session.PacketBuilder.SendSound(481, 0, 10);
     }
 
     public override bool CanExecute()
@@ -57,8 +103,6 @@ public class RunecraftingInteraction : RSInteraction
 
         var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
         var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
-
-        _player.Session.PacketBuilder.SendMessage($"Clip: {clip}");
 
         var reachedFacingObject = Region.ReachedObject(
             _player.Location.PositionRelativeToOffsetChunkX,

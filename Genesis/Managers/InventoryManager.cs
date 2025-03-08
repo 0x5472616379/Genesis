@@ -147,11 +147,11 @@ public class InventoryManager
 
     public int GetItemIndex(int itemId) => InventoryItems.FindIndex(i => i != null && i.Id == itemId);
     public Item GetItemAtIndex(int index) => InventoryItems[index];
-
+    public bool HasItem(int itemId) => GetItemIndex(itemId) != -1;
+    
     public void RefreshInventory()
     {
-        _player.Session.PacketBuilder.RefreshContainer(InventoryItems, GameInterfaces.DefaultInventoryContainer,
-            GetItemCount());
+        _player.Session.PacketBuilder.RefreshContainer(InventoryItems, GameInterfaces.DefaultInventoryContainer, ServerConfig.INVENTORY_SIZE);
     }
 
     public int GetItemCount() => InventoryItems.Count(i => i != null);

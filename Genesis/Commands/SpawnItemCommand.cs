@@ -34,5 +34,6 @@ public class SpawnItemCommand : RSCommand
     public override void Invoke()
     {
         Player.InventoryManager.AddItem(_id, _amount);
+        Player.InventoryManager.RefreshInventory();
     }
 }

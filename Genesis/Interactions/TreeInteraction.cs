@@ -101,8 +101,6 @@ public class TreeInteraction : RSInteraction
         var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
         var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
 
-        _player.Session.PacketBuilder.SendMessage($"Clip: {clip}");
-
         var reachedFacingObject = Region.ReachedObject(
             _player.Location.PositionRelativeToOffsetChunkX,
             _player.Location.PositionRelativeToOffsetChunkY,

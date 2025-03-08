@@ -42,13 +42,13 @@ public class World
         ProcessPlayerInteractions();
         EnvironmentBuilder.Process();
         
-        foreach (var player in Players)
-        {
-            if (player == null) continue;
-            var isMoving = (player.MovementHandler.IsWalking || player.MovementHandler.IsRunning);
-            // player.Session.PacketBuilder.SendMessage($"IsMoving: {isMoving}");
-            player.Session.PacketBuilder.SendMessage($"PosX: {player.Location.X} PosY: {player.Location.Y}");
-        }
+        // foreach (var player in Players)
+        // {
+        //     if (player == null) continue;
+        //     var isMoving = (player.MovementHandler.IsWalking || player.MovementHandler.IsRunning);
+        //     // player.Session.PacketBuilder.SendMessage($"IsMoving: {isMoving}");
+        //     player.Session.PacketBuilder.SendMessage($"PosX: {player.Location.X} PosY: {player.Location.Y}");
+        // }
 
         /* Refresh */
         RefreshPlayer();
@@ -90,7 +90,6 @@ public class World
             if (Players[i] == null) continue;
 
             Players[i].EquipmentManager.Refresh();
-            Players[i].InventoryManager.RefreshInventory();
         }
     }
 

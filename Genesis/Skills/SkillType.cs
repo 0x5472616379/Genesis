@@ -1,6 +1,6 @@
 ﻿namespace Genesis.Skills;
 
-public enum SkillType
+public enum SkillType : byte
 {
     ATTACK,
     DEFENCE,

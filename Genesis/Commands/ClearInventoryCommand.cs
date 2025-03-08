@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Commands;
 using ArcticRS.Constants;
 using Genesis.Entities;
+using Genesis.Skills.Runecrafting;
 
 namespace Genesis.Commands;
 
@@ -21,8 +22,8 @@ public class ClearInventoryCommand : RSCommand
     {
         Player.InventoryManager.Clear();
 
-        Player.InventoryManager.AddItem(1462);
-        Player.InventoryManager.AddItem(1436, 27);
+        RunecraftingAltarData.GetAllTalismanIds().ForEach(id => Player.InventoryManager.AddItem(id));
+        Player.InventoryManager.AddItem(1436, 17);
         
         Player.InventoryManager.RefreshInventory();
     }
