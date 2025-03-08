@@ -32,7 +32,7 @@ public class InteractFirstOptionPacket : IPacket
         var worldObject = GetWorldObject();
         if (worldObject == null) return;
 
-        HandleTreeInteraction(worldObject);
+        if (HandleTreeInteraction(worldObject)) return;
         HandleRunecraftingInteraction(worldObject);
     }
 

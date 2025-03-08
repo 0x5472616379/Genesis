@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Constants;
+using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Movement;
 using Genesis.Skills;
@@ -57,7 +58,7 @@ public class TreeInteraction : RSInteraction
                 {
                     _player.InventoryManager.AddItem(_tree.LogId);
                     _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
-                        .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP);
+                        .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.WOODCUTTING));
                     _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
 
                     _lastLogGatheredTick = _tick;

@@ -1,4 +1,7 @@
-﻿namespace Genesis.Skills;
+﻿using Genesis.Configuration;
+using Genesis.Entities;
+
+namespace Genesis.Skills;
 
 public class Skill
 {
@@ -22,25 +25,27 @@ public class Skill
     //     Experience += (int)experience;
     // }
     
-    public bool AddExperience(int experienceToAdd)
+    public bool AddExperience(int experienceToAdd, Player player, SkillData skillData)
     {
-        // Store old level based on current experience
         int oldLevel = GetLevelForExperience(Experience, SkillManager.EXPERIENCE_TABLE);
 
-        // Add the new experience
         Experience = Math.Min(Experience + experienceToAdd, SkillManager.MAX_EXPERIENCE);
 
-        // Calculate new level based on updated experience
         int newLevel = GetLevelForExperience(Experience, SkillManager.EXPERIENCE_TABLE);
 
         // Check if the player leveled up
         if (newLevel > oldLevel)
         {
-            Level = newLevel; // Update the displayed level
-            return true; // Indicate a level-up occurred
+            Level = newLevel; 
+            player.Session.PacketBuilder.SendChatInterface(skillData.PrimaryId);
+            player.Session.PacketBuilder.SendTextToInterface($"@dbl@Congratulations, you just advanced a {skillData.SkillType.ToTitleCase()} level." , skillData.SecondaryId);
+            player.Session.PacketBuilder.SendTextToInterface($"Your {skillData.SkillType.ToTitleCase()} level is now {Level}.", skillData.TertiaryId);
+            player.Session.PacketBuilder.SendMessage($"Congratulations! You've reached level {Level} in {SkillType.ToTitleCase()}!");
+            player.SetCurrentGfx(199);
+            return true;
         }
 
-        return false; // No level-up
+        return false;
     }
 
     private int GetLevelForExperience(int experience, int[] experienceTable)

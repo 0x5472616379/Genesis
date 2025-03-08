@@ -1,5 +1,6 @@
 ﻿using ArcticRS.Appearance;
 using Genesis.Cache;
+using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Movement;
@@ -67,10 +68,11 @@ public class RunecraftingInteraction : RSInteraction
             _player.InventoryManager.AddItem(altar.RuneId, totalRunes);
             _player.InventoryManager.RefreshInventory();
 
-            _skill.AddExperience((int)(removedEssenceCount * altar.XpPerRune) * ServerConfig.SKILL_BONUS_EXP);
+            PlayRunecraftingEffects();
+            
+            _skill.AddExperience((int)(removedEssenceCount * altar.XpPerRune) * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.RUNECRAFTING));
             _player.SkillManager.RefreshSkill(SkillType.RUNECRAFTING);
 
-            PlayRunecraftingEffects();
             return true;
         }
 

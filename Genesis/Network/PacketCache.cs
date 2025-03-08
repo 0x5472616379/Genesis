@@ -59,6 +59,8 @@ public class PacketCache
             103 => true,
             122 => true,
             
+            40 => true,
+            
             73 => true,
             39 => true,
             

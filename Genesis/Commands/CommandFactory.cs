@@ -23,6 +23,7 @@ public class CommandFactory
             "spawn" => new SpawnGroundItemCommand(player, _commandArgs),
             "item" => new SpawnItemCommand(player, _commandArgs),
             "clear" => new ClearInventoryCommand(player, _commandArgs),
+            "colors" => new TestColorsCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }

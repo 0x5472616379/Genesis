@@ -36,6 +36,6 @@ public class PlayGfxCommand : RSCommand
     public override void Invoke()
     {
         _player.SetCurrentGfx(_id);
-        _player.SetCurrentAnimation(791);
+        _player.SetCurrentAnimation(199);
     }
 }

@@ -55,13 +55,12 @@ public static class RunecraftingAltarData
 
     public static int GetMultiplierForLevel(Dictionary<int, int> multipliers, int level)
     {
-        // Default to 1x multiplier if no match is found
         int multiplier = 1;
 
         foreach (var entry in multipliers)
         {
             if (level >= entry.Key) multiplier = entry.Value;
-            else break; // Stop when the level is less than the current key
+            else break;
         }
 
         return multiplier;
