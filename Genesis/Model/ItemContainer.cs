@@ -238,6 +238,21 @@ public class Container
     {
         player.Session.PacketBuilder.RefreshContainer(_slots, interfaceId, _maxSize);
     }
+
+    public int Count => _slots.Count;
+    public List<ItemSlot> GetItems => _slots;
+    public bool ContainsItemId(int id) => _slots.Any(s => s.ItemId == id);
+    public int RemoveAllById(int id)
+    {
+        int count = 0;
+        foreach (var slot in _slots.Where(s => s.ItemId == id))
+        {
+            slot.ItemId = 0;
+            slot.Quantity = 0;
+            count++;
+        }
+        return count;
+    }
 }
 
 public class InventorySystem

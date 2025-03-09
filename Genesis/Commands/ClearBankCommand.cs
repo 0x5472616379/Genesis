@@ -17,6 +17,6 @@ public class ClearBankCommand : RSCommand
 
     public override void Invoke()
     {
-        // Player.BankManager.Clear();
+        Player.BankItemContainer.Clear();
     }
 }

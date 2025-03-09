@@ -1,4 +1,5 @@
-﻿using Genesis.Constants;
+﻿using Genesis.Configuration;
+using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Movement;
@@ -54,8 +55,8 @@ public class TreeInteraction : RSInteraction
                 var random = new Random();
                 if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe)) //GetSuccessRate(_tree, EquippedAxe)
                 {
-                    // _player.InventoryManager.AddItem(_tree.LogId);
-                    // _player.InventoryManager.RefreshInventory();
+                    _player.InventoryItemContainer.AddItem(_tree.LogId, 1);
+                    _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
                     _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
                         .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.WOODCUTTING));
                     _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
@@ -181,12 +182,12 @@ public class TreeInteraction : RSInteraction
 
     private bool HasEnoughInventorySpace()
     {
-        // if (_player.InventoryManager.GetItemCount() >= 28)
-        // {
-        //     _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
-        //     _player.ClearInteraction();
-        //     return false;
-        // }
+        if (_player.InventoryItemContainer.FreeSlots <= 0)
+        {
+            _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
+            _player.ClearInteraction();
+            return false;
+        }
 
         return true;
     }
@@ -208,21 +209,21 @@ public class TreeInteraction : RSInteraction
 
     private bool TryUseInventoryAxe(int playerLevel)
     {
-        // var inventory = _player.InventoryManager.GetItems();
-        // var usableAxe = inventory
-        //     .Select(item => AxeData.GetAxe(item.Id))
-        //     .Where(axe => axe != null && playerLevel >= axe.RequiredLevel)
-        //     .OrderByDescending(axe => axe!.RequiredLevel)
-        //     .FirstOrDefault();
-        //
-        // if (usableAxe == null)
-        // {
-        //     _player.ClearInteraction();
-        //     return false;
-        // }
-        //
-        // axeAnimationId = usableAxe.AnimationId;
-        // EquippedAxe = usableAxe;
+         var inventory = _player.InventoryItemContainer.GetItems;
+         var usableAxe = inventory
+             .Select(item => AxeData.GetAxe(item.ItemId))
+             .Where(axe => axe != null && playerLevel >= axe.RequiredLevel)
+             .OrderByDescending(axe => axe!.RequiredLevel)
+             .FirstOrDefault();
+        
+         if (usableAxe == null)
+         {
+             _player.ClearInteraction();
+             return false;
+         }
+        
+         axeAnimationId = usableAxe.AnimationId;
+         EquippedAxe = usableAxe;
         return true;
     }
 }
