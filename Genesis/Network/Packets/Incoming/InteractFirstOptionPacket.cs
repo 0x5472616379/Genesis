@@ -35,6 +35,18 @@ public class InteractFirstOptionPacket : IPacket
 
         if (HandleTreeInteraction(worldObject)) return;
         if (HandleRunecraftingInteraction(worldObject)) return;
+        if (HandleBankInteraction(worldObject)) return;
+    }
+
+    private bool HandleBankInteraction(WorldObject worldObject)
+    {
+        if (worldObject.Id != 2213)
+        {
+            return false;
+        }
+        
+        _player.CurrentInterraction = new BankInteraction(_player, worldObject);
+        return true;
     }
 
     private WorldObject? GetWorldObject()

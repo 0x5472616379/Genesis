@@ -22,7 +22,6 @@ public class PacketCache
     {
         while (UserPacketQueue.Count > 0)
         {
-            Console.WriteLine($"Contains: {UserPacketQueue.Count}");
             var packet = UserPacketQueue.Dequeue();
             packet.Process();
 
@@ -64,6 +63,8 @@ public class PacketCache
             73 => true,
             39 => true,
             192 => true,
+            145 => true,
+            214 => true,
             
             132 => true,
             _ => false

@@ -24,6 +24,8 @@ public class CommandFactory
             "item" => new SpawnItemCommand(player, _commandArgs),
             "clear" => new ClearInventoryCommand(player, _commandArgs),
             "colors" => new TestColorsCommand(player, _commandArgs),
+            "loadbank" => new LoadBankCommand(player, _commandArgs),
+            "clearbank" => new ClearBankCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }

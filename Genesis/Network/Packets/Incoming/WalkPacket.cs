@@ -44,9 +44,7 @@ public class WalkPacket : IPacket
 
         _player.SetFacingEntity(null);
         _player.MovementHandler.Reset();
-        // _player.StartNewTask();
-        // _player.ResetInteractingWorldObject();
-        // ModalManager.ClearModal(_player);
+        _player.Session.PacketBuilder.ClearAllInterfaces();
     }
 
     public void Process()

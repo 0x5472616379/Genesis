@@ -116,14 +116,14 @@ public class InventoryManager
 
         var item = InventoryItems[index];
         if (item is null)
-            throw new InvalidOperationException("No item exists at the specified index.");
+            return;
 
         if (item.Amount > amount)
             item.Amount -= amount;
         else
             InventoryItems[index] = null;
     }
-    
+
     public int RemoveItemsWithId(int itemId)
     {
         var indicesToRemove = InventoryItems
@@ -139,7 +139,25 @@ public class InventoryManager
 
         return indicesToRemove.Count;
     }
-    
+
+    public bool SwapItems(int from, int to)
+    {
+        if (from < 0 || from >= MAX_SLOTS || to < 0 || to >= MAX_SLOTS)
+        {
+            _player.Session.PacketBuilder.SendMessage($"Invalid indexes: {from} or {to}.");
+            return false;
+        }
+
+        var item1 = InventoryItems[from];
+        var item2 = InventoryItems[to];
+
+        InventoryItems[from] = item2;
+        InventoryItems[to] = item1;
+
+        RefreshInventory();
+        return true;
+    }
+
     public void Clear()
     {
         InventoryItems = new List<Item>(new Item[MAX_SLOTS]);
@@ -148,14 +166,16 @@ public class InventoryManager
     public int GetItemIndex(int itemId) => InventoryItems.FindIndex(i => i != null && i.Id == itemId);
     public Item GetItemAtIndex(int index) => InventoryItems[index];
     public bool HasItem(int itemId) => GetItemIndex(itemId) != -1;
-    
+
     public void RefreshInventory()
     {
-        _player.Session.PacketBuilder.RefreshContainer(InventoryItems, GameInterfaces.DefaultInventoryContainer, ServerConfig.INVENTORY_SIZE);
+        _player.Session.PacketBuilder.RefreshContainer(InventoryItems, GameInterfaces.DefaultInventoryContainer,
+            ServerConfig.INVENTORY_SIZE);
     }
 
     public int GetItemCount() => InventoryItems.Count(i => i != null);
     public List<Item> GetItems() => InventoryItems.Where(x => x != null).ToList();
+    public List<Item> GetAllItemsIncNull() => InventoryItems.ToList();
 }
 
 public class Item

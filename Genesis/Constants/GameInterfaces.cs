@@ -10,15 +10,13 @@ public class GameInterfaces
     
     /* Default */
     public static int DefaultInventoryContainer { get; } = 3214;
-    public static int DefaultInventorySwappingInterface { get; } = 3724;
     
     /* Bank */
-    public static int BankContainer { get; } = 5382;
+    public static int DefaultBankContainer { get; } = 5382;
     public static int BankInventoryContainer { get; } = 5064;
     
     public static int BankWindowInterface { get; } = 5292;
     public static int BankInventorySidebarInterface { get; } = 5063;
-
     public static int WeaponInterface { get; } = 2423;
     public static int SkillInterface { get; } = 3917;
     public static int QuestInterface { get; } = 638;

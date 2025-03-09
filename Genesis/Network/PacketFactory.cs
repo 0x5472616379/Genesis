@@ -35,6 +35,10 @@ public static class PacketFactory
                 return new DialogueClickPacket(parameters);
             case 192:
                 return new ItemOnWorldObjectPacket(parameters);
+            case 145:
+                return new WithdrawSingleItemFromContainerPacket(parameters);
+            case 214:
+                return new MoveItemInContainerPacket(parameters);
 
             default:
                 Console.WriteLine($"No packet class implementation for opcode {opcode}.");

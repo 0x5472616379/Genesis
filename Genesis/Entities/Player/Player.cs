@@ -26,6 +26,7 @@ public class Player : Entity
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public InventoryManager InventoryManager { get; set; }
+    public BankManager BankManager { get; set; }
     public SkillManager SkillManager { get; set; }
     public RSInteraction CurrentInterraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
@@ -43,6 +44,7 @@ public class Player : Entity
         MovementHandler = new MovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
         InventoryManager = new InventoryManager(this);
+        BankManager = new BankManager(this);
         SkillManager = new SkillManager(this);
         DialogueManager = new DialogueManager(this);
         

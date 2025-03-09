@@ -37,9 +37,9 @@ public class Skill
         if (newLevel > oldLevel)
         {
             Level = newLevel; 
-            player.Session.PacketBuilder.SendChatInterface(skillData.PrimaryId);
             player.Session.PacketBuilder.SendTextToInterface($"@dbl@Congratulations, you just advanced a {skillData.SkillType.ToTitleCase()} level." , skillData.SecondaryId);
             player.Session.PacketBuilder.SendTextToInterface($"Your {skillData.SkillType.ToTitleCase()} level is now {Level}.", skillData.TertiaryId);
+            player.Session.PacketBuilder.SendChatInterface(skillData.PrimaryId);
             player.Session.PacketBuilder.SendMessage($"Congratulations! You've reached level {Level} in {SkillType.ToTitleCase()}!");
             player.SetCurrentGfx(199);
             return true;

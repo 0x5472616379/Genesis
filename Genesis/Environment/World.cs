@@ -12,43 +12,13 @@ public class World
 
     public static void Process()
     {
-        // MessageTickCount();
-
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
 
-        /* Process Regular Movement */
-        // ProcessPlayerMovement();
-
-        /* If we did follow someone then process again for this player */
-        // foreach (var player in Players) 
-        // {
-        //     if (player == null) continue;
-        //     if (player.Following != null)
-        //     {
-        //         player.MovementHandler.Reset();
-        //         RSPathfinder.MeleeFollow(player, player.Following);
-        //         player.MovementHandler.Finish();
-        //
-        //         player.MovementHandler.Process();
-        //     }
-        // }
-        
-
-        // ProcessPlayerMovement();
-        
         ProcessActions();
         ProcessPlayerInteractions();
         EnvironmentBuilder.Process();
-        
-        // foreach (var player in Players)
-        // {
-        //     if (player == null) continue;
-        //     var isMoving = (player.MovementHandler.IsWalking || player.MovementHandler.IsRunning);
-        //     // player.Session.PacketBuilder.SendMessage($"IsMoving: {isMoving}");
-        //     player.Session.PacketBuilder.SendMessage($"PosX: {player.Location.X} PosY: {player.Location.Y}");
-        // }
 
         /* Refresh */
         RefreshPlayer();
@@ -70,16 +40,6 @@ public class World
 
             if (player.CurrentInterraction.Execute())
                 player.CurrentInterraction = null;
-        }
-    }
-
-    private static void ProcessPlayerMovement()
-    {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-            if (Players[i].CurrentInterraction != null || Players[i].Following != null) continue;
-            Players[i].MovementHandler.Process();
         }
     }
 
