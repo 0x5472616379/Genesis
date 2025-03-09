@@ -44,7 +44,7 @@ public class ClientManager
 
         player.Session.PacketBuilder.DisplayWelcomeScreen();
         player.Session.PacketBuilder.SendPlayerStatus();
-        
+
         player.Session.PacketBuilder.SendInteractionOption("Attack", 3, true);
         player.Session.PacketBuilder.SendInteractionOption("Follow", 5, false);
         player.Session.PacketBuilder.SendInteractionOption("Trade with", 4, false);
@@ -64,7 +64,7 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(13, GameInterfaces.MusicInterface);
         player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
         player.SkillManager.RefreshSkills();
-        
+
         // for (int i = 0; i <= 3; i++)
         //     player.InventoryManager.AddItem(526);
         //
@@ -75,10 +75,14 @@ public class ClientManager
         // player.InventoryManager.AddItem(542);
 
         for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
-            player.InventoryManager.AddItem(AxeData.GetAllAxeIds()[i]);
+            player.InventoryItemContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
 
-        player.InventoryManager.RefreshInventory();
-        player.EquipmentManager.Refresh();
+        player.BankItemContainer.AddItem(995, 2147483640);
+
+        player.InventoryItemContainer.Refresh(player, GameInterfaces.DefaultInventoryContainer);
+
+        // player.InventoryManager.RefreshInventory();
+        // player.EquipmentManager.Refresh();
 
 
         // player.EquipmentManager.Equip(new RSItem(544, 1), EquipmentSlot.Chest);

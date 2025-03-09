@@ -24,28 +24,29 @@ public class MoveItemInContainerPacket : IPacket
         _from = _player.Session.Reader.ReadSignedWordBigEndianA();
         _to = _player.Session.Reader.ReadSignedWordBigEndian();
     }
-    
+
     public void Process()
     {
         Console.WriteLine($"ContainerId: {_containerId}");
         Console.WriteLine($"InsertionMode: {_insertionMode}");
         Console.WriteLine($"From: {_from}");
         Console.WriteLine($"To: {_to}");
-        
+
         if (_containerId == GameInterfaces.DefaultInventoryContainer)
         {
-            _player.InventoryManager.SwapItems(_from, _to);
+            _player.InventoryItemContainer.Swap(_from, _to);
         }
 
         if (_containerId == GameInterfaces.DefaultBankContainer)
         {
-            _player.BankManager.SwapItems(_from, _to);
+            _player.BankItemContainer.Swap(_from, _to);
         }
-        
+
         if (_containerId == GameInterfaces.BankInventoryContainer)
         {
-            _player.InventoryManager.SwapItems(_from, _to);
-            _player.BankManager.RefreshInventory();
+            _player.BankInventoryItemContainer.Swap(_from, _to);
+            _player.InventoryItemContainer.Swap(_from, _to);
+            _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
         }
     }
 }

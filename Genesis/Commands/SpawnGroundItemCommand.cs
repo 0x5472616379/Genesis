@@ -19,19 +19,19 @@ public class SpawnGroundItemCommand : RSCommand
 
     public override void Invoke()
     {
-        var item = new Item(995, 10000);
-
-        var relX = Player.Location.X - Player.Location.CachedBuildAreaStartX;
-        var relY = Player.Location.Y - Player.Location.CachedBuildAreaStartY;
-
-        var relZoneX = (byte)(relX & ~0x7);
-        var relZoneY = (byte)(relY & ~0x7);
-
-        var inZoneX = relX & 0x7;
-        var inZoneY = relY & 0x7;
-
-        /* Chunk to update in */
-        Player.Session.PacketBuilder.SendActiveChunk(relZoneX, relZoneY);
-        Player.Session.PacketBuilder.SendGroundItem(item, inZoneX, inZoneY);
+        // var item = new Item(995, 10000);
+        //
+        // var relX = Player.Location.X - Player.Location.CachedBuildAreaStartX;
+        // var relY = Player.Location.Y - Player.Location.CachedBuildAreaStartY;
+        //
+        // var relZoneX = (byte)(relX & ~0x7);
+        // var relZoneY = (byte)(relY & ~0x7);
+        //
+        // var inZoneX = relX & 0x7;
+        // var inZoneY = relY & 0x7;
+        //
+        // /* Chunk to update in */
+        // Player.Session.PacketBuilder.SendActiveChunk(relZoneX, relZoneY);
+        // Player.Session.PacketBuilder.SendGroundItem(item, inZoneX, inZoneY);
     }
 }

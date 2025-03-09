@@ -24,8 +24,13 @@ public class BankInteraction : RSInteraction
 
         if (!CanExecute()) return false;
 
-        _player.BankManager.CompressBank();
-        _player.BankManager.RefreshInventory();
+        // _player.BankManager.CompressBank();
+
+        _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
+        _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
+        _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+        _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
+
         _player.Session.PacketBuilder.SendInterface(GameInterfaces.BankWindowInterface,
             GameInterfaces.BankInventorySidebarInterface);
 

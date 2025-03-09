@@ -53,7 +53,7 @@ public class EquipmentManager
         
          Equipment[slot] = new EquipmentItem(rsItem.Id, rsItem.Amount);
         
-         _player.InventoryManager.Remove(rsItem.Index, rsItem.Amount);
+         // _player.InventoryManager.Remove(rsItem.Index, rsItem.Amount);
     }
 
     public void Unequip(EquipmentSlot slot)

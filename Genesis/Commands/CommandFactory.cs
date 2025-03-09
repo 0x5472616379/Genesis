@@ -22,6 +22,7 @@ public class CommandFactory
             "admin" => new SetAdminCommand(player, _commandArgs),
             "spawn" => new SpawnGroundItemCommand(player, _commandArgs),
             "item" => new SpawnItemCommand(player, _commandArgs),
+            "removeitem" => new RemoveItemCommand(player, _commandArgs),
             "clear" => new ClearInventoryCommand(player, _commandArgs),
             "colors" => new TestColorsCommand(player, _commandArgs),
             "loadbank" => new LoadBankCommand(player, _commandArgs),

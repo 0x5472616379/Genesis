@@ -20,11 +20,11 @@ public class ClearInventoryCommand : RSCommand
 
     public override void Invoke()
     {
-        Player.InventoryManager.Clear();
-
-        RunecraftingAltarData.GetAllTalismanIds().ForEach(id => Player.InventoryManager.AddItem(id));
-        Player.InventoryManager.AddItem(1436, 17);
-        
-        Player.InventoryManager.RefreshInventory();
+        // Player.InventoryManager.Clear();
+        //
+        // RunecraftingAltarData.GetAllTalismanIds().ForEach(id => Player.InventoryManager.AddItem(id));
+        // Player.InventoryManager.AddItem(1436, 17);
+        //
+        // Player.InventoryManager.RefreshInventory();
     }
 }

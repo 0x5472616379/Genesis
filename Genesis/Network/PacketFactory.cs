@@ -35,8 +35,14 @@ public static class PacketFactory
                 return new DialogueClickPacket(parameters);
             case 192:
                 return new ItemOnWorldObjectPacket(parameters);
+            case 117:
+                return new Withdraw5FromContainerPacket(parameters);
+            case 43:
+                return new Withdraw10FromContainerPacket(parameters);
+            case 129:
+                return new WithdrawAllFromContainerPacket(parameters);
             case 145:
-                return new WithdrawSingleItemFromContainerPacket(parameters);
+                return new Withdraw1FromContainerPacket(parameters);
             case 214:
                 return new MoveItemInContainerPacket(parameters);
 

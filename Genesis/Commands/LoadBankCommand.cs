@@ -23,116 +23,116 @@ public class LoadBankCommand : RSCommand
 
     public override void Invoke()
     {
-        _player.BankManager.Clear();
-
-        /* Coins */
-        _player.BankManager.AddItem(995, int.MaxValue);
-
-        /* Rares */
-        _player.BankManager.AddItem(962, 10);
-
-        for (int i = 0; i < 6; i++)
-        {
-            var itemId = 1038 + (i * 2);
-            _player.BankManager.AddItem(itemId, 10);
-        }
-
-        _player.BankManager.AddItem(981, 10);
-        _player.BankManager.AddItem(1050, 10);
-        _player.BankManager.AddItem(1959, 10);
-
-        _player.BankManager.AddItem(1053, 5);
-        _player.BankManager.AddItem(1055, 5);
-        _player.BankManager.AddItem(1057, 5);
-
-        _player.BankManager.AddItem(2577, 2);
-        _player.BankManager.AddItem(2581, 2);
-
-
-        /* Runes */
-        for (int i = 0; i < 13; i++)
-        {
-            var itemid = 554;
-            _player.BankManager.AddItem(itemid + i, 100000000);
-        }
-
-        /* Bones */
-        _player.BankManager.AddItem(536, 100000);
-        _player.BankManager.AddItem(534, 100000);
-        _player.BankManager.AddItem(532, 100000);
-
-        /* Potions */
-        _player.BankManager.AddItem(2434, 1000);
-        _player.BankManager.AddItem(2452, 1000);
-        _player.BankManager.AddItem(2444, 1000);
-        _player.BankManager.AddItem(2436, 1000);
-        _player.BankManager.AddItem(2440, 1000);
-        _player.BankManager.AddItem(2442, 1000);
-        _player.BankManager.AddItem(385, 1000);
-        _player.BankManager.AddItem(3144, 1000);
-
-        /* Herbs */
-        for (int i = 0; i < 11; i++)
-        {
-            var itemid = 199;
-            _player.BankManager.AddItem(itemid + (i * 2), new Random().Next(1000, 5001));
-        }
-
-        /* Longbow */
-        _player.BankManager.AddItem(845, new Random().Next(5000, 7001));
-        _player.BankManager.AddItem(847, new Random().Next(5000, 7001));
-        _player.BankManager.AddItem(851, new Random().Next(5000, 7001));
-        _player.BankManager.AddItem(855, new Random().Next(5000, 7001));
-        _player.BankManager.AddItem(859, new Random().Next(5000, 7001));
-
-        /* Arrows */
-        for (int i = 0; i < 6; i++)
-        {
-            var itemid = 882;
-            _player.BankManager.AddItem(itemid + (i * 2), new Random().Next(5000, 9001));
-        }
-
-        _player.BankManager.AddItem(53, new Random().Next(5000, 9001));
-        _player.BankManager.AddItem(52, new Random().Next(15000, 25001));
-
-        /* Gear */
-
-        _player.BankManager.AddItem(4716, 5);
-        _player.BankManager.AddItem(4718, 5);
-
-        _player.BankManager.AddItem(3140, new Random().Next(2, 8));
-        _player.BankManager.AddItem(1187, new Random().Next(5, 10));
-        _player.BankManager.AddItem(4087, new Random().Next(2, 8));
-        _player.BankManager.AddItem(3751, new Random().Next(5, 15));
-
-        _player.BankManager.AddItem(4131, new Random().Next(5, 10));
-        _player.BankManager.AddItem(1580, new Random().Next(5, 10));
-
-
-        _player.BankManager.AddItem(4720, 5);
-        _player.BankManager.AddItem(4722, 5);
-
-        _player.BankManager.AddItem(1377, new Random().Next(5, 10));
-        _player.BankManager.AddItem(1215, new Random().Next(5, 10));
-        _player.BankManager.AddItem(4151, new Random().Next(5, 10));
-        _player.BankManager.AddItem(4224, 1);
-        _player.BankManager.AddItem(4212, 1);
-        _player.BankManager.AddItem(1052, 1);
-
-        /* Fillers */
-        var random = new Random();
-        while (_player.BankManager.GetItemCount() < 351)
-        {
-            var itemId = random.Next(1, 4000);
-            var item = ItemDefinition.Lookup(itemId);
-            if (item == null || item.Id == 995 || item.IsNote()) continue;
-
-            _player.BankManager.AddItem(item.Id, _random.Next(1, 100));
-        }
-
-        _player.BankManager.AddItem(732, 100000);
-
-        _player.BankManager.CopyInventory(_player.InventoryManager.GetAllItemsIncNull());
-        _player.BankManager.RefreshInventory();
+        // _player.BankManager.Clear();
+        //
+        // /* Coins */
+        // _player.BankManager.AddItem(995, int.MaxValue);
+        //
+        // /* Rares */
+        // _player.BankManager.AddItem(962, 10);
+        //
+        // for (int i = 0; i < 6; i++)
+        // {
+        //     var itemId = 1038 + (i * 2);
+        //     _player.BankManager.AddItem(itemId, 10);
+        // }
+        //
+        // _player.BankManager.AddItem(981, 10);
+        // _player.BankManager.AddItem(1050, 10);
+        // _player.BankManager.AddItem(1959, 10);
+        //
+        // _player.BankManager.AddItem(1053, 5);
+        // _player.BankManager.AddItem(1055, 5);
+        // _player.BankManager.AddItem(1057, 5);
+        //
+        // _player.BankManager.AddItem(2577, 2);
+        // _player.BankManager.AddItem(2581, 2);
+        //
+        //
+        // /* Runes */
+        // for (int i = 0; i < 13; i++)
+        // {
+        //     var itemid = 554;
+        //     _player.BankManager.AddItem(itemid + i, 100000000);
+        // }
+        //
+        // /* Bones */
+        // _player.BankManager.AddItem(536, 100000);
+        // _player.BankManager.AddItem(534, 100000);
+        // _player.BankManager.AddItem(532, 100000);
+        //
+        // /* Potions */
+        // _player.BankManager.AddItem(2434, 1000);
+        // _player.BankManager.AddItem(2452, 1000);
+        // _player.BankManager.AddItem(2444, 1000);
+        // _player.BankManager.AddItem(2436, 1000);
+        // _player.BankManager.AddItem(2440, 1000);
+        // _player.BankManager.AddItem(2442, 1000);
+        // _player.BankManager.AddItem(385, 1000);
+        // _player.BankManager.AddItem(3144, 1000);
+        //
+        // /* Herbs */
+        // for (int i = 0; i < 11; i++)
+        // {
+        //     var itemid = 199;
+        //     _player.BankManager.AddItem(itemid + (i * 2), new Random().Next(1000, 5001));
+        // }
+        //
+        // /* Longbow */
+        // _player.BankManager.AddItem(845, new Random().Next(5000, 7001));
+        // _player.BankManager.AddItem(847, new Random().Next(5000, 7001));
+        // _player.BankManager.AddItem(851, new Random().Next(5000, 7001));
+        // _player.BankManager.AddItem(855, new Random().Next(5000, 7001));
+        // _player.BankManager.AddItem(859, new Random().Next(5000, 7001));
+        //
+        // /* Arrows */
+        // for (int i = 0; i < 6; i++)
+        // {
+        //     var itemid = 882;
+        //     _player.BankManager.AddItem(itemid + (i * 2), new Random().Next(5000, 9001));
+        // }
+        //
+        // _player.BankManager.AddItem(53, new Random().Next(5000, 9001));
+        // _player.BankManager.AddItem(52, new Random().Next(15000, 25001));
+        //
+        // /* Gear */
+        //
+        // _player.BankManager.AddItem(4716, 5);
+        // _player.BankManager.AddItem(4718, 5);
+        //
+        // _player.BankManager.AddItem(3140, new Random().Next(2, 8));
+        // _player.BankManager.AddItem(1187, new Random().Next(5, 10));
+        // _player.BankManager.AddItem(4087, new Random().Next(2, 8));
+        // _player.BankManager.AddItem(3751, new Random().Next(5, 15));
+        //
+        // _player.BankManager.AddItem(4131, new Random().Next(5, 10));
+        // _player.BankManager.AddItem(1580, new Random().Next(5, 10));
+        //
+        //
+        // _player.BankManager.AddItem(4720, 5);
+        // _player.BankManager.AddItem(4722, 5);
+        //
+        // _player.BankManager.AddItem(1377, new Random().Next(5, 10));
+        // _player.BankManager.AddItem(1215, new Random().Next(5, 10));
+        // _player.BankManager.AddItem(4151, new Random().Next(5, 10));
+        // _player.BankManager.AddItem(4224, 1);
+        // _player.BankManager.AddItem(4212, 1);
+        // _player.BankManager.AddItem(1052, 1);
+        //
+        // /* Fillers */
+        // var random = new Random();
+        // while (_player.BankManager.GetItemCount() < 351)
+        // {
+        //     var itemId = random.Next(1, 4000);
+        //     var item = ItemDefinition.Lookup(itemId);
+        //     if (item == null || item.Id == 995 || item.IsNote()) continue;
+        //
+        //     _player.BankManager.AddItem(item.Id, _random.Next(1, 100));
+        // }
+        //
+        // _player.BankManager.AddItem(732, 100000);
+        //
+        // _player.BankManager.CopyInventory(_player.InventoryManager.GetAllItemsIncNull());
+        // _player.BankManager.RefreshInventory();
     }
 }

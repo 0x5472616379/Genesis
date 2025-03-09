@@ -130,7 +130,7 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndian(barId);
     }
 
-    public void RefreshContainer(List<Item> container, int containerId, int count)
+    public void RefreshContainer(List<ItemSlot> container, int containerId, int count)
     {
         _player.Session.Writer.CreateFrameVarSizeWord(ServerOpCodes.ITEM_SET);
         _player.Session.Writer.WriteWord(containerId);
@@ -148,13 +148,14 @@ public class PacketBuilder
             }
             else
             {
-                amount = container[i].Amount;
-                itemId = container[i].Id;
-
-                if (amount < 1) itemId = 0;
-                if (itemId > ServerConfig.ITEM_LIMIT || itemId < 0)
-                    itemId = ServerConfig.ITEM_LIMIT;
+                amount = container[i].Quantity;
+                itemId = container[i].ItemId;
             }
+
+            if (amount < 1) itemId = 0;
+            if (itemId > ServerConfig.ITEM_LIMIT || itemId < 0)
+                itemId = ServerConfig.ITEM_LIMIT;
+
             if (amount > 254)
             {
                 _player.Session.Writer.WriteByte(255);

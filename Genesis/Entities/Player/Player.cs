@@ -4,6 +4,7 @@ using Genesis.Configuration;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Managers;
+using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills;
 
@@ -25,13 +26,15 @@ public class Player : Entity
     public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
-    public InventoryManager InventoryManager { get; set; }
-    public BankManager BankManager { get; set; }
     public SkillManager SkillManager { get; set; }
     public RSInteraction CurrentInterraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
     public Player Following { get; set; }
-
+   
+    public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
+    public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    
     public Player()
     {
         Session = new NetworkSession(this);
@@ -43,8 +46,10 @@ public class Player : Entity
         Flags = PlayerUpdateFlags.None;
         MovementHandler = new MovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
-        InventoryManager = new InventoryManager(this);
-        BankManager = new BankManager(this);
+        
+        // InventoryManager = new InventoryManager(this);
+        // BankManager = new BankManager(this);
+        
         SkillManager = new SkillManager(this);
         DialogueManager = new DialogueManager(this);
         
