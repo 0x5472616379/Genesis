@@ -34,6 +34,8 @@ public class Player : Entity
     public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
     public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
     public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    public Container ShopItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
     
     public Player()
     {

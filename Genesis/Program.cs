@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using Genesis;
 using Genesis.Cache;
+using Genesis.Configuration;
 using Genesis.Environment;
+using Genesis.Shop;
 
 var ifs = new IndexedFileSystem("../../../Data/cache", true);
 
@@ -11,6 +13,8 @@ Benchmark(() => { new ItemDefinitionDecoder(ifs).Run(); }, "Decoded Item Definit
 
 RSServer server = new RSServer();
 server.Run();
+
+
 
 
 void Benchmark(Action action, string benchmarkText)

@@ -26,6 +26,7 @@ public class CommandFactory
             "colors" => new TestColorsCommand(player, _commandArgs),
             "loadbank" => new LoadBankCommand(player, _commandArgs),
             "clearbank" => new ClearBankCommand(player, _commandArgs),
+            "shop" => new OpenShopCommand(player, _commandArgs),
             _ => new NullCommand(player, _commandArgs)
         };
     }

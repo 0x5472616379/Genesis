@@ -14,9 +14,16 @@ public class GameInterfaces
     /* Bank */
     public static int DefaultBankContainer { get; } = 5382;
     public static int BankInventoryContainer { get; } = 5064;
-    
     public static int BankWindowInterface { get; } = 5292;
     public static int BankInventorySidebarInterface { get; } = 5063;
+
+    /* Shop */
+    public static int ShopWindowTitleInterface { get; } = 3901;
+    public static int DefaultShopWindowInterface { get; } = 3824;
+    public static int DefaultShopWindowContainer { get; } = 3900;
+    public static int DefaultShopInventoryInterface { get; } = 3822;
+    public static int DefaultShopInventoryContainer { get; } = 3823;
+    
     public static int WeaponInterface { get; } = 2423;
     public static int SkillInterface { get; } = 3917;
     public static int QuestInterface { get; } = 638;
