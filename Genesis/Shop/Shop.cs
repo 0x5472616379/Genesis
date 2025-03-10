@@ -60,7 +60,7 @@ public class Shop
 
         if (maxAffordable == 0)
         {
-            player.Session.PacketBuilder.SendMessage("Not enough coins.");
+            player.Session.PacketBuilder.SendMessage("You don't have enough coins.");
             return;
         }
 

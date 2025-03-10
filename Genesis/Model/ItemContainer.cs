@@ -53,7 +53,8 @@ public class Container
 
         int remaining = quantity;
 
-        bool isStackable = IsBank || (ItemDefinition.Lookup(itemId).Stackable);
+        bool isStackable = IsBank || (ItemDefinition.Lookup(itemId).Stackable) ||
+                           (ItemDefinition.Lookup(itemId).IsNote());
 
         if (isStackable)
         {
@@ -111,7 +112,8 @@ public class Container
 
         int remaining = quantity;
 
-        bool isStackable = IsBank || ((ItemDefinition.Lookup(itemId).Stackable));
+        bool isStackable = IsBank || ((ItemDefinition.Lookup(itemId).Stackable)) ||
+                           (ItemDefinition.Lookup(itemId).IsNote());
 
         if (isStackable)
         {
@@ -153,7 +155,7 @@ public class Container
 
         return quantity - remaining;
     }
-    
+
     public bool ContainsSlotWithExactQuantity(int itemId, int quantity)
     {
         return _slots.Any(s => s.ItemId == itemId && s.Quantity == quantity);
@@ -161,7 +163,8 @@ public class Container
 
     public int GetItemCount(int itemId)
     {
-        bool isStackable = IsBank || (ItemDefinition.Lookup(itemId).Stackable);
+        bool isStackable = IsBank || (ItemDefinition.Lookup(itemId).Stackable) ||
+                           (ItemDefinition.Lookup(itemId).IsNote());
         if (isStackable)
         {
             return _slots.Where(s => s.ItemId == itemId).Sum(s => s.Quantity);
@@ -247,6 +250,7 @@ public class Container
     public int Count => _slots.Count;
     public List<ItemSlot> GetItems => _slots;
     public bool ContainsItemId(int id) => _slots.Any(s => s.ItemId == id);
+
     public int RemoveAllById(int id)
     {
         int count = 0;
@@ -256,6 +260,7 @@ public class Container
             slot.Quantity = 0;
             count++;
         }
+
         return count;
     }
 }
@@ -264,26 +269,50 @@ public class InventorySystem
 {
     public static int Transfer(Container source, Container destination, int itemId, int amount)
     {
+        int actualItemId = itemId;
+        if (ShouldConvertNoted(destination, itemId))
+        {
+            actualItemId = ConvertToUnnoted(itemId);
+        }
+
         int available = source.GetItemCount(itemId);
-        if (available <= 0)
-            return 0;
+        if (available <= 0) return 0;
 
         int possibleFromSource = Math.Min(available, amount);
-        int addableToDest = destination.GetAddableQuantity(itemId, possibleFromSource);
-
+        int addableToDest = destination.GetAddableQuantity(actualItemId, possibleFromSource);
         int transferAmount = Math.Min(possibleFromSource, addableToDest);
-        if (transferAmount <= 0)
-            return 0;
 
+        if (transferAmount <= 0) return 0;
+
+        // Remove *original* items from source
         int removed = source.RemoveItem(itemId, transferAmount);
-        int added = destination.AddItem(itemId, removed);
 
+        // Add *converted* items to destination
+        int added = destination.AddItem(actualItemId, removed);
+
+        // Handle leftovers
         if (added < removed)
         {
-            // Attempt to return leftover to source if destination couldn't accept all
+            // Return unconverted leftovers to source
             source.AddItem(itemId, removed - added);
         }
 
         return added;
+    }
+
+    private static bool ShouldConvertNoted(Container destination, int itemId)
+    {
+        return (destination.IsBank) && IsNotedItem(itemId);
+    }
+
+    private static bool IsNotedItem(int itemId)
+    {
+        var def = ItemDefinition.Lookup(itemId);
+        return def?.IsNote() ?? false;
+    }
+
+    private static int ConvertToUnnoted(int notedItemId)
+    {
+        return notedItemId - 1;
     }
 }

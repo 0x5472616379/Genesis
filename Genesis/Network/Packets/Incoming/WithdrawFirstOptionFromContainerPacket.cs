@@ -12,7 +12,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
     private readonly int _length;
     private readonly int _fromContainer;
     private readonly int _from;
-    private readonly int _itemId;
+    private int _itemId;
     private readonly int _amount;
 
     public WithdrawFirstOptionFromContainerPacket(PacketParameters parameters)
