@@ -53,22 +53,52 @@ public class Shop
         var shopItem = Stock.GetItem(slot);
         if (shopItem.IsEmpty) return;
 
-        int price = CalculateBuyPrice(shopItem.ItemId);
-        int totalCost = price * quantity;
+        int itemId = shopItem.ItemId;
+        int price = CalculateBuyPrice(itemId);
+        int playerCoins = player.InventoryItemContainer.GetItemCount(995);
+        int maxAffordable = playerCoins / price;
 
-        if (player.InventoryItemContainer.GetItemCount(995) >= totalCost)
+        if (maxAffordable == 0)
         {
-            int transferred = InventorySystem.Transfer(
-                source: Stock,
-                destination: player.InventoryItemContainer,
-                shopItem.ItemId,
-                quantity);
+            player.Session.PacketBuilder.SendMessage("Not enough coins.");
+            return;
+        }
 
-            if (transferred > 0)
+        int quantityToBuy = Math.Min(quantity, maxAffordable);
+        int transferred = InventorySystem.Transfer(Stock, player.InventoryItemContainer, itemId, quantityToBuy);
+
+        // Handle cases where removing coins might free up inventory space
+        if (transferred == 0)
+        {
+            // Check if buying 1 item by removing exact coins would free a slot
+            bool hasExactCoins = player.InventoryItemContainer.ContainsSlotWithExactQuantity(995, price);
+            if (hasExactCoins)
             {
-                player.InventoryItemContainer.RemoveItem(995, totalCost);
-                RefreshInterfaces(player);
+                // Attempt to remove coins and transfer again
+                int coinsRemoved = player.InventoryItemContainer.RemoveItem(995, price);
+                if (coinsRemoved == price)
+                {
+                    transferred = InventorySystem.Transfer(Stock, player.InventoryItemContainer, itemId, 1);
+                    if (transferred == 0)
+                    {
+                        // Transfer failed, refund coins
+                        player.InventoryItemContainer.AddItem(995, price);
+                    }
+                }
             }
+        }
+
+        if (transferred > 0)
+        {
+            int totalCost = transferred * price;
+            player.InventoryItemContainer.RemoveItem(995, totalCost);
+            player.InventoryItemContainer.CopyToContainer(PlayerMirror);
+            RefreshInterfaces(player);
+            player.Session.PacketBuilder.SendMessage($"Transferred {transferred} items.");
+        }
+        else
+        {
+            player.Session.PacketBuilder.SendMessage("Not enough space in inventory.");
         }
     }
 
@@ -77,8 +107,7 @@ public class Shop
         var playerItem = PlayerMirror.GetItem(slot);
         if (playerItem.IsEmpty) return;
 
-        int price = CalculateSellPrice(playerItem.ItemId);
-        int totalValue = price * quantity;
+        
 
         // Transfer item from player to shop
         int transferred = InventorySystem.Transfer(
@@ -86,7 +115,11 @@ public class Shop
             destination: Stock,
             playerItem.ItemId,
             quantity);
+        
+        int price = CalculateSellPrice(playerItem.ItemId);
+        int totalValue = price * transferred;
 
+        player.Session.PacketBuilder.SendMessage("Transferred " + transferred + " items.");
         // Add coins to player
         if (transferred > 0)
         {

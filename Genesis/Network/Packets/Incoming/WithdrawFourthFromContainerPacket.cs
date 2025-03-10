@@ -1,10 +1,11 @@
 ﻿using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Model;
+using Genesis.Shop;
 
 namespace Genesis.Packets.Incoming;
 
-public class Withdraw10FromContainerPacket : IPacket
+public class WithdrawFourthFromContainerPacket : IPacket
 {
     private readonly Player _player;
     private readonly int _opcode;
@@ -14,15 +15,15 @@ public class Withdraw10FromContainerPacket : IPacket
     private readonly int _from;
     private readonly int _amount;
 
-    public Withdraw10FromContainerPacket(PacketParameters parameters)
+    public WithdrawFourthFromContainerPacket(PacketParameters parameters)
     {
         _player = parameters.Player;
         _opcode = parameters.OpCode;
         _length = parameters.Length;
         
-        _fromContainer = _player.Session.Reader.ReadUnsignedWordBigEndian();
-        _itemId = _player.Session.Reader.ReadUnsignedWordA();
         _from = _player.Session.Reader.ReadUnsignedWordA();
+        _fromContainer = _player.Session.Reader.ReadUnsignedWord();
+        _itemId = _player.Session.Reader.ReadUnsignedWordA();
 
         Console.WriteLine($"From Container: {_fromContainer}");
         Console.WriteLine($"FromIndex: {_itemId}");
@@ -34,7 +35,7 @@ public class Withdraw10FromContainerPacket : IPacket
         /* Bank Inventory Container */
         if (_fromContainer == GameInterfaces.BankInventoryContainer)
         {
-            InventorySystem.Transfer(_player.InventoryItemContainer, _player.BankItemContainer, _itemId, 10);
+            InventorySystem.Transfer(_player.InventoryItemContainer, _player.BankItemContainer, _itemId, int.MaxValue);
             _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
 
             _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
@@ -45,12 +46,22 @@ public class Withdraw10FromContainerPacket : IPacket
 
         if (_fromContainer == GameInterfaces.DefaultBankContainer)
         {
-            InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, 10);
+            InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, int.MaxValue);
             _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
             
             _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
             _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
             _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+        }
+        
+        if (_fromContainer == GameInterfaces.DefaultShopWindowContainer)
+        {
+            Shops.GeneralStore.BuyItem(_player, _from, 10);
+        }
+        
+        if (_fromContainer == GameInterfaces.DefaultShopInventoryContainer)
+        {
+            Shops.GeneralStore.SellItem(_player, _from, 10);
         }
     }
 }

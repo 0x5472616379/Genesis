@@ -153,6 +153,11 @@ public class Container
 
         return quantity - remaining;
     }
+    
+    public bool ContainsSlotWithExactQuantity(int itemId, int quantity)
+    {
+        return _slots.Any(s => s.ItemId == itemId && s.Quantity == quantity);
+    }
 
     public int GetItemCount(int itemId)
     {

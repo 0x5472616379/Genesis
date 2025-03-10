@@ -36,13 +36,13 @@ public static class PacketFactory
             case 192:
                 return new ItemOnWorldObjectPacket(parameters);
             case 117:
-                return new Withdraw5FromContainerPacket(parameters);
+                return new WithdrawSecondOptionFromContainerPacket(parameters);
             case 43:
-                return new Withdraw10FromContainerPacket(parameters);
+                return new WithdrawThirdFromContainerPacket(parameters);
             case 129:
-                return new WithdrawAllFromContainerPacket(parameters);
+                return new WithdrawFourthFromContainerPacket(parameters);
             case 145:
-                return new Withdraw1FromContainerPacket(parameters);
+                return new WithdrawFirstOptionFromContainerPacket(parameters);
             case 214:
                 return new MoveItemInContainerPacket(parameters);
 
