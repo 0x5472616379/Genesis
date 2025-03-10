@@ -13,7 +13,7 @@ public class Shop
     private int _shopInterfaceId;
     private int _inventoryInterfaceId;
 
-    public Shop(string name, int shopInterfaceId, int inventoryInterfaceId, int stockSize = 20)
+    public Shop(string name, int shopInterfaceId, int inventoryInterfaceId, int stockSize = 40)
     {
         Name = name;
         Stock = new Container(stockSize, true);

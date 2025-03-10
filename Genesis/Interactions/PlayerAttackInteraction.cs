@@ -38,49 +38,56 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
+        var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
+            _player.Location.Z,
+            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, 2);
+
+        var isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y,
+            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
+
+        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
+            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
+
+        if (distance == 0)
+        {
+            _player.MovementHandler.Reset();
+            RSPathfinder.MeleeWalk(_player,
+                new Location(_player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y,
+                    _player.InteractingEntity.Location.Z));
+            _player.MovementHandler.Finish();
+            _player.MovementHandler.Process();
+        }
+
+        if (distance > 1 || !projectilePathClear)
+        {
+            _player.MovementHandler.Reset();
+            RSPathfinder.FindPath(_player, _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y,
+                true, 1, 1);
+            _player.MovementHandler.Finish();
+            _player.MovementHandler.Process();
+        }
+
         var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
-        if (isMoving) return false;
+        _player.Session.PacketBuilder.SendMessage("AmIMoving: " + isMoving);
 
-        Console.WriteLine("IsMoving: " + isMoving);
+        var s = _player.InteractingEntity.MovementHandler.IsWalking || _player.Following.MovementHandler.IsWalking;
 
-        return false;
-        // var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
-        //     _player.Location.Z,
-        //     _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, 1);
-        //
-        // var isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y,
-        //     _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
-        //
-        // var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
-        //     _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
-        //
-        // if (distance == 0)
-        // {
-        //     _player.MovementHandler.Reset();
-        //     RSPathfinder.MeleeWalk(_player, new Location(_player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, 0));
-        //     _player.MovementHandler.Finish();
-        //     _player.MovementHandler.Process();
-        //     return true;
-        // }
-        //
-        // if(distance > 1 || !projectilePathClear)
-        // {
-        //     _player.MovementHandler.Reset();
-        //
-        //     RSPathfinder.FindPath(_player, _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, true, 0,0);
-        //
-        //     _player.MovementHandler.Finish();
-        //     _player.MovementHandler.Process();
-        //     
-        //     return true;
-        // }
-        //
-        //
-        // _player.Session.PacketBuilder.SendMessage("Long Path Clear: " + projectilePathClear);
-        // _player.Session.PacketBuilder.SendMessage("Diagonal: " + isDiagonal);
-        // _player.Session.PacketBuilder.SendMessage("PIS: " + (projectilePathClear && !isDiagonal));
-        //
-        // return projectilePathClear && !isDiagonal;
+        _player.Session.PacketBuilder.SendMessage("IsTargetMoving: " + s);
+
+        _player.Session.PacketBuilder.SendMessage("Long Path Clear: " + projectilePathClear);
+        _player.Session.PacketBuilder.SendMessage("Diagonal: " + isDiagonal);
+        _player.Session.PacketBuilder.SendMessage("PIS: " + (projectilePathClear && !isDiagonal));
+        _player.Session.PacketBuilder.SendMessage("Distance: " + distance);
+
+        int moveDistance = 1;
+        if (_player.MovementHandler.IsWalking)
+            moveDistance = 2;
+        if (_player.MovementHandler.IsRunning)
+            moveDistance = 3;
+
+        _player.Session.PacketBuilder.SendMessage("MoveDistance: " + moveDistance);
+
+        return projectilePathClear && !isDiagonal && distance <= moveDistance;
     }
 
     private int meleeDistance()
