@@ -42,8 +42,7 @@ public class PlayerAttackInteraction : RSInteraction
         int targetZ = _player.InteractingEntity.Location.Z;
 
         _player.MovementHandler.Reset();
-        RSPathfinder.MeleeWalk(_player, new Location(targetX, targetY, targetZ));
-        //RSPathfinder.FindPath(_player, targetX, targetY, true, 1, 1);
+        RSPathfinder.MeleeFollow(_player, _player.Following);
         _player.MovementHandler.Finish();
         _player.MovementHandler.Process();
 

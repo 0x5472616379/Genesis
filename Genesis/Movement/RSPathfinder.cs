@@ -539,8 +539,10 @@ public class RSPathfinder
 
     public static void MeleeFollow(Player player, Player leader)
     {
-        int x = player.Location.X, y = player.Location.Y;
-        int x2 = leader.Location.X, y2 = leader.Location.Y;
+        int x = player.Location.X;
+        int y = player.Location.Y;
+        int x2 = leader.Location.X;
+        int y2 = leader.Location.Y;
 
         if (x > x2 && leader.canMove(1, 0))
         {
@@ -579,6 +581,7 @@ public class RSPathfinder
     {
         int x = player.Location.X, y = player.Location.Y;
         int x2 = destination.X, y2 = destination.Y;
+
         if (x > x2 && player.canMove(1, 0))
         {
             FindPath(player, x2 + 1, y2, true, 0, 0);
