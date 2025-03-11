@@ -31,187 +31,42 @@ public class PlayerAttackInteraction : RSInteraction
             attackLoaded = true;
         }
 
-
         currentTick++;
         return false;
     }
 
     public override bool CanExecute()
     {
+        int targetX = _player.InteractingEntity.Location.X;
+        int targetY = _player.InteractingEntity.Location.Y;
+        int targetZ = _player.InteractingEntity.Location.Z;
+
+        _player.MovementHandler.Reset();
+        RSPathfinder.MeleeWalk(_player, new Location(targetX, targetY, targetZ));
+        //RSPathfinder.FindPath(_player, targetX, targetY, true, 1, 1);
+        _player.MovementHandler.Finish();
+        _player.MovementHandler.Process();
+
+        _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
+
         var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
-            _player.Location.Z,
-            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, 2);
-
-        var isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y,
-            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
-
-        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
-            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
-
-        if (distance == 0)
-        {
-            _player.MovementHandler.Reset();
-            RSPathfinder.MeleeWalk(_player,
-                new Location(_player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y,
-                    _player.InteractingEntity.Location.Z));
-            _player.MovementHandler.Finish();
-            _player.MovementHandler.Process();
-        }
-
-        if (distance > 1 || !projectilePathClear)
-        {
-            _player.MovementHandler.Reset();
-            RSPathfinder.FindPath(_player, _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y,
-                true, 1, 1);
-            _player.MovementHandler.Finish();
-            _player.MovementHandler.Process();
-        }
-
-        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
-        _player.Session.PacketBuilder.SendMessage("AmIMoving: " + isMoving);
-
-        var s = _player.InteractingEntity.MovementHandler.IsWalking || _player.Following.MovementHandler.IsWalking;
-
-        _player.Session.PacketBuilder.SendMessage("IsTargetMoving: " + s);
-
-        _player.Session.PacketBuilder.SendMessage("Long Path Clear: " + projectilePathClear);
-        _player.Session.PacketBuilder.SendMessage("Diagonal: " + isDiagonal);
-        _player.Session.PacketBuilder.SendMessage("PIS: " + (projectilePathClear && !isDiagonal));
-        _player.Session.PacketBuilder.SendMessage("Distance: " + distance);
-
+            _player.Location.Z, targetX, targetY, 2);
+        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
         int moveDistance = 1;
         if (_player.MovementHandler.IsWalking)
             moveDistance = 2;
         if (_player.MovementHandler.IsRunning)
             moveDistance = 3;
 
-        _player.Session.PacketBuilder.SendMessage("MoveDistance: " + moveDistance);
 
-        return projectilePathClear && !isDiagonal && distance <= moveDistance;
-    }
+        bool isValidDistance = distance <= moveDistance;
+        bool isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y, targetX, targetY);
 
-    private int meleeDistance()
-    {
-        int meleeDistance = 1;
-        if (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning)
-        {
-            int extraSpace = _player.InteractingEntity.MovementHandler.IsRunning ? 2
-                : _player.InteractingEntity.MovementHandler.IsWalking ? 1 : 0;
-            meleeDistance = 1 + extraSpace;
-        }
+        _player.Session.PacketBuilder.SendMessage($"MoveDistance: {moveDistance}");
+        _player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal}");
+        _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
+        _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
 
-        return meleeDistance;
-    }
-
-    public static bool IsValidMeleeClipping(Entity attacker, Entity target)
-    {
-        Location[] attackerTiles = TileControl.GetTiles(attacker);
-        Location[] targetTiles = TileControl.GetTiles(target);
-
-        int extraSpace = 0;
-        if (attacker.MovementHandler.IsWalking || attacker.MovementHandler.IsRunning)
-        {
-            extraSpace = target.MovementHandler.IsRunning ? 2 : target.MovementHandler.IsWalking ? 1 : 0;
-        }
-
-        foreach (Location attackerTile in attackerTiles)
-        {
-            foreach (Location targetTile in targetTiles)
-            {
-                string adjacentDirection = GetAdjacentDirection(attackerTile, targetTile, extraSpace);
-
-                if (adjacentDirection != null)
-                {
-                    if (!IsDirectionBlockedForAttacker(attackerTile.X, attackerTile.Y, attackerTile.Z,
-                            adjacentDirection))
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public static bool IsDirectionBlockedForAttacker(int x, int y, int z, string direction)
-    {
-        switch (direction)
-        {
-            case "North":
-                return Region.BlockedNorth(x, y, z);
-            case "East":
-                return Region.BlockedEast(x, y, z);
-            case "South":
-                return Region.BlockedSouth(x, y, z);
-            case "West":
-                return Region.BlockedWest(x, y, z);
-            default:
-                return false;
-        }
-    }
-
-    public static string GetAdjacentDirection(Location tileOne, Location tileTwo, int extraSpace)
-    {
-        if (tileTwo.Y <= tileOne.Y + 1 + extraSpace && tileTwo.Y >= tileOne.Y + 1 && tileTwo.X == tileOne.X)
-            return "North";
-        if (tileTwo.Y == tileOne.Y && tileTwo.X <= tileOne.X + 1 + extraSpace && tileTwo.X >= tileOne.X + 1)
-            return "East";
-        if (tileTwo.Y >= tileOne.Y - 1 - extraSpace && tileTwo.Y <= tileOne.Y - 1 && tileTwo.X == tileOne.X)
-            return "South";
-        if (tileTwo.Y == tileOne.Y && tileTwo.X >= tileOne.X - 1 - extraSpace && tileTwo.X <= tileOne.X - 1)
-            return "West";
-
-        return null;
-    }
-}
-
-public class TileControl
-{
-    public static Location Generate(int x, int y, int z)
-    {
-        return new Location(x, y, z);
-    }
-
-    /// <summary>
-    /// Gets the tiles that the entity occupies.
-    /// </summary>
-    /// <param name="entity"></param>
-    /// <returns></returns>
-    public static Location[] GetTiles(Entity entity)
-    {
-        int size = 1;
-        int tileCount = 0;
-
-        Location[] tiles = new Location[size * size];
-
-        if (tiles.Length == 1)
-        {
-            tiles[0] = Generate(entity.Location.X, entity.Location.Y, entity.Location.Z);
-        }
-        else
-        {
-            for (int x = 0; x < size; x++)
-            {
-                for (int y = 0; y < size; y++)
-                {
-                    tiles[tileCount++] = Generate(entity.Location.X + x, entity.Location.Y + y, entity.Location.Z);
-                }
-            }
-        }
-
-        return tiles;
-    }
-
-    public static int CalculateDistance(Location location, Entity other)
-    {
-        int X = Math.Abs(location.X - other.Location.X);
-        int Y = Math.Abs(location.Y - other.Location.Y);
-        return X > Y ? X : Y;
-    }
-
-    public static Location CurrentLocation(Entity entity)
-    {
-        return entity.Location;
+        return isValidDistance && projectilePathClear && !isDiagonal;
     }
 }

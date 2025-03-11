@@ -65,7 +65,8 @@ public class RSPathfinder
             /* Combat Exit Strategy */
             // if (character.MostRecentCombatTarget != null)
             // {
-            //     if (xLength != 0 && yLength != 0 && Region.canInteract(destX, destY, curAbsX, curAbsY, curX, curY,xLength, yLength, 0))
+            //     if (xLength != 0 && yLength != 0 &&
+            //         Region.canInteract(destX, destY, curAbsX, curAbsY, curX, curY, xLength, yLength, 0))
             //     {
             //         foundPath = true;
             //         break;
@@ -304,7 +305,7 @@ public class RSPathfinder
 
         return true;
     }
-    
+
     public static bool IsProjectilePathClear(int x0, int y0, int z, int x1, int y1)
     {
         var deltaX = x1 - x0;
@@ -380,8 +381,8 @@ public class RSPathfinder
         return (Region.CanMove(x, y, z, (Direction)dir) && Region.CanMove(px, py, z, (Direction)dir2))
                || (Region.CanShoot(x, y, z, dir) && Region.CanShoot(px, py, z, dir2));
     }
-    
-    
+
+
     private static bool Meleeable(int x, int y, int z, int px, int py)
     {
         if (x == px && y == py) return true;
@@ -396,7 +397,7 @@ public class RSPathfinder
 
         return (Region.CanMove(x, y, z, (Direction)dir) && Region.CanMove(px, py, z, (Direction)dir2));
     }
-    
+
     public static bool IsAccessible(int x, int y, int z, int destX, int destY)
     {
         Location location = new Location(x, y, z);
@@ -535,76 +536,122 @@ public class RSPathfinder
 
         return false;
     }
-    
-    public static void MeleeFollow(Player player, Player leader) {
+
+    public static void MeleeFollow(Player player, Player leader)
+    {
         int x = player.Location.X, y = player.Location.Y;
         int x2 = leader.Location.X, y2 = leader.Location.Y;
-        
-        if (x > x2 && leader.canMove(1, 0)) {
+
+        if (x > x2 && leader.canMove(1, 0))
+        {
             FindPath(player, x2 + 1, y2, true, 0, 0);
-        } else if (x < x2 && leader.canMove(-1, 0)) {
+        }
+        else if (x < x2 && leader.canMove(-1, 0))
+        {
             FindPath(player, x2 - 1, y2, true, 0, 0);
-        } else if (y < y2 && leader.canMove(0, -1)) {
+        }
+        else if (y < y2 && leader.canMove(0, -1))
+        {
             FindPath(player, x2, y2 - 1, true, 0, 0);
-        } else {
-            if (leader.canMove(1, 0)) {
+        }
+        else
+        {
+            if (leader.canMove(1, 0))
+            {
                 FindPath(player, x2 + 1, y2, true, 0, 0);
-            } else if (leader.canMove(-1, 0)) {
+            }
+            else if (leader.canMove(-1, 0))
+            {
                 FindPath(player, x2 - 1, y2, true, 0, 0);
-            } else if (leader.canMove(0, -1)) {
+            }
+            else if (leader.canMove(0, -1))
+            {
                 FindPath(player, x2, y2 - 1, true, 0, 0);
-            } else if (leader.canMove(0, 1)) {
+            }
+            else if (leader.canMove(0, 1))
+            {
                 FindPath(player, x2, y2 + 1, true, 0, 0);
             }
         }
     }
-    
-    public static void MeleeWalk(Player player, Location destination) {
+
+    public static void MeleeWalk(Player player, Location destination)
+    {
         int x = player.Location.X, y = player.Location.Y;
         int x2 = destination.X, y2 = destination.Y;
-        if (x > x2 && player.canMove(1, 0)) {
+        if (x > x2 && player.canMove(1, 0))
+        {
             FindPath(player, x2 + 1, y2, true, 0, 0);
-        } else if (x < x2 && player.canMove(-1, 0)) {
+        }
+        else if (x < x2 && player.canMove(-1, 0))
+        {
             FindPath(player, x2 - 1, y2, true, 0, 0);
-        } else if (y < y2 && player.canMove(0, -1)) {
+        }
+        else if (y < y2 && player.canMove(0, -1))
+        {
             FindPath(player, x2, y2 - 1, true, 0, 0);
-        } else {
-            if (player.canMove(1, 0)) {
+        }
+        else
+        {
+            if (player.canMove(1, 0))
+            {
                 FindPath(player, x2 + 1, y2, true, 0, 0);
-            } else if (player.canMove(-1, 0)) {
+            }
+            else if (player.canMove(-1, 0))
+            {
                 FindPath(player, x2 - 1, y2, true, 0, 0);
-            } else if (player.canMove(0, -1)) {
+            }
+            else if (player.canMove(0, -1))
+            {
                 FindPath(player, x2, y2 - 1, true, 0, 0);
-            } else if (player.canMove(0, 1)) {
+            }
+            else if (player.canMove(0, 1))
+            {
                 FindPath(player, x2, y2 + 1, true, 0, 0);
             }
         }
     }
-    
-    public static void WalkToObject(Player player, Location pos) {
+
+    public static void WalkToObject(Player player, Location pos)
+    {
         int x = player.Location.X, y = player.Location.Y;
         int x2 = pos.X, y2 = pos.Y;
 
-        if (x > x2 && player.canMove(1, 0)) {
+        if (x > x2 && player.canMove(1, 0))
+        {
             FindPath(player, x2, y2, true, 1, 1);
-        } else if (x < x2 && player.canMove(-1, 0)) {
+        }
+        else if (x < x2 && player.canMove(-1, 0))
+        {
             FindPath(player, x2, y2, true, 1, 1);
-        } else if (y < y2 && player.canMove(0, -1)) {
+        }
+        else if (y < y2 && player.canMove(0, -1))
+        {
             FindPath(player, x2, y2, true, 1, 1);
-        } else {
-            if (player.canMove(1, 0)) {
+        }
+        else
+        {
+            if (player.canMove(1, 0))
+            {
                 FindPath(player, x2, y2, true, 1, 1);
-            } else if (player.canMove(-1, 0)) {
+            }
+            else if (player.canMove(-1, 0))
+            {
                 FindPath(player, x2, y2, true, 1, 1);
-            } else if (player.canMove(0, -1)) {
+            }
+            else if (player.canMove(0, -1))
+            {
                 FindPath(player, x2, y2, true, 1, 1);
-            } else if (player.canMove(0, 1)) {
+            }
+            else if (player.canMove(0, 1))
+            {
                 FindPath(player, x2, y2, true, 1, 1);
             }
         }
     }
-    
-    public static void WalkToObject1TileAway(Player player, Location target) {
+
+    public static void WalkToObject1TileAway(Player player, Location target)
+    {
         // Current position of the player
         int currentX = player.Location.X;
         int currentY = player.Location.Y;
@@ -614,31 +661,36 @@ public class RSPathfinder
         int targetY = target.Y;
 
         // Check if already adjacent (1 tile away horizontally or vertically)
-        if ((Math.Abs(currentX - targetX) == 1 && currentY == targetY) || 
-            (Math.Abs(currentY - targetY) == 1 && currentX == targetX)) {
+        if ((Math.Abs(currentX - targetX) == 1 && currentY == targetY) ||
+            (Math.Abs(currentY - targetY) == 1 && currentX == targetX))
+        {
             // This check should only pass if the player is *exactly* 1 tile away
             Console.WriteLine("Player is already 1 tile away from the target.");
             return;
         }
 
         // Directions to move closer (dx, dy) in priority order
-        var directions = new (int dx, int dy)[] {
-            (1, 0),  // Move Right
+        var directions = new (int dx, int dy)[]
+        {
+            (1, 0), // Move Right
             (-1, 0), // Move Left
-            (0, 1),  // Move Down
-            (0, -1)  // Move Up
+            (0, 1), // Move Down
+            (0, -1) // Move Up
         };
 
         // Loop through each possible direction
-        foreach (var (dx, dy) in directions) {
+        foreach (var (dx, dy) in directions)
+        {
             // Calculate the new position after moving one tile in this direction
             int newX = currentX + dx;
             int newY = currentY + dy;
 
             // Check if moving this direction will leave the player 1 tile away from the target
-            if ((Math.Abs(newX - targetX) == 1 && newY == targetY) || 
-                (Math.Abs(newY - targetY) == 1 && newX == targetX)) {
-                if (player.canMove(dx, dy)) {
+            if ((Math.Abs(newX - targetX) == 1 && newY == targetY) ||
+                (Math.Abs(newY - targetY) == 1 && newX == targetX))
+            {
+                if (player.canMove(dx, dy))
+                {
                     // If this movement is valid, move the player to the new position
                     FindPath(player, newX, newY, moveNear: false, xLength: 1, yLength: 1);
                     return;
@@ -650,12 +702,11 @@ public class RSPathfinder
         Console.WriteLine("Player cannot move closer to stop 1 tile away.");
     }
 
-    
-    
-     public static bool IsMeleeAccessable(Entity character, int destX, int destY)
-     {
 
-        if (destX == character.Location.PositionRelativeToOffsetChunkX && destY == character.Location.PositionRelativeToOffsetChunkY)
+    public static bool IsMeleeAccessable(Entity character, int destX, int destY)
+    {
+        if (destX == character.Location.PositionRelativeToOffsetChunkX &&
+            destY == character.Location.PositionRelativeToOffsetChunkY)
         {
             if (character is Player player) player.Session.PacketBuilder.SendMessage("ERROR!");
 
@@ -811,6 +862,4 @@ public class RSPathfinder
 
         return foundPath;
     }
-    
-    
 }

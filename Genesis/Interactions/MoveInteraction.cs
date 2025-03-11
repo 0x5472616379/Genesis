@@ -31,7 +31,7 @@ public class MoveInteraction : RSInteraction
             RSPathfinder.FindPath(_player, x, y, true, 1, 1);
             _player.MovementHandler.Finish();
             _player.MovementHandler.Process();
-
+            _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
             return false;
         }
 
