@@ -14,14 +14,14 @@ public class TreeInteraction : RSInteraction
     private readonly Player _player;
     private readonly WorldObject _treeWorldObject;
     private readonly Tree _tree;
+    public override InteractingEntity Target { get; set; } = new();
     private readonly int _clipping;
 
     private int axeAnimationId;
 
     private AxeData.Axe EquippedAxe = null;
-
     private int _tick;
-
+    public override int MaxDistance { get; }
     public TreeInteraction(Player player, WorldObject treeWorldObject, Tree tree)
     {
         _player = player;
@@ -89,7 +89,7 @@ public class TreeInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
+        var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
         if (isMoving)
         {
             didWalk = false;
@@ -113,15 +113,15 @@ public class TreeInteraction : RSInteraction
 
         if (!reachedFacingObject)
         {
-            _player.MovementHandler.Reset();
+            _player.PlayerMovementHandler.Reset();
 
-            RSPathfinder.WalkToObject(_player, new Location(_player.MovementHandler.TargetDestX,
-                _player.MovementHandler.TargetDestY,
+            RSPathfinder.WalkToObject(_player, new Location(_player.PlayerMovementHandler.TargetDestX,
+                _player.PlayerMovementHandler.TargetDestY,
                 _treeWorldObject.Height));
 
-            _player.MovementHandler.Finish();
+            _player.PlayerMovementHandler.Finish();
 
-            _player.MovementHandler.Process();
+            _player.PlayerMovementHandler.Process();
             didWalk = true;
             return false;
         }

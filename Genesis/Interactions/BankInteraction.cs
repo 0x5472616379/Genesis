@@ -11,12 +11,14 @@ public class BankInteraction : RSInteraction
     private readonly Player _player;
     private readonly WorldObject _worldObject;
     private readonly Random _random = new();
-
+    public override InteractingEntity Target { get; set; } = new();
     public BankInteraction(Player player, WorldObject worldObject)
     {
         _player = player;
         _worldObject = worldObject;
     }
+
+    public override int MaxDistance { get; }
 
     public override bool Execute()
     {
@@ -38,7 +40,7 @@ public class BankInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
+        var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
         if (isMoving)
             return false;
 
@@ -58,11 +60,11 @@ public class BankInteraction : RSInteraction
 
         if (!reachedFacingObject)
         {
-            _player.MovementHandler.Reset();
-            RSPathfinder.FindPath(_player, _player.MovementHandler.TargetDestX, _player.MovementHandler.TargetDestY,
+            _player.PlayerMovementHandler.Reset();
+            RSPathfinder.FindPath(_player, _player.PlayerMovementHandler.TargetDestX, _player.PlayerMovementHandler.TargetDestY,
                 true, 1, 1);
-            _player.MovementHandler.Finish();
-            _player.MovementHandler.Process();
+            _player.PlayerMovementHandler.Finish();
+            _player.PlayerMovementHandler.Process();
             return false;
         }
 

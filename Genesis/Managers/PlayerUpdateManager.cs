@@ -115,8 +115,8 @@ public class PlayerUpdateManager
 
     private static void UpdateLocalPlayerMovement(Player player, RSStream writer)
     {
-        var pDir = player.MovementHandler.PrimaryDirection;
-        var sDir = player.MovementHandler.SecondaryDirection;
+        var pDir = player.PlayerMovementHandler.PrimaryDirection;
+        var sDir = player.PlayerMovementHandler.SecondaryDirection;
         if (pDir != -1)
         {
             writer.WriteBits(1, 1);
@@ -178,7 +178,7 @@ public class PlayerUpdateManager
     private static void AppendAnimation(Player player, RSStream playerFlagUpdateBlock)
     {
         playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentAnimation);
-        playerFlagUpdateBlock.WriteByteC(player.AnimationDelay); //delay is x * client tick (20ms)
+        playerFlagUpdateBlock.WriteByteC(0); //delay is x * client tick (20ms)
     }
 
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
@@ -268,8 +268,8 @@ public class PlayerUpdateManager
 
     private static void WriteMove(Player player)
     {
-        var pDir = player.MovementHandler.PrimaryDirection;
-        var sDir = player.MovementHandler.SecondaryDirection;
+        var pDir = player.PlayerMovementHandler.PrimaryDirection;
+        var sDir = player.PlayerMovementHandler.SecondaryDirection;
 
         if (pDir != -1)
         {

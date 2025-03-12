@@ -9,7 +9,7 @@ public abstract class Entity
                                                  ServerConfig.SPAWN_LOCATION_Y,
                                                  ServerConfig.SPAWN_LOCATION_Z);
 
-    public MovementHandler MovementHandler { get; set; }
+    public PlayerMovementHandler PlayerMovementHandler { get; set; }
     
     public int CurrentHealth { get; set; } = 10;
     public int CurrentGfx { get; set; }

@@ -26,16 +26,29 @@ public class InteractFirstOptionPacket : IPacket
         _objId = _player.Session.Reader.ReadUnsignedWord();
         _y = _player.Session.Reader.ReadSignedWordA();
         _z = _player.Location.Z;
+        _player.Session.PacketBuilder.SendMessage($"Interacting with object. {_objId} {_x} {_y} {_z}");
     }
 
+    /* Invoked from World.cs.ProcessPackets(); */
     public void Process()
     {
         var worldObject = GetWorldObject();
         if (worldObject == null) return;
 
-        if (HandleTreeInteraction(worldObject)) return;
-        if (HandleRunecraftingInteraction(worldObject)) return;
-        if (HandleBankInteraction(worldObject)) return;
+        HandleMiningInteraction(worldObject);
+    }
+
+    private bool HandleMiningInteraction(WorldObject worldObject)
+    {
+        if (worldObject.Id == 2093 || worldObject.Id == 2092 || worldObject.Id == 2091 || worldObject.Id == 2090)
+        {
+            _player.SetFaceX(_x * 2 + worldObject.GetSize()[0]);
+            _player.SetFaceY(_y * 2 + worldObject.GetSize()[1]);
+            _player.CurrentInteraction = new MiningInteraction(_player, worldObject);
+            return true;
+        }
+
+        return false;
     }
 
     private bool HandleBankInteraction(WorldObject worldObject)
@@ -44,8 +57,8 @@ public class InteractFirstOptionPacket : IPacket
         {
             return false;
         }
-        
-        _player.CurrentInterraction = new BankInteraction(_player, worldObject);
+
+        _player.CurrentInteraction = new BankInteraction(_player, worldObject);
         return true;
     }
 
@@ -66,7 +79,7 @@ public class InteractFirstOptionPacket : IPacket
         if (altar == null)
             return false;
 
-        _player.CurrentInterraction = new RunecraftingInteraction(_player, worldObject);
+        _player.CurrentInteraction = new RunecraftingInteraction(_player, worldObject);
         return true;
     }
 
@@ -79,7 +92,7 @@ public class InteractFirstOptionPacket : IPacket
         _player.SetFaceX(worldObject.X * 2 + worldObject.GetSize()[0]);
         _player.SetFaceY(worldObject.Y * 2 + worldObject.GetSize()[1]);
 
-        _player.CurrentInterraction = new TreeInteraction(_player, worldObject, tree);
+        _player.CurrentInteraction = new TreeInteraction(_player, worldObject, tree);
         return true;
     }
 }

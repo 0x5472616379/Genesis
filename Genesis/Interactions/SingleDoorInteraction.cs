@@ -9,7 +9,8 @@ public class SingleDoorInteraction : RSInteraction
     private readonly int _ey;
     private readonly int _ez;
     private readonly Player _player;
-
+    public override int MaxDistance { get; } = 1;
+    public override InteractingEntity Target { get; set; } = new();
     public SingleDoorInteraction(Action action, int ex, int ey, int ez, Player player)
     {
         _ex = ex;

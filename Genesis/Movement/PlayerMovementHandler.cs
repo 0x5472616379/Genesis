@@ -3,15 +3,15 @@ using Genesis.Environment;
 
 namespace Genesis.Movement;
 
-public class MovementHandler
+public class PlayerMovementHandler
 {
-    private readonly Entity _entity;
+    private readonly Player _player;
     private readonly LinkedList<Waypoint> waypoints = new();
     private bool newWalkCmdIsRunning = false;
 
-    public MovementHandler(Entity entity)
+    public PlayerMovementHandler(Player player)
     {
-        _entity = entity;
+        _player = player;
     }
 
     public int PrimaryDirection { get; set; } = -1;
@@ -25,6 +25,8 @@ public class MovementHandler
     public bool IsWalking { get; set; }
     public bool IsRunning { get; set; }
 
+    public bool HasSteps => waypoints.Count > 0;
+    
     public void Process()
     {
         if (DiscardMovementQueue)
@@ -32,7 +34,7 @@ public class MovementHandler
             Reset();
         }
 
-        if (_entity.CurrentHealth <= 0)
+        if (_player.CurrentHealth <= 0)
             return;
 
         if (waypoints.Count == 0)
@@ -55,6 +57,7 @@ public class MovementHandler
             MoveToDirection(walkPoint.Direction);
             PrimaryDirection = walkPoint.Direction;
             IsWalking = true;
+            _player.MovedThisTick = true;
         }
 
         if (runPoint != null && runPoint.Direction != -1)
@@ -70,13 +73,14 @@ public class MovementHandler
             MoveToDirection(runPoint.Direction);
             SecondaryDirection = runPoint.Direction;
             IsRunning = true;
+            _player.MovedThisTick = true;
         }
 
-        if (_entity is Player player)
+        if (_player is Player player)
         {
-            if (_entity.Location.ShouldGenerateNewBuildArea)
+            if (_player.Location.ShouldGenerateNewBuildArea)
             {
-                _entity.Location.Build();
+                _player.Location.Build();
                 EnvironmentBuilder.UpdateBuildArea(player);
                 player.Session.PacketBuilder.SendNewBuildAreaPacket();
             }
@@ -114,7 +118,7 @@ public class MovementHandler
 
     private void MoveToDirection(int direction)
     {
-        _entity.Location.Move(MovementHelper.DIRECTION_DELTA_X[direction], MovementHelper.DIRECTION_DELTA_Y[direction]);
+        _player.Location.Move(MovementHelper.DIRECTION_DELTA_X[direction], MovementHelper.DIRECTION_DELTA_Y[direction]);
     }
 
     public void WalkTo(Location location)
@@ -211,7 +215,7 @@ public class MovementHandler
     public void Reset()
     {
         waypoints.Clear();
-        var location = _entity.Location;
+        var location = _player.Location;
         waypoints.AddLast(new Waypoint(location.X, location.Y, -1));
     }
 

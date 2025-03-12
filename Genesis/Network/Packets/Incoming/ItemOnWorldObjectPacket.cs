@@ -50,7 +50,7 @@ public class ItemOnWorldObjectPacket : IPacket
 
     public void Process()
     {
-        _player.CurrentInterraction = new ItemOnWorldObjectInteraction(_player, _worldObject);
+        _player.CurrentInteraction = new ItemOnWorldObjectInteraction(_player, _worldObject);
     }
 }
 

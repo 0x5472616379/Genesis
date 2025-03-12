@@ -6,36 +6,31 @@ namespace Genesis.Interactions;
 public class MoveInteraction : RSInteraction
 {
     private readonly Player _player;
-    private int x;
-    private int y;
+    public override int MaxDistance { get; } = 0;
+    public override InteractingEntity Target { get; set; } = new();
 
-    public MoveInteraction(Player player)
+
+    public MoveInteraction(Player player, int destX, int destY)
     {
         _player = player;
-        x = _player.MovementHandler.TargetDestX;
-        y = _player.MovementHandler.TargetDestY;
+        Target.X = destX;
+        Target.Y = destY;
+        Target.Z = _player.Location.Z;
     }
 
     public override bool Execute()
     {
         if (!CanExecute()) return false;
 
+        /* Movement does not require any action delay ticks like wc and mining */
+        _player.NormalDelayTicks = 0;
         return true;
     }
 
     public override bool CanExecute()
     {
-        if (_player.Location.X != x || _player.Location.Y != y)
-        {
-            _player.MovementHandler.Reset();
-            RSPathfinder.FindPath(_player, x, y, true, 1, 1);
-            _player.MovementHandler.Finish();
-            _player.MovementHandler.Process();
-            _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
-            return false;
-        }
-
-
+        /* Check for protected access by modal? */
+        
         return true;
     }
 }

@@ -42,7 +42,7 @@ public class TeleportAction : RSAction
             _player.Location.Build();
             _player.Session.PacketBuilder.SendNewBuildAreaPacket();
             EnvironmentBuilder.UpdateBuildArea(_player);
-            _player.MovementHandler.DiscardMovementQueue = true;
+            _player.PlayerMovementHandler.DiscardMovementQueue = true;
             return true;
         }
         
@@ -72,7 +72,7 @@ public class TeleportAction : RSAction
                 _player.Session.PacketBuilder.SendNewBuildAreaPacket();
                 // _player.Location.RefreshObjects(_player);
                 EnvironmentBuilder.UpdateBuildArea(_player);
-                _player.MovementHandler.DiscardMovementQueue = true; // Clear movement queue
+                _player.PlayerMovementHandler.DiscardMovementQueue = true; // Clear movement queue
                 
                 _currentState = TeleportState.Arrived; // Transition to the final state
                 return false; // Still in progress

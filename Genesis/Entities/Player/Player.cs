@@ -13,30 +13,34 @@ namespace Genesis.Entities;
 public class Player : Entity
 {
     public bool IsBot { get; set; }
-    
+
+    public int ArriveDelayTicks { get; set; } // Applied after moving
+    public int NormalDelayTicks { get; set; } // General action lock
+    public bool MovedLastTick { get; set; }
+    public bool MovedThisTick { get; set; }
+    public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
+
     public NetworkSession Session { get; set; }
     public PlayerUpdateFlags Flags { get; set; }
-    
+
     public Player[] LocalPlayers { get; set; } = new Player[255];
 
     public bool PerformedTeleport { get; set; }
     public ActionHandler ActionHandler { get; set; } = new();
-    
+
     public PlayerAttributes Attributes { get; set; }
     public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public SkillManager SkillManager { get; set; }
-    public RSInteraction CurrentInterraction { get; set; }
+    public RSInteraction CurrentInteraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
     public Player Following { get; set; }
-   
+
     public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
     public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
     public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    public Container ShopItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    
+
     public Player()
     {
         Session = new NetworkSession(this);
@@ -46,18 +50,44 @@ public class Player : Entity
     private void LoadDefaults()
     {
         Flags = PlayerUpdateFlags.None;
-        MovementHandler = new MovementHandler(this);
+        PlayerMovementHandler = new PlayerMovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
-        
+
         // InventoryManager = new InventoryManager(this);
         // BankManager = new BankManager(this);
-        
+
         SkillManager = new SkillManager(this);
         DialogueManager = new DialogueManager(this);
-        
+
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
+    }
+
+    public void PreProcessTick()
+    {
+        // Decrement delays at the START of the tick
+        if (ArriveDelayTicks > 0) ArriveDelayTicks--;
+        if (NormalDelayTicks > 0) NormalDelayTicks--;
+
+        // Update movement history
+        MovedLastTick = MovedThisTick;
+        MovedThisTick = false;
+    }
+
+    public void ProcessMovement()
+    {
+        if (NormalDelayTicks > 0) return;
+
+        PlayerMovementHandler.Reset();
+        RSPathfinder.FindPath(this, PlayerMovementHandler.TargetDestX, PlayerMovementHandler.TargetDestY, true, 1,
+            1);
+        PlayerMovementHandler.Finish();
+        PlayerMovementHandler.Process();
+
+        // Apply arrive delay if moved (should this not be set in the interaction?)
+        if (MovedThisTick || MovedLastTick)
+            ArriveDelayTicks = 1;
     }
 
     public void AddLocalPlayer(Entity player)
@@ -71,7 +101,7 @@ public class Player : Entity
             }
         }
     }
-    
+
     public void RemoveLocalPlayer(Entity player)
     {
         for (int i = 0; i < LocalPlayers.Length; i++)
@@ -93,6 +123,7 @@ public class Player : Entity
     }
 
     public int AnimationDelay { get; set; }
+
     public override void SetCurrentAnimation(int animationId, int delay = 0)
     {
         CurrentAnimation = animationId;
@@ -108,6 +139,7 @@ public class Player : Entity
     }
 
     public Entity InteractingEntity { get; set; }
+
     public void SetFacingEntity(Entity entity)
     {
         InteractingEntity = entity;
@@ -127,19 +159,19 @@ public class Player : Entity
     }
 
 
-    public void ClearInteraction() => CurrentInterraction = null;
-    
+    public void ClearInteraction() => CurrentInteraction = null;
+
     public void Reset()
     {
         PerformedTeleport = false;
         Flags = PlayerUpdateFlags.None;
-        
-        MovementHandler.PrimaryDirection = -1;
-        MovementHandler.SecondaryDirection = -1;
-        MovementHandler.IsRunning = false;
-        MovementHandler.IsWalking = false;
-        MovementHandler.DiscardMovementQueue = false;
-        
+
+        PlayerMovementHandler.PrimaryDirection = -1;
+        PlayerMovementHandler.SecondaryDirection = -1;
+        PlayerMovementHandler.IsRunning = false;
+        PlayerMovementHandler.IsWalking = false;
+        PlayerMovementHandler.DiscardMovementQueue = false;
+
         CurrentAnimation = -1;
         CurrentGfx = -1;
     }

@@ -23,6 +23,6 @@ public class AttackPlayerPacket : IPacket
     {
         _player.Following = World.GetPlayers()[_index - 1];
         _player.InteractingEntity = World.GetPlayers()[_index - 1];
-        _player.CurrentInterraction = new PlayerAttackInteraction(_player);
+        _player.CurrentInteraction = new PlayerAttackInteraction(_player);
     }
 }

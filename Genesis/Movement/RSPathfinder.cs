@@ -235,14 +235,14 @@ public class RSPathfinder
         var pathX = character.Location.CachedBuildAreaSwChunkX * 8 + tileQueueX[tail];
         var pathY = character.Location.CachedBuildAreaSwChunkY * 8 + tileQueueY[tail];
 
-        character.MovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
+        character.PlayerMovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
 
         for (var i = 1; i < size; i++)
         {
             tail--;
             pathX = character.Location.CachedBuildAreaSwChunkX * 8 + tileQueueX[tail];
             pathY = character.Location.CachedBuildAreaSwChunkY * 8 + tileQueueY[tail];
-            character.MovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
+            character.PlayerMovementHandler.AddToPath(new Location(pathX, pathY, character.Location.Z));
         }
     }
 

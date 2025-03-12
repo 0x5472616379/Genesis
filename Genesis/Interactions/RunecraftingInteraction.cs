@@ -16,7 +16,8 @@ public class RunecraftingInteraction : RSInteraction
     private readonly WorldObject _runecraftingAltar;
     private int _tick;
     private readonly Skill _skill;
-
+    public override int MaxDistance { get; }
+    public override InteractingEntity Target { get; set; } = new();
     public RunecraftingInteraction(Player player, WorldObject runecraftingAltar)
     {
         _player = player;
@@ -96,7 +97,7 @@ public class RunecraftingInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
+        var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
         if (isMoving)
         {
             return false;
@@ -118,15 +119,15 @@ public class RunecraftingInteraction : RSInteraction
 
         if (!reachedFacingObject)
         {
-            _player.MovementHandler.Reset();
+            _player.PlayerMovementHandler.Reset();
 
-            RSPathfinder.WalkToObject(_player, new Location(_player.MovementHandler.TargetDestX,
-                _player.MovementHandler.TargetDestY,
+            RSPathfinder.WalkToObject(_player, new Location(_player.PlayerMovementHandler.TargetDestX,
+                _player.PlayerMovementHandler.TargetDestY,
                 _runecraftingAltar.Height));
 
-            _player.MovementHandler.Finish();
+            _player.PlayerMovementHandler.Finish();
 
-            _player.MovementHandler.Process();
+            _player.PlayerMovementHandler.Process();
             return false;
         }
 

@@ -7,7 +7,8 @@ namespace Genesis.Interactions;
 public class PlayerAttackInteraction : RSInteraction
 {
     private readonly Player _player;
-
+    public override int MaxDistance { get; }
+    public override InteractingEntity Target { get; set; } = new();
     public PlayerAttackInteraction(Player player)
     {
         _player = player;
@@ -41,10 +42,10 @@ public class PlayerAttackInteraction : RSInteraction
         int targetY = _player.InteractingEntity.Location.Y;
         int targetZ = _player.InteractingEntity.Location.Z;
 
-        _player.MovementHandler.Reset();
+        _player.PlayerMovementHandler.Reset();
         RSPathfinder.MeleeFollow(_player, _player.Following);
-        _player.MovementHandler.Finish();
-        _player.MovementHandler.Process();
+        _player.PlayerMovementHandler.Finish();
+        _player.PlayerMovementHandler.Process();
 
         _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
 
@@ -52,9 +53,9 @@ public class PlayerAttackInteraction : RSInteraction
             _player.Location.Z, targetX, targetY, 2);
         var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
         int moveDistance = 1;
-        if (_player.MovementHandler.IsWalking)
+        if (_player.PlayerMovementHandler.IsWalking)
             moveDistance = 2;
-        if (_player.MovementHandler.IsRunning)
+        if (_player.PlayerMovementHandler.IsRunning)
             moveDistance = 3;
 
 

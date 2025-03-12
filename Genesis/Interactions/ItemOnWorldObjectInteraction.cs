@@ -14,6 +14,7 @@ public class ItemOnWorldObjectInteraction : RSInteraction
     private readonly Player _player;
     private readonly WorldInteractObject _worldObject;
     private readonly WorldObject? _interactWith;
+    public override InteractingEntity Target { get; set; } = new();
 
     public ItemOnWorldObjectInteraction(Player player, WorldInteractObject worldObject)
     {
@@ -21,6 +22,8 @@ public class ItemOnWorldObjectInteraction : RSInteraction
         _worldObject = worldObject;
         _interactWith = GetWorldObject();
     }
+
+    public override int MaxDistance { get; }
 
     public override bool Execute()
     {
@@ -35,7 +38,7 @@ public class ItemOnWorldObjectInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var isMoving = (_player.MovementHandler.IsWalking || _player.MovementHandler.IsRunning);
+        var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
         if (isMoving)
             return false;
 
@@ -55,11 +58,11 @@ public class ItemOnWorldObjectInteraction : RSInteraction
 
         if (!reachedFacingObject)
         {
-            _player.MovementHandler.Reset();
-            RSPathfinder.FindPath(_player, _player.MovementHandler.TargetDestX, _player.MovementHandler.TargetDestY,
+            _player.PlayerMovementHandler.Reset();
+            RSPathfinder.FindPath(_player, _player.PlayerMovementHandler.TargetDestX, _player.PlayerMovementHandler.TargetDestY,
                 true, 1, 1);
-            _player.MovementHandler.Finish();
-            _player.MovementHandler.Process();
+            _player.PlayerMovementHandler.Finish();
+            _player.PlayerMovementHandler.Process();
             return false;
         }
 

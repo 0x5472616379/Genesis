@@ -12,50 +12,84 @@ public class World
 
     public static void Process()
     {
-        foreach (var player in Players)
-        {
-            if (player == null) continue;
-            player.Session.PacketBuilder.SendMessage("Start Tick");
-        }
-        
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
 
-        ProcessActions();
+        PreProcessTick();
+        ProcessMovement();
         ProcessPlayerInteractions();
-        EnvironmentBuilder.Process();
-
-        /* Refresh */
-        RefreshPlayer();
 
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
-
-        foreach (var player in Players)
-        {
-            if (player == null) continue;
-            player.Session.PacketBuilder.SendMessage("End Tick");
-        }
         
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
-        
-        
     }
 
-    private static void ProcessPlayerInteractions()
+    private static void PreProcessTick()
     {
         foreach (var player in Players)
         {
             if (player == null) continue;
-            if (player.CurrentInterraction == null) continue;
-
-            if (player.CurrentInterraction.Execute())
-                player.CurrentInterraction = null;
+            player.PreProcessTick();
         }
     }
+
+    public static void ProcessPlayerInteractions()
+    {
+        foreach (var player in Players)
+        {
+            if (player == null) continue;
+            if (player.IsDelayed) continue;
+            
+            var interaction = player.CurrentInteraction;
+            if (interaction == null) continue;
+
+            // Check distance
+            var target = player.CurrentInteraction.Target;
+            double distance = MovementHelper.EuclideanDistance(player.Location.X, player.Location.Y, target.X, target.Y);
+
+            if (distance > player.CurrentInteraction.MaxDistance)
+            {
+                player.PlayerMovementHandler.Reset();
+                RSPathfinder.FindPath(player, target.X, target.Y, true, 1, 1);
+                player.PlayerMovementHandler.Finish();
+                player.PlayerMovementHandler.Process();
+                
+                continue; // Try again next tick
+            }
+
+            // Execute interaction
+            if (player.CurrentInteraction.Execute())
+            {
+                player.CurrentInteraction = null;
+            }
+        }
+    }
+    
+    private static void ProcessMovement()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            if (Players[i] == null) continue;
+
+            Players[i].ProcessMovement();
+        }
+    }
+
+    // private static void ProcessPlayerInteractions()
+    // {
+    //     foreach (var player in Players)
+    //     {
+    //         if (player == null) continue;
+    //         if (player.CurrentInteraction == null) continue;
+    //
+    //         if (player.CurrentInteraction.Execute())
+    //             player.CurrentInteraction = null;
+    //     }
+    // }
 
     private static void RefreshPlayer()
     {
