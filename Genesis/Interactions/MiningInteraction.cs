@@ -1,5 +1,6 @@
 ﻿using Genesis.Cache;
 using Genesis.Entities;
+using Genesis.Movement;
 
 namespace Genesis.Interactions;
 
@@ -10,7 +11,6 @@ public class MiningInteraction : RSInteraction
 
     public override int MaxDistance { get; } = 1;
     public override InteractingEntity Target { get; set; } = new();
-    private const int ARRIVE_DELAY = 1;
 
     public MiningInteraction(Player player, WorldObject worldObject)
     {
@@ -38,6 +38,14 @@ public class MiningInteraction : RSInteraction
     {
         if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
             return false;
+        
+        // Proper game square distance check
+        int distance = MovementHelper.GameSquareDistance(
+            _player.Location.X, _player.Location.Y,
+            _worldObject.X, _worldObject.Y
+        );
+
+        return distance <= MaxDistance;
 
         return true;
     }

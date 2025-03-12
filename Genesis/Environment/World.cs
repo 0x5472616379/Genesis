@@ -16,13 +16,21 @@ public class World
         CollectPlayerPackets();
         ProcessPackets();
 
+        /* 2. Pre-process state */
         PreProcessTick();
+
+        /* 4. Process movement */
         ProcessMovement();
+
+        /* 3. Process interactions (pathfinding setup) */
         ProcessPlayerInteractions();
+
+        /* 5. Final interaction validation */
+        FinalizeInteractions();
 
         /* 7. Client Visual Updates */
         PlayerUpdateManager.Update();
-        
+
         /* 8. Flush and Reset */
         FlushAllPlayers();
         Reset();
@@ -41,34 +49,26 @@ public class World
     {
         foreach (var player in Players)
         {
-            if (player == null) continue;
-            if (player.IsDelayed) continue;
-            
-            var interaction = player.CurrentInteraction;
-            if (interaction == null) continue;
+            if (player?.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
 
-            // Check distance
-            var target = player.CurrentInteraction.Target;
-            double distance = MovementHelper.EuclideanDistance(player.Location.X, player.Location.Y, target.X, target.Y);
+            int distance = MovementHelper.GameSquareDistance(
+                player.Location.X, player.Location.Y,
+                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y
+            );
 
-            if (distance > player.CurrentInteraction.MaxDistance)
+            if (distance > player.CurrentInteraction.MaxDistance && !player.PlayerMovementHandler.HasSteps)
             {
                 player.PlayerMovementHandler.Reset();
-                RSPathfinder.FindPath(player, target.X, target.Y, true, 1, 1);
+                RSPathfinder.FindPath(player,
+                    player.CurrentInteraction.Target.X,
+                    player.CurrentInteraction.Target.Y,
+                    true, 1, 1
+                );
                 player.PlayerMovementHandler.Finish();
-                player.PlayerMovementHandler.Process();
-                
-                continue; // Try again next tick
-            }
-
-            // Execute interaction
-            if (player.CurrentInteraction.Execute())
-            {
-                player.CurrentInteraction = null;
             }
         }
     }
-    
+
     private static void ProcessMovement()
     {
         for (int i = 0; i < Players.Length; i++)
@@ -76,6 +76,27 @@ public class World
             if (Players[i] == null) continue;
 
             Players[i].ProcessMovement();
+        }
+    }
+
+    public static void FinalizeInteractions()
+    {
+        foreach (var player in Players)
+        {
+            if (player?.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
+
+            int distance = MovementHelper.GameSquareDistance(
+                player.Location.X, player.Location.Y,
+                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y
+            );
+
+            if (distance <= player.CurrentInteraction.MaxDistance)
+            {
+                if (player.CurrentInteraction.Execute())
+                {
+                    player.CurrentInteraction = null;
+                }
+            }
         }
     }
 

@@ -66,9 +66,10 @@ public class WalkPacket : IPacket
             _destY = _path[i, 1];
         }
 
-        /* Does not create a new Interaction btw */
-        _player.PlayerMovementHandler.TargetDestX = _destX;
-        _player.PlayerMovementHandler.TargetDestY = _destY;
         _player.CurrentInteraction = null;
+        
+        _player.PlayerMovementHandler.Reset();
+        RSPathfinder.FindPath(_player, _destX, _destY, true, 1, 1);
+        _player.PlayerMovementHandler.Finish();
     }
 }

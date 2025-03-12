@@ -79,13 +79,22 @@ public class Player : Entity
     {
         if (NormalDelayTicks > 0) return;
 
-        PlayerMovementHandler.Reset();
-        RSPathfinder.FindPath(this, PlayerMovementHandler.TargetDestX, PlayerMovementHandler.TargetDestY, true, 1,
-            1);
-        PlayerMovementHandler.Finish();
         PlayerMovementHandler.Process();
+    
+        // Auto-stop when entering interaction range
+        if (CurrentInteraction != null)
+        {
+            int distance = MovementHelper.GameSquareDistance(
+                Location.X, Location.Y,
+                CurrentInteraction.Target.X, CurrentInteraction.Target.Y
+            );
 
-        // Apply arrive delay if moved (should this not be set in the interaction?)
+            if (distance <= CurrentInteraction.MaxDistance)
+            {
+                PlayerMovementHandler.Reset();
+            }
+        }
+
         if (MovedThisTick || MovedLastTick)
             ArriveDelayTicks = 1;
     }
