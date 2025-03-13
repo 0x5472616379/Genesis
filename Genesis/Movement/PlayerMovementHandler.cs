@@ -121,27 +121,7 @@ public class PlayerMovementHandler
         _player.Location.Move(MovementHelper.DIRECTION_DELTA_X[direction], MovementHelper.DIRECTION_DELTA_Y[direction]);
     }
 
-    public void WalkTo(Location location)
-    {
-        if (waypoints.Count == 0)
-            Reset();
-
-        var last = waypoints.Last.Value;
-        var deltaX = location.X - last.X;
-        var deltaY = location.Y - last.Y;
-        var distanceDelta = Math.Max(Math.Abs(deltaX), Math.Abs(deltaY));
-
-        if (distanceDelta >= 40)
-            return;
-
-        for (var i = 0; i < distanceDelta; i++)
-        {
-            if (deltaX != 0) deltaX -= Math.Sign(deltaX);
-            if (deltaY != 0) deltaY -= Math.Sign(deltaY);
-            AddStep(location.X - deltaX, location.Y - deltaY);
-        }
-    }
-
+   
     public void AddToPath(Location location)
     {
         if (waypoints.Count == 0)
@@ -202,15 +182,6 @@ public class PlayerMovementHandler
         }
     }
 
-    private bool EarlyMovementResetCheck(Entity entity)
-    {
-        // if (entity.MostRecentCombatTarget != null)
-        // {
-        //     return entity.CombatStrategy.IsValidDistance();
-        // }
-
-        return false;
-    }
 
     public void Reset()
     {

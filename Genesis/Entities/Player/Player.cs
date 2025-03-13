@@ -80,9 +80,9 @@ public class Player : Entity
         if (NormalDelayTicks > 0) return;
 
         PlayerMovementHandler.Process();
-    
+
         // Auto-stop when entering interaction range
-        if (CurrentInteraction != null)
+        if (CurrentInteraction != null && MovedThisTick)
         {
             int distance = MovementHelper.GameSquareDistance(
                 Location.X, Location.Y,
@@ -95,8 +95,11 @@ public class Player : Entity
             }
         }
 
-        if (MovedThisTick || MovedLastTick)
+        if (CurrentInteraction != null && (MovedThisTick || MovedLastTick) &&
+            MovementHelper.GameSquareDistance(Location.X, Location.Y, CurrentInteraction.Target.X, CurrentInteraction.Target.Y) <= 1)
+        {
             ArriveDelayTicks = 1;
+        }
     }
 
     public void AddLocalPlayer(Entity player)

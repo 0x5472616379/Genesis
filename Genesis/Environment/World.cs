@@ -54,17 +54,20 @@ public class World
         }
     }
 
-    public static void FinalizeInteractions()
+    private static void FinalizeInteractions()
     {
         foreach (var player in Players)
         {
-            if (player == null) continue;
-            if (player.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
+            if (player == null || player.CurrentInteraction == null) continue;
+        
+            // Block during ANY delay
+            if (player.NormalDelayTicks > 0 || player.ArriveDelayTicks > 0)
+                continue;
 
+            // Distance check
             int distance = MovementHelper.GameSquareDistance(
                 player.Location.X, player.Location.Y,
-                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y
-            );
+                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y);
 
             if (distance <= player.CurrentInteraction.MaxDistance)
             {
