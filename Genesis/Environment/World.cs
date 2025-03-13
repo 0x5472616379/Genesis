@@ -19,11 +19,11 @@ public class World
         /* 2. Pre-process state */
         PreProcessTick();
 
-        /* 4. Process movement */
+        /* 3. Process movement */
         ProcessMovement();
 
-        /* 3. Process interactions (pathfinding setup) */
-        ProcessPlayerInteractions();
+        /* 4. Process interactions (pathfinding setup) */
+        //ProcessPlayerInteractions();
 
         /* 5. Final interaction validation */
         FinalizeInteractions();
@@ -56,16 +56,16 @@ public class World
                 player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y
             );
 
-            if (distance > player.CurrentInteraction.MaxDistance && !player.PlayerMovementHandler.HasSteps)
-            {
-                player.PlayerMovementHandler.Reset();
-                RSPathfinder.FindPath(player,
-                    player.CurrentInteraction.Target.X,
-                    player.CurrentInteraction.Target.Y,
-                    true, 1, 1
-                );
-                player.PlayerMovementHandler.Finish();
-            }
+            // if (distance > player.CurrentInteraction.MaxDistance && !player.PlayerMovementHandler.HasSteps)
+            // {
+            //     player.PlayerMovementHandler.Reset();
+            //     RSPathfinder.FindPath(player,
+            //         player.CurrentInteraction.Target.X,
+            //         player.CurrentInteraction.Target.Y,
+            //         true, 1, 1
+            //     );
+            //     player.PlayerMovementHandler.Finish();
+            // }
         }
     }
 
@@ -100,28 +100,6 @@ public class World
         }
     }
 
-    // private static void ProcessPlayerInteractions()
-    // {
-    //     foreach (var player in Players)
-    //     {
-    //         if (player == null) continue;
-    //         if (player.CurrentInteraction == null) continue;
-    //
-    //         if (player.CurrentInteraction.Execute())
-    //             player.CurrentInteraction = null;
-    //     }
-    // }
-
-    private static void RefreshPlayer()
-    {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-
-            Players[i].EquipmentManager.Refresh();
-        }
-    }
-
     private static void CollectPlayerPackets()
     {
         for (int i = 0; i < Players.Length; i++)
@@ -139,15 +117,6 @@ public class World
         {
             if (Players[i] == null) continue;
             Players[i].Session.PacketCache.Process();
-        }
-    }
-
-    private static void ProcessActions()
-    {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-            Players[i].ActionHandler.ProcessActions();
         }
     }
 

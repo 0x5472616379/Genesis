@@ -40,10 +40,8 @@ public class MiningInteraction : RSInteraction
             return false;
         
         // Proper game square distance check
-        int distance = MovementHelper.GameSquareDistance(
-            _player.Location.X, _player.Location.Y,
-            _worldObject.X, _worldObject.Y
-        );
+        int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
+                                                         _worldObject.X, _worldObject.Y);
 
         return distance <= MaxDistance;
 
