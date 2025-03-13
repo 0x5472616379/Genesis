@@ -22,17 +22,16 @@ public class World
         /* 3. Process movement */
         ProcessMovement();
 
-        /* 4. Process interactions (pathfinding setup) */
-        //ProcessPlayerInteractions();
-
-        /* 5. Final interaction validation */
+        /* 4. Final interaction validation */
         FinalizeInteractions();
 
-        /* 7. Client Visual Updates */
+        /* 5. Client Visual Updates */
         PlayerUpdateManager.Update();
 
-        /* 8. Flush and Reset */
+        /* 6. Flush */
         FlushAllPlayers();
+        
+        /* 7. Reset */
         Reset();
     }
 
@@ -42,30 +41,6 @@ public class World
         {
             if (player == null) continue;
             player.PreProcessTick();
-        }
-    }
-
-    public static void ProcessPlayerInteractions()
-    {
-        foreach (var player in Players)
-        {
-            if (player?.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
-
-            int distance = MovementHelper.GameSquareDistance(
-                player.Location.X, player.Location.Y,
-                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y
-            );
-
-            // if (distance > player.CurrentInteraction.MaxDistance && !player.PlayerMovementHandler.HasSteps)
-            // {
-            //     player.PlayerMovementHandler.Reset();
-            //     RSPathfinder.FindPath(player,
-            //         player.CurrentInteraction.Target.X,
-            //         player.CurrentInteraction.Target.Y,
-            //         true, 1, 1
-            //     );
-            //     player.PlayerMovementHandler.Finish();
-            // }
         }
     }
 
@@ -83,7 +58,8 @@ public class World
     {
         foreach (var player in Players)
         {
-            if (player?.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
+            if (player == null) continue;
+            if (player.CurrentInteraction == null || player.NormalDelayTicks > 0) continue;
 
             int distance = MovementHelper.GameSquareDistance(
                 player.Location.X, player.Location.Y,

@@ -49,7 +49,7 @@ public class WalkPacket : IPacket
         if (_player.CurrentHealth <= 0)
             return;
 
-        if (_player.NormalDelayTicks > 0)
+        if (_player.IsDelayed)
             return;
 
         _player.PlayerMovementHandler.RunToggled = _running;

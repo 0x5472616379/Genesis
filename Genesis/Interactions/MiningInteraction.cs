@@ -29,7 +29,7 @@ public class MiningInteraction : RSInteraction
         if (!CanExecute()) return false;
 
         _player.SetCurrentAnimation(625);
-        _player.NormalDelayTicks = 4; /* Exaggerated for testing */
+        //_player.NormalDelayTicks = 2; /* Exaggerated for testing */
         _player.Session.PacketBuilder.SendMessage("You swing your pick at the rock.");
         return true;
     }
