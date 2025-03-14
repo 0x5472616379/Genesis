@@ -16,9 +16,9 @@ public class RunecraftEntranceChecker
             {
                 if (TeleportCommand.NamedLocations.TryGetValue(altarInfo.NamedLocation, out var namedLocation))
                 {
-                    player.ActionHandler.AddAction(new TeleportAction(
-                        player,
-                        new Location(namedLocation.Item1, namedLocation.Item2, namedLocation.Item3), true));
+                    // player.ActionHandler.AddAction(new TeleportAction(
+                    //     player,
+                    //     new Location(namedLocation.Item1, namedLocation.Item2, namedLocation.Item3), true));
                     return true;
                 }
 

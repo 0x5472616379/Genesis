@@ -26,7 +26,7 @@ public class Player : Entity
     public Player[] LocalPlayers { get; set; } = new Player[255];
 
     public bool PerformedTeleport { get; set; }
-    public ActionHandler ActionHandler { get; set; } = new();
+    public ActionHandler ActionHandler { get; set; }
 
     public PlayerAttributes Attributes { get; set; }
     public EquipmentManager EquipmentManager { get; set; }
@@ -58,6 +58,7 @@ public class Player : Entity
 
         SkillManager = new SkillManager(this);
         DialogueManager = new DialogueManager(this);
+        ActionHandler = new ActionHandler(this);
 
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
@@ -95,7 +96,10 @@ public class Player : Entity
             }
         }
 
-        if (CurrentInteraction != null && (MovedThisTick || MovedLastTick) &&
+        // Apply the ArriveDelayTick when we have an interaction and we're in range and we have moved
+        // Not sure if this is correct?
+        if (CurrentInteraction != null 
+            && (MovedThisTick || MovedLastTick) &&
             MovementHelper.GameSquareDistance(Location.X, Location.Y, CurrentInteraction.Target.X, CurrentInteraction.Target.Y) <= 1)
         {
             ArriveDelayTicks = 1;
@@ -141,6 +145,13 @@ public class Player : Entity
         CurrentAnimation = animationId;
         AnimationDelay = delay;
         Flags |= PlayerUpdateFlags.Animation;
+    }
+    
+    public void SetDamage(int amount, int type)
+    {
+        // CurrentAnimation = animationId;
+        // AnimationDelay = delay;
+        // Flags |= PlayerUpdateFlags.SingleHit;
     }
 
 

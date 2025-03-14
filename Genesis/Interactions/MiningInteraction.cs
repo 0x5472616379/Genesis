@@ -23,13 +23,13 @@ public class MiningInteraction : RSInteraction
 
     public override bool Execute()
     {
-        _player.SetFaceX(Target.X * 2 + _worldObject.GetSize()[0]);
-        _player.SetFaceY(Target.Y * 2 + _worldObject.GetSize()[1]);
+        // _player.SetFaceX(Target.X * 2 + _worldObject.GetSize()[0]);
+        // _player.SetFaceY(Target.Y * 2 + _worldObject.GetSize()[1]);
         
         if (!CanExecute()) return false;
 
         _player.SetCurrentAnimation(625);
-        //_player.NormalDelayTicks = 2; /* Exaggerated for testing */
+        // _player.NormalDelayTicks = 10; /* Exaggerated for testing */
         _player.Session.PacketBuilder.SendMessage("You swing your pick at the rock.");
         return true;
     }
@@ -38,13 +38,12 @@ public class MiningInteraction : RSInteraction
     {
         if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
             return false;
+     
         
         // Proper game square distance check
         int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
                                                          _worldObject.X, _worldObject.Y);
 
         return distance <= MaxDistance;
-
-        return true;
     }
 }

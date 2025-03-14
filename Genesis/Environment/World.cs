@@ -9,6 +9,7 @@ public class World
 {
     private static Player[] Players = new Player[ServerConfig.MAX_PLAYERS];
     private static Entity[] NPCs = new Entity[ServerConfig.MAX_NPCS];
+    public static int CurrentTick = 0;
 
     public static void Process()
     {
@@ -19,6 +20,8 @@ public class World
         /* 2. Pre-process state */
         PreProcessTick();
 
+        ProcessActions();
+        
         /* 3. Process movement */
         ProcessMovement();
 
@@ -33,6 +36,17 @@ public class World
         
         /* 7. Reset */
         Reset();
+        
+        CurrentTick++;
+    }
+
+    private static void ProcessActions()
+    {
+        foreach (var player in Players)
+        {
+            if (player == null) continue;
+            player.ActionHandler.ProcessActionPipeline();
+        }
     }
 
     private static void PreProcessTick()

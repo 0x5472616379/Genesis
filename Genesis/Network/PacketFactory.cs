@@ -45,6 +45,8 @@ public static class PacketFactory
                 return new WithdrawFirstOptionFromContainerPacket(parameters);
             case 214:
                 return new MoveItemInContainerPacket(parameters);
+            case 185:
+                return new ButtonClickPacket(parameters);
 
             default:
                 Console.WriteLine($"No packet class implementation for opcode {opcode}.");

@@ -32,21 +32,21 @@ public class FirstItemOptionPacket : IPacket
         Console.WriteLine(_itemId);
 
 
-        if (_itemId == 526)
-        {
-            if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.BURY))
-                return;
-            
-            _player.ActionHandler.AddAction(new BuryAction(_player));
-        }
-
-        if (_itemId == 379)
-        {
-            if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.EAT))
-                return;
-            
-            _player.ActionHandler.AddAction(new EatAction(_player));
-            // _player.PacketBuilder.SendMessage($"Queued Eat On Tick: {World.CurrentTick}");
-        }
+        // if (_itemId == 526)
+        // {
+        //     if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.BURY))
+        //         return;
+        //     
+        //     _player.ActionHandler.AddAction(new BuryAction(_player));
+        // }
+        //
+        // if (_itemId == 379)
+        // {
+        //     if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.EAT))
+        //         return;
+        //     
+        //     _player.ActionHandler.AddAction(new EatAction(_player));
+        //     // _player.PacketBuilder.SendMessage($"Queued Eat On Tick: {World.CurrentTick}");
+        // }
     }
 }

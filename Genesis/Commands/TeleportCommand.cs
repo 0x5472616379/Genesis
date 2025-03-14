@@ -207,6 +207,6 @@ public class TeleportCommand : RSCommand
 
     public override void Invoke()
     {
-        Player.ActionHandler.AddAction(new TeleportAction(Player, new Location(_x, _y, _z)));
+        // Player.ActionHandler.AddAction(new TeleportAction(Player, new Location(_x, _y, _z)));
     }
 }
