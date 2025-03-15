@@ -51,8 +51,8 @@ public class TeleAction : RSAction
 
     private void MovePlayer()
     {
-        _player.Location.X = 3285;
-        _player.Location.Y = 3367;
+        _player.Location.X = _destination.X;
+        _player.Location.Y = _destination.Y;
         _player.Location.Z = _destination.Z;
         _player.PerformedTeleport = true;
         _player.Location.Build();

@@ -2,6 +2,7 @@
 using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Skills;
 
 namespace Genesis.Managers;
 
@@ -165,7 +166,7 @@ public class PlayerUpdateManager
         if ((mask & PlayerUpdateFlags.InteractingEntity) != 0) AppendNPCInteract(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
-        // if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
     }
 
 
@@ -183,10 +184,10 @@ public class PlayerUpdateManager
 
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
     {
-        // playerFlagUpdateBlock.WriteByte((byte)player.MostRecentDamage.FirstAmount); //hitDamage
-        // playerFlagUpdateBlock.WriteByteA((byte)player.MostRecentDamage.FirstDamageType); //hitType
-        // playerFlagUpdateBlock.WriteByteC(player.CurrentHealth); //currentHealth
-        // playerFlagUpdateBlock.WriteByte(player.Skills.GetSkill(SkillId.HITPOINTS).Level); //maxHealth
+        playerFlagUpdateBlock.WriteByte((byte)player.RecentDamage.Amount); //hitDamage
+        playerFlagUpdateBlock.WriteByteA((byte)player.RecentDamage.Type); //hitType
+        playerFlagUpdateBlock.WriteByteC(player.CurrentHealth); //currentHealth
+        playerFlagUpdateBlock.WriteByte(player.SkillManager.Skills[(int)SkillType.HITPOINTS].Level); //maxHealth
     }
 
     private static void AppendNPCInteract(Player player, RSStream updatetempBlock)

@@ -7,6 +7,7 @@ using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills;
+using Genesis.Skills.Combat;
 
 namespace Genesis.Entities;
 
@@ -146,12 +147,12 @@ public class Player : Entity
         AnimationDelay = delay;
         Flags |= PlayerUpdateFlags.Animation;
     }
-    
-    public void SetDamage(int amount, int type)
+
+    public Damage RecentDamage { get; set; }
+    public void SetDamage(int amount, DamageType type)
     {
-        // CurrentAnimation = animationId;
-        // AnimationDelay = delay;
-        // Flags |= PlayerUpdateFlags.SingleHit;
+        RecentDamage = new Damage(type, amount);
+        Flags |= PlayerUpdateFlags.SingleHit;
     }
 
 

@@ -41,6 +41,7 @@ public class WalkPacket : IPacket
 
         _firstStepY = _player.Session.Reader.ReadSignedWordBigEndian();
         _running = _player.Session.Reader.ReadSignedByteC() == 1;
+        _player.SetFacingEntity(null);
     }
 
     /* invoked from World.cs.ProcessPackets(); */

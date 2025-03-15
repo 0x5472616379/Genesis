@@ -20,14 +20,8 @@ public class World
         /* 2. Pre-process state */
         PreProcessTick();
 
-        ProcessActions();
+        BulkPlayerProcess();
         
-        /* 3. Process movement */
-        ProcessMovement();
-
-        /* 4. Final interaction validation */
-        FinalizeInteractions();
-
         /* 5. Client Visual Updates */
         PlayerUpdateManager.Update();
 
@@ -40,6 +34,38 @@ public class World
         CurrentTick++;
     }
 
+    private static void BulkPlayerProcess()
+    {
+        for (int i = 0; i < Players.Length; i++)
+        {
+            var player = Players[i];
+            if (player == null) continue;
+            
+            /* Actions (Queues) */
+            player.ActionHandler.ProcessActionPipeline();
+            
+            /* Movement */
+            player.ProcessMovement();
+
+            /* Interactions */
+            if (player.CurrentInteraction == null) continue;
+            if (player.NormalDelayTicks > 0 || player.ArriveDelayTicks > 0)
+                continue;
+
+            // Distance check
+            int distance = MovementHelper.GameSquareDistance(
+                player.Location.X, player.Location.Y,
+                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y);
+
+            if (distance <= player.CurrentInteraction.MaxDistance)
+            {
+                if (player.CurrentInteraction.Execute())
+                {
+                    player.CurrentInteraction = null;
+                }
+            }
+        }
+    }
     private static void ProcessActions()
     {
         foreach (var player in Players)
