@@ -52,8 +52,10 @@ public class World
                 /* Within Range of the CurrentInteraction */
                 if (player.CurrentInteraction.CanExecute())
                 {
-                    player.CurrentInteraction.Execute();
-                    player.CurrentInteraction = null;
+                    if (player.CurrentInteraction.Execute())
+                    {
+                        player.CurrentInteraction = null;
+                    }
                 }
             }
         }

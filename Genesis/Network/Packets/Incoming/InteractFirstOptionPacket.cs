@@ -94,6 +94,9 @@ public class InteractFirstOptionPacket : IPacket
         _player.SetFaceX(worldObject.X * 2 + worldObject.GetSize()[0]);
         _player.SetFaceY(worldObject.Y * 2 + worldObject.GetSize()[1]);
 
+        if (_player.CurrentInteraction is TreeInteraction)
+            return true;
+
         _player.CurrentInteraction = new TreeInteraction(_player, worldObject, tree);
         return true;
     }

@@ -104,7 +104,21 @@ public class TreeInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-
+        var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
+        var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
+        
+        var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
+        var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
+        
+        var reachedFacingObject = Region.ReachedObject(
+            _player.Location.PositionRelativeToOffsetChunkX,
+            _player.Location.PositionRelativeToOffsetChunkY,
+            treeRelX2,
+            treeRelY2,
+            _treeWorldObject.GetSize()[0],
+            _treeWorldObject.GetSize()[1],
+            0, clip);
+        
         var distance = DistanceToObject(_player.Location.X, _player.Location.Y, _treeWorldObject.X, _treeWorldObject.Y, _treeWorldObject.GetSize()[0], _treeWorldObject.GetSize()[1]);
         _player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
         
@@ -118,93 +132,8 @@ public class TreeInteraction : RSInteraction
         
         if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
             return false;
-     
-        
-        // Proper game square distance check
-        // int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
-        //     _worldObject.X, _worldObject.Y);
 
-        return distance <= MaxDistance;
-        
-        // if (_player.CurrentInteraction != null &&  (_player.MovedThisTick || _player.MovedLastTick) && 
-        //     MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y, _player.CurrentInteraction.Target.X, _player.CurrentInteraction.Target.Y) >= 1)
-        // {
-        //     _player.ArriveDelayTicks = 1;
-        // }
-        //
-        // if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
-        //     return false;
-        //
-        //
-        // // Proper game square distance check
-        // int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
-        //     _treeWorldObject.X, _treeWorldObject.Y);
-        //
-        // return true;
-        
-        // var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
-        // var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
-        //
-        // var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
-        // var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
-        //
-        // var reachedFacingObject = Region.ReachedObject(
-        //     _player.Location.PositionRelativeToOffsetChunkX,
-        //     _player.Location.PositionRelativeToOffsetChunkY,
-        //     treeRelX2,
-        //     treeRelY2,
-        //     _treeWorldObject.GetSize()[0],
-        //     _treeWorldObject.GetSize()[1],
-        //     0, clip);
-        //
-        // if (!reachedFacingObject)
-        // {
-        //     // _player.PlayerMovementHandler.Reset();
-        //     //
-        //     // RSPathfinder.WalkToObject(_player, new Location(_player.PlayerMovementHandler.TargetDestX,
-        //     //     _player.PlayerMovementHandler.TargetDestY,
-        //     //     _treeWorldObject.Height));
-        //     //
-        //     // _player.PlayerMovementHandler.Finish();
-        //     RSPathfinder.FindPath(_player, _treeWorldObject.X, _treeWorldObject.Y, true, 1, 1);
-        //     _player.PlayerMovementHandler.Process();
-        //     _player.PlayerMovementHandler.Process();
-        //     return false;
-        // }
-        //
-        // var playerWoodcuttingLevel = _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].Level;
-        //
-        // if (!HasRequiredWoodcuttingLevel(playerWoodcuttingLevel) || !HasEnoughInventorySpace())
-        //     return false;
-        //
-        // if (!TryUseEquippedAxe(playerWoodcuttingLevel) && !TryUseInventoryAxe(playerWoodcuttingLevel))
-        // {
-        //     _player.Session.PacketBuilder.SendMessage(
-        //         "You need a usable axe equipped or in your inventory to cut this tree.");
-        //     _player.ClearInteraction();
-        //     return false;
-        // }
-        //
-        // // if (_player.MovementHandler.IsRunning)
-        // // {
-        // //     if (sleepTick < 1)
-        // //     {
-        // //         sleepTick++;
-        // //         return false;
-        // //     }
-        // // }
-        // //
-        // // if (_player.MovementHandler.IsWalking)
-        // // {
-        // //     if (sleepTick < 2)
-        // //     {
-        // //         sleepTick++;
-        // //         return false;
-        // //     }
-        // // }
-        // //
-        // // sleepTick = 0;
-        return true;
+        return distance <= MaxDistance && reachedFacingObject;
     }
 
     public static double GetSuccessRate(Tree tree, AxeData.Axe axe)

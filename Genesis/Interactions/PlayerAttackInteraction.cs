@@ -1,9 +1,6 @@
-﻿using System.Security.Cryptography;
-using ArcticRS.Actions;
+﻿using ArcticRS.Actions;
 using Genesis.Entities;
-using Genesis.Environment;
 using Genesis.Movement;
-using Genesis.Skills.Combat;
 
 namespace Genesis.Interactions;
 
@@ -56,38 +53,39 @@ public class PlayerAttackInteraction : RSInteraction
             Target = null;
             return false;
         }
-        
-        return true;
 
-        // int targetX = _player.InteractingEntity.Location.X;
-        // int targetY = _player.InteractingEntity.Location.Y;
-        // int targetZ = _player.InteractingEntity.Location.Z;
-        //
-        // _player.PlayerMovementHandler.Reset();
-        // RSPathfinder.MeleeFollow(_player, _player.Following);
-        // _player.PlayerMovementHandler.Finish();
-        // _player.PlayerMovementHandler.Process();
-        //
-        // _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
-        //
-        // var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
-        //     _player.Location.Z, targetX, targetY, 2);
-        // var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
-        // int moveDistance = 1;
-        // if (_player.PlayerMovementHandler.IsWalking)
-        //     moveDistance = 2;
-        // if (_player.PlayerMovementHandler.IsRunning)
-        //     moveDistance = 3;
-        //
-        //
-        // bool isValidDistance = distance <= moveDistance;
-        // bool isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y, targetX, targetY);
-        //
-        // _player.Session.PacketBuilder.SendMessage($"MoveDistance: {moveDistance}");
-        // _player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal}");
-        // _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
-        // _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
-        //
-        // return isValidDistance && projectilePathClear && !isDiagonal;
+        // return true;
+
+        _player.PlayerMovementHandler.Reset();
+        RSPathfinder.MeleeFollow(_player, _player.Following);
+        _player.PlayerMovementHandler.Finish();
+        _player.PlayerMovementHandler.Process();
+        _player.PlayerMovementHandler.Reset();
+        
+        int targetX = _player.InteractingEntity.Location.X;
+        int targetY = _player.InteractingEntity.Location.Y;
+        int targetZ = _player.InteractingEntity.Location.Z;
+        
+        _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
+
+        var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
+            _player.Location.Z, targetX, targetY, 2);
+        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
+        int moveDistance = 1;
+        if (_player.PlayerMovementHandler.IsWalking)
+            moveDistance = 2;
+        if (_player.PlayerMovementHandler.IsRunning)
+            moveDistance = 3;
+
+
+        bool isValidDistance = distance <= moveDistance;
+        bool isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y, targetX, targetY);
+
+        _player.Session.PacketBuilder.SendMessage($"MoveDistance: {moveDistance}");
+        _player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal}");
+        _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
+        _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
+
+        return isValidDistance && projectilePathClear && !isDiagonal;
     }
 }
