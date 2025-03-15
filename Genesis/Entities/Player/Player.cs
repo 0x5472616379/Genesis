@@ -15,8 +15,8 @@ public class Player : Entity
 {
     public bool IsBot { get; set; }
 
-    public int ArriveDelayTicks { get; set; } // Applied after moving
-    public int NormalDelayTicks { get; set; } // General action lock
+    public int ArriveDelayTicks { get; set; }
+    public int NormalDelayTicks { get; set; }
     public bool MovedLastTick { get; set; }
     public bool MovedThisTick { get; set; }
     public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
@@ -79,32 +79,8 @@ public class Player : Entity
 
     public void ProcessMovement()
     {
-        if (NormalDelayTicks > 0) return;
-
+        
         PlayerMovementHandler.Process();
-
-        // Auto-stop when entering interaction range
-        if (CurrentInteraction != null && MovedThisTick)
-        {
-            int distance = MovementHelper.GameSquareDistance(
-                Location.X, Location.Y,
-                CurrentInteraction.Target.X, CurrentInteraction.Target.Y
-            );
-
-            if (distance <= CurrentInteraction.MaxDistance)
-            {
-                PlayerMovementHandler.Reset();
-            }
-        }
-
-        // Apply the ArriveDelayTick when we have an interaction and we're in range and we have moved
-        // Not sure if this is correct?
-        // if (CurrentInteraction != null && 
-        //     (MovedThisTick || MovedLastTick) && 
-        //     MovementHelper.GameSquareDistance(Location.X, Location.Y, CurrentInteraction.Target.X, CurrentInteraction.Target.Y) <= 1)
-        // {
-        //     ArriveDelayTicks = 1;
-        // }
     }
 
     public void AddLocalPlayer(Entity player)

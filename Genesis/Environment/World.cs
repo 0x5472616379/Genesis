@@ -1,7 +1,5 @@
 ﻿using Genesis.Entities;
 using Genesis.Managers;
-using Genesis.Movement;
-using ICSharpCode.SharpZipLib.Core;
 
 namespace Genesis.Environment;
 
@@ -21,16 +19,17 @@ public class World
         PreProcessTick();
 
         BulkPlayerProcess();
-        
+
+
         /* 5. Client Visual Updates */
         PlayerUpdateManager.Update();
 
         /* 6. Flush */
         FlushAllPlayers();
-        
+
         /* 7. Reset */
         Reset();
-        
+
         CurrentTick++;
     }
 
@@ -40,40 +39,26 @@ public class World
         {
             var player = Players[i];
             if (player == null) continue;
-            
+
             /* Actions (Queues) */
             player.ActionHandler.ProcessActionPipeline();
-            
+
             /* Movement */
             player.ProcessMovement();
 
             /* Interactions */
-            if (player.CurrentInteraction == null) continue;
-            if (player.NormalDelayTicks > 0 || player.ArriveDelayTicks > 0)
-                continue;
-
-            // Distance check
-            int distance = MovementHelper.GameSquareDistance(
-                player.Location.X, player.Location.Y,
-                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y);
-
-            if (distance <= player.CurrentInteraction.MaxDistance)
+            if (player.CurrentInteraction != null)
             {
-                if (player.CurrentInteraction.Execute())
+                /* Within Range of the CurrentInteraction */
+                if (player.CurrentInteraction.CanExecute())
                 {
+                    player.CurrentInteraction.Execute();
                     player.CurrentInteraction = null;
                 }
             }
         }
     }
-    private static void ProcessActions()
-    {
-        foreach (var player in Players)
-        {
-            if (player == null) continue;
-            player.ActionHandler.ProcessActionPipeline();
-        }
-    }
+
 
     private static void PreProcessTick()
     {
@@ -81,41 +66,6 @@ public class World
         {
             if (player == null) continue;
             player.PreProcessTick();
-        }
-    }
-
-    private static void ProcessMovement()
-    {
-        for (int i = 0; i < Players.Length; i++)
-        {
-            if (Players[i] == null) continue;
-
-            Players[i].ProcessMovement();
-        }
-    }
-
-    private static void FinalizeInteractions()
-    {
-        foreach (var player in Players)
-        {
-            if (player == null || player.CurrentInteraction == null) continue;
-        
-            // Block during ANY delay
-            if (player.NormalDelayTicks > 0 || player.ArriveDelayTicks > 0)
-                continue;
-
-            // Distance check
-            int distance = MovementHelper.GameSquareDistance(
-                player.Location.X, player.Location.Y,
-                player.CurrentInteraction.Target.X, player.CurrentInteraction.Target.Y);
-
-            if (distance <= player.CurrentInteraction.MaxDistance)
-            {
-                if (player.CurrentInteraction.Execute())
-                {
-                    player.CurrentInteraction = null;
-                }
-            }
         }
     }
 

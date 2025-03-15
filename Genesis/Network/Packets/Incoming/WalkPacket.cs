@@ -50,7 +50,7 @@ public class WalkPacket : IPacket
         if (_player.CurrentHealth <= 0)
             return;
 
-        if (_player.IsDelayed && _player.CurrentInteraction != null)
+        if (_player.IsDelayed)
             return;
 
         _player.PlayerMovementHandler.RunToggled = _running;
@@ -68,7 +68,7 @@ public class WalkPacket : IPacket
         }
 
         _player.CurrentInteraction = null;
-        
+
         _player.PlayerMovementHandler.Reset();
         RSPathfinder.FindPath(_player, _destX, _destY, true, 1, 1);
         _player.PlayerMovementHandler.Finish();

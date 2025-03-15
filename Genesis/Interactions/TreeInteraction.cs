@@ -21,143 +21,189 @@ public class TreeInteraction : RSInteraction
 
     private AxeData.Axe EquippedAxe = null;
     private int _tick;
-    public override int MaxDistance { get; }
+    public override int MaxDistance { get; } = 1;
     public TreeInteraction(Player player, WorldObject treeWorldObject, Tree tree)
     {
         _player = player;
         _treeWorldObject = treeWorldObject;
         _tree = tree;
+        
+        Target.X = treeWorldObject.X;
+        Target.Y = treeWorldObject.Y;
+        Target.Z = _player.Location.Z;
     }
 
     private int _lastLogGatheredTick = -1;
-    private int sleepTick = 0;
-    private bool didWalk = false;
-
     public override bool Execute()
     {
         _player.SetFaceX(_treeWorldObject.X * 2 + _treeWorldObject.GetSize()[0]);
         _player.SetFaceY(_treeWorldObject.Y * 2 + _treeWorldObject.GetSize()[1]);
 
         if (!CanExecute()) return false;
-        _tick++;
+        
+        _player.SetCurrentAnimation(875);
 
-        if (_tick > 1)
-            _player.SetCurrentAnimation(axeAnimationId);
+        // if (_tick > 1)
+        //     _player.SetCurrentAnimation(axeAnimationId);
 
-        if (_tick > 2)
-            _player.Session.PacketBuilder.SendSound(471, 0, 10);
-
-        if (_tick > 3)
-        {
-            if (_lastLogGatheredTick == -1 || _tick - _lastLogGatheredTick > 2)
-            {
-                _player.SetCurrentAnimation(axeAnimationId);
-                var random = new Random();
-                if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe)) //GetSuccessRate(_tree, EquippedAxe)
-                {
-                    _player.InventoryItemContainer.AddItem(_tree.LogId, 1);
-                    _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
-                    _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
-                        .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.WOODCUTTING));
-                    _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
-
-                    _lastLogGatheredTick = _tick;
-
-                    if (random.Next(0, 100) < _tree.DecayChance)
-                    {
-                        var stumpId = _tree.StumpId;
-                        _player.SetCurrentAnimation(-1);
-                        EnvironmentBuilder.Add(new ModifiedEntity
-                        {
-                            OriginalId = _treeWorldObject.Id,
-                            Id = stumpId,
-                            Type = _treeWorldObject.Type,
-                            Face = _treeWorldObject.Direction,
-                            Location = new Location(_treeWorldObject.X, _treeWorldObject.Y, _treeWorldObject.Height),
-                            Delay = _tree.RespawnTime
-                        });
-
-                        return true;
-                    }
-                }
-            }
-        }
+        // if (_tick > 2)
+        //     _player.Session.PacketBuilder.SendSound(471, 0, 10);
+        //
+        // if (_tick > 3)
+        // {
+        //     if (_lastLogGatheredTick == -1 || _tick - _lastLogGatheredTick > 2)
+        //     {
+        //         _player.SetCurrentAnimation(axeAnimationId);
+        //         var random = new Random();
+        //         if (random.Next(1, 100) < GetSuccessRate(_tree, EquippedAxe)) //GetSuccessRate(_tree, EquippedAxe)
+        //         {
+        //             _player.InventoryItemContainer.AddItem(_tree.LogId, 1);
+        //             _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+        //             _player.SkillManager.Skills[(int)SkillType.WOODCUTTING]
+        //                 .AddExperience((int)_tree.Xp * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.WOODCUTTING));
+        //             _player.SkillManager.RefreshSkill(SkillType.WOODCUTTING);
+        //
+        //             _lastLogGatheredTick = _tick;
+        //
+        //             if (random.Next(0, 100) < _tree.DecayChance)
+        //             {
+        //                 var stumpId = _tree.StumpId;
+        //                 _player.SetCurrentAnimation(-1);
+        //                 EnvironmentBuilder.Add(new ModifiedEntity
+        //                 {
+        //                     OriginalId = _treeWorldObject.Id,
+        //                     Id = stumpId,
+        //                     Type = _treeWorldObject.Type,
+        //                     Face = _treeWorldObject.Direction,
+        //                     Location = new Location(_treeWorldObject.X, _treeWorldObject.Y, _treeWorldObject.Height),
+        //                     Delay = _tree.RespawnTime
+        //                 });
+        //
+        //                 return true;
+        //             }
+        //         }
+        //     }
+        // }
 
 
         return false;
     }
+    
+    public static double DistanceToObject(int px, int py, int ox, int oy, int width, int height)
+    {
+        int minX = ox;
+        int maxX = ox + width - 1;
+        int minY = oy;
+        int maxY = oy + height - 1;
+
+        int dx = Math.Max(0, Math.Max(minX - px, px - maxX));
+        int dy = Math.Max(0, Math.Max(minY - py, py - maxY));
+
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
 
     public override bool CanExecute()
     {
-        var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
-        if (isMoving)
+
+        var distance = DistanceToObject(_player.Location.X, _player.Location.Y, _treeWorldObject.X, _treeWorldObject.Y, _treeWorldObject.GetSize()[0], _treeWorldObject.GetSize()[1]);
+        _player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
+        
+        
+        if (_player.CurrentInteraction != null && 
+            (_player.MovedThisTick || _player.MovedLastTick) && 
+            distance <= 1)
         {
-            didWalk = false;
-            return false;
+            _player.ArriveDelayTicks = 1;
         }
-
-        var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
-        var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
-
-        var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
-        var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
-
-        var reachedFacingObject = Region.ReachedObject(
-            _player.Location.PositionRelativeToOffsetChunkX,
-            _player.Location.PositionRelativeToOffsetChunkY,
-            treeRelX2,
-            treeRelY2,
-            _treeWorldObject.GetSize()[0],
-            _treeWorldObject.GetSize()[1],
-            0, clip);
-
-        if (!reachedFacingObject)
-        {
-            _player.PlayerMovementHandler.Reset();
-
-            RSPathfinder.WalkToObject(_player, new Location(_player.PlayerMovementHandler.TargetDestX,
-                _player.PlayerMovementHandler.TargetDestY,
-                _treeWorldObject.Height));
-
-            _player.PlayerMovementHandler.Finish();
-
-            _player.PlayerMovementHandler.Process();
-            didWalk = true;
+        
+        if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
             return false;
-        }
+     
+        
+        // Proper game square distance check
+        // int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
+        //     _worldObject.X, _worldObject.Y);
 
-        var playerWoodcuttingLevel = _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].Level;
-
-        if (!HasRequiredWoodcuttingLevel(playerWoodcuttingLevel) || !HasEnoughInventorySpace())
-            return false;
-
-        if (!TryUseEquippedAxe(playerWoodcuttingLevel) && !TryUseInventoryAxe(playerWoodcuttingLevel))
-        {
-            _player.Session.PacketBuilder.SendMessage(
-                "You need a usable axe equipped or in your inventory to cut this tree.");
-            _player.ClearInteraction();
-            return false;
-        }
-
-        // if (_player.MovementHandler.IsRunning)
+        return distance <= MaxDistance;
+        
+        // if (_player.CurrentInteraction != null &&  (_player.MovedThisTick || _player.MovedLastTick) && 
+        //     MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y, _player.CurrentInteraction.Target.X, _player.CurrentInteraction.Target.Y) >= 1)
         // {
-        //     if (sleepTick < 1)
-        //     {
-        //         sleepTick++;
-        //         return false;
-        //     }
+        //     _player.ArriveDelayTicks = 1;
         // }
         //
-        // if (_player.MovementHandler.IsWalking)
+        // if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
+        //     return false;
+        //
+        //
+        // // Proper game square distance check
+        // int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
+        //     _treeWorldObject.X, _treeWorldObject.Y);
+        //
+        // return true;
+        
+        // var treeRelX2 = _treeWorldObject.X - _player.Location.CachedBuildAreaStartX;
+        // var treeRelY2 = _treeWorldObject.Y - _player.Location.CachedBuildAreaStartY;
+        //
+        // var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
+        // var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
+        //
+        // var reachedFacingObject = Region.ReachedObject(
+        //     _player.Location.PositionRelativeToOffsetChunkX,
+        //     _player.Location.PositionRelativeToOffsetChunkY,
+        //     treeRelX2,
+        //     treeRelY2,
+        //     _treeWorldObject.GetSize()[0],
+        //     _treeWorldObject.GetSize()[1],
+        //     0, clip);
+        //
+        // if (!reachedFacingObject)
         // {
-        //     if (sleepTick < 2)
-        //     {
-        //         sleepTick++;
-        //         return false;
-        //     }
+        //     // _player.PlayerMovementHandler.Reset();
+        //     //
+        //     // RSPathfinder.WalkToObject(_player, new Location(_player.PlayerMovementHandler.TargetDestX,
+        //     //     _player.PlayerMovementHandler.TargetDestY,
+        //     //     _treeWorldObject.Height));
+        //     //
+        //     // _player.PlayerMovementHandler.Finish();
+        //     RSPathfinder.FindPath(_player, _treeWorldObject.X, _treeWorldObject.Y, true, 1, 1);
+        //     _player.PlayerMovementHandler.Process();
+        //     _player.PlayerMovementHandler.Process();
+        //     return false;
         // }
         //
-        // sleepTick = 0;
+        // var playerWoodcuttingLevel = _player.SkillManager.Skills[(int)SkillType.WOODCUTTING].Level;
+        //
+        // if (!HasRequiredWoodcuttingLevel(playerWoodcuttingLevel) || !HasEnoughInventorySpace())
+        //     return false;
+        //
+        // if (!TryUseEquippedAxe(playerWoodcuttingLevel) && !TryUseInventoryAxe(playerWoodcuttingLevel))
+        // {
+        //     _player.Session.PacketBuilder.SendMessage(
+        //         "You need a usable axe equipped or in your inventory to cut this tree.");
+        //     _player.ClearInteraction();
+        //     return false;
+        // }
+        //
+        // // if (_player.MovementHandler.IsRunning)
+        // // {
+        // //     if (sleepTick < 1)
+        // //     {
+        // //         sleepTick++;
+        // //         return false;
+        // //     }
+        // // }
+        // //
+        // // if (_player.MovementHandler.IsWalking)
+        // // {
+        // //     if (sleepTick < 2)
+        // //     {
+        // //         sleepTick++;
+        // //         return false;
+        // //     }
+        // // }
+        // //
+        // // sleepTick = 0;
         return true;
     }
 

@@ -34,7 +34,7 @@ public class MiningInteraction : RSInteraction
     {
         if (_player.CurrentInteraction != null && 
             (_player.MovedThisTick || _player.MovedLastTick) && 
-            MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y, _player.CurrentInteraction.Target.X, _player.CurrentInteraction.Target.Y) >= 1)
+            MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y, _player.CurrentInteraction.Target.X, _player.CurrentInteraction.Target.Y) <= 1)
         {
             _player.ArriveDelayTicks = 1;
         }

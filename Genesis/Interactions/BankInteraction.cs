@@ -45,42 +45,45 @@ public class BankInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        // var isMoving = (_player.PlayerMovementHandler.IsWalking || _player.PlayerMovementHandler.IsRunning);
-        // if (isMoving)
-        //     return false;
+        var distance = DistanceToObject(_player.Location.X, _player.Location.Y, _worldObject.X, _worldObject.Y,
+            _worldObject.GetSize()[0], _worldObject.GetSize()[1]);
+        _player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
 
-        var treeRelX2 = _worldObject.X - _player.Location.CachedBuildAreaStartX;
-        var treeRelY2 = _worldObject.Y - _player.Location.CachedBuildAreaStartY;
-        //
-        var region = Region.GetRegion(_player.Location.X, _player.Location.Y);
-        var clip = region.GetClip(_player.Location.X, _player.Location.Y, _player.Location.Z);
-        
-        var reachedFacingObject = Region.ReachedObject(_player.Location.PositionRelativeToOffsetChunkX,
-            _player.Location.PositionRelativeToOffsetChunkY,
-            treeRelX2,
-            treeRelY2,
-            _worldObject.GetSize()[0],
-            _worldObject.GetSize()[1],
-            0, clip);
-
-        // Proper game square distance check
-        int distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
-            _worldObject.X, _worldObject.Y);
-
-        if (distance <= MaxDistance && !reachedFacingObject)
+        if (_player.CurrentInteraction != null &&
+            (_player.MovedThisTick || _player.MovedLastTick) &&
+            distance <= 1)
         {
-            RSPathfinder.FindPath(_player, _worldObject.X, _worldObject.Y, true, 1, 1);
-            _player.PlayerMovementHandler.Process();
-            return false;
+            // _player.ArriveDelayTicks = 1;
         }
 
-        SetPlayerFacing();
-        return true;
+        if (_player.NormalDelayTicks > 0 || _player.ArriveDelayTicks > 0)
+            return false;
+
+        if (distance <= MaxDistance)
+        {
+            SetPlayerFacing();
+            return true;
+        }
+
+        return false;
     }
 
     private void SetPlayerFacing()
     {
         _player.SetFaceX(_worldObject.X * 2 + _worldObject.GetSize()[0]);
         _player.SetFaceY(_worldObject.Y * 2 + _worldObject.GetSize()[1]);
+    }
+
+    public static double DistanceToObject(int px, int py, int ox, int oy, int width, int height)
+    {
+        int minX = ox;
+        int maxX = ox + width - 1;
+        int minY = oy;
+        int maxY = oy + height - 1;
+
+        int dx = Math.Max(0, Math.Max(minX - px, px - maxX));
+        int dy = Math.Max(0, Math.Max(minY - py, py - maxY));
+
+        return Math.Sqrt(dx * dx + dy * dy);
     }
 }
