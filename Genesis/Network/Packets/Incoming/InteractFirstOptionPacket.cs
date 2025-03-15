@@ -36,6 +36,7 @@ public class InteractFirstOptionPacket : IPacket
         if (worldObject == null) return;
 
         HandleMiningInteraction(worldObject);
+        HandleBankInteraction(worldObject);
     }
 
     private bool HandleMiningInteraction(WorldObject worldObject)

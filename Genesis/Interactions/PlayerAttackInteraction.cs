@@ -33,12 +33,8 @@ public class PlayerAttackInteraction : RSInteraction
 
         if (attackLoaded)
         {
-            _player.SetCurrentAnimation(1658);
-
-            _player.Session.PacketBuilder.SendMessage("You swing your sword.");
-
+            _player.SetCurrentAnimation(422);
             _target.ActionHandler.AddAction(new DamageAction(_target));
-
             attackLoaded = false;
         }
 
@@ -53,6 +49,14 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
+        if (_target.CurrentHealth <= 0)
+        {
+            _player.CurrentInteraction = null;
+            _player.SetFacingEntity(null);
+            Target = null;
+            return false;
+        }
+        
         return true;
 
         // int targetX = _player.InteractingEntity.Location.X;

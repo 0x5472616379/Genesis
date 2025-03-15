@@ -99,12 +99,12 @@ public class Player : Entity
 
         // Apply the ArriveDelayTick when we have an interaction and we're in range and we have moved
         // Not sure if this is correct?
-        if (CurrentInteraction != null 
-            && (MovedThisTick || MovedLastTick) &&
-            MovementHelper.GameSquareDistance(Location.X, Location.Y, CurrentInteraction.Target.X, CurrentInteraction.Target.Y) <= 1)
-        {
-            ArriveDelayTicks = 1;
-        }
+        // if (CurrentInteraction != null && 
+        //     (MovedThisTick || MovedLastTick) && 
+        //     MovementHelper.GameSquareDistance(Location.X, Location.Y, CurrentInteraction.Target.X, CurrentInteraction.Target.Y) <= 1)
+        // {
+        //     ArriveDelayTicks = 1;
+        // }
     }
 
     public void AddLocalPlayer(Entity player)
@@ -149,9 +149,21 @@ public class Player : Entity
     }
 
     public Damage RecentDamage { get; set; }
+
     public void SetDamage(int amount, DamageType type)
     {
         RecentDamage = new Damage(type, amount);
+        if (CurrentHealth - amount == 0)
+        {
+            CurrentHealth = 0;
+            ActionHandler.AddAction(new RespawnAction(this));
+        }
+        else
+        {
+            CurrentHealth -= amount;
+        }
+
+        // SkillManager.Skills[(int)SkillType.HITPOINTS].
         Flags |= PlayerUpdateFlags.SingleHit;
     }
 
