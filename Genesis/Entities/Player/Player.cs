@@ -79,14 +79,16 @@ public class Player : Entity
 
     public void ProcessMovement()
     {
-        // if (Following != null)
-        // {
-        //     PlayerMovementHandler.Reset();
-        //     RSPathfinder.FindPath(this, Following.Location.X, Following.Location.Y, true, 1, 1);
-        //     PlayerMovementHandler.Finish();
-        // }
-        
-        PlayerMovementHandler.Process();
+        if (Following != null)
+        {
+            PlayerMovementHandler.Reset();
+            RSPathfinder.FindPath(this, Following.Location.X, Following.Location.Y, true, 1, 1);
+            PlayerMovementHandler.Finish();
+        }
+        else
+        {
+            PlayerMovementHandler.Process();
+        }
     }
 
     public void AddLocalPlayer(Entity player)
