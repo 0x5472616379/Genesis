@@ -100,7 +100,7 @@ public class PlayerAttackInteraction : RSInteraction
         _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
         _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
         
-        return false;
+        return isValidDistance && projectilePathClear && !isDiagonal;
 
         // return true;
 

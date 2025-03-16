@@ -137,6 +137,7 @@ public class Player : Entity
     public void SetDamage(int amount, DamageType type)
     {
         RecentDamage = new Damage(type, amount);
+        SetCurrentAnimation(424);
         if (CurrentHealth - amount == 0)
         {
             CurrentHealth = 0;
