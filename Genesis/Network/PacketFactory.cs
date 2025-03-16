@@ -29,6 +29,8 @@ public static class PacketFactory
                 return new InteractFirstOptionPacket(parameters);
             case 73:
                 return new AttackPlayerPacket(parameters);
+            case 249:
+                return new SpellOnPlayer(parameters);
             case 39:
                 return new FollowPlayerPacket(parameters);
             case 40:

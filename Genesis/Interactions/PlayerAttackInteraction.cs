@@ -30,7 +30,7 @@ public class PlayerAttackInteraction : RSInteraction
         if (attackLoaded)
         {
             _player.SetCurrentAnimation(422);
-            _target.ActionHandler.AddAction(new DamageAction(_target));
+            _target.ActionHandler.AddAction(new DamageAction(_target, null, 0));
             attackLoaded = false;
         }
 
@@ -60,63 +60,6 @@ public class PlayerAttackInteraction : RSInteraction
             return false;
         }
         
-        int targetX = _target.Location.X;
-        int targetY = _target.Location.Y;
-        int targetZ = _target.Location.Z;
-
-        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
-            targetX, targetY);
-        
-
-        if (distance > 20)
-        {
-            // _player.Following = null;
-            _player.CurrentInteraction = null;
-            _player.SetFacingEntity(null);
-            Target = null;
-            _player.PlayerMovementHandler.Reset();
-            return false;
-        }
-        
-
-        if (_target != null)
-        {
-            if (distance > (int)combatDistance)
-            {
-                _player.PlayerMovementHandler.Reset();
-                RSPathfinder.MeleeFollow(_player, _target);
-                _player.PlayerMovementHandler.Finish();
-                _player.PlayerMovementHandler.Process();
-            }
-
-            /* If same tile step away */
-            if (distance <= 0)
-            {
-                _player.PlayerMovementHandler.Reset();
-                RSPathfinder.MeleeFollow(_player, _target);
-                _player.PlayerMovementHandler.Finish();
-                _player.PlayerMovementHandler.Process();
-            }
-        }
-
-        int moveDistance = 1;
-        if (_player.PlayerMovementHandler.IsWalking)
-            moveDistance = 2;
-        if (_player.PlayerMovementHandler.IsRunning)
-            moveDistance = 3;
-        
-        var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
-            _player.Location.Z, targetX, targetY, 2);
-
-        bool isValidDistance = distance <= moveDistance;
-        bool isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y, targetX, targetY);
-        
-        _player.Session.PacketBuilder.SendMessage($"MoveDistance: {moveDistance}");
-        _player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal}");
-        _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
-        _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
-        
-        return isValidDistance && projectilePathClear && !isDiagonal;
-
+        return _player.CombatManager.InValidMeleeDistance(_target);
     }
 }

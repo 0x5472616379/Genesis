@@ -306,7 +306,7 @@ public class RSPathfinder
         return true;
     }
 
-    public static bool IsProjectilePathClear(int x0, int y0, int z, int x1, int y1)
+    public static bool IsProjectilePathClear(Player player, int x0, int y0, int z, int x1, int y1)
     {
         var deltaX = x1 - x0;
         var deltaY = y1 - y0;
@@ -324,7 +324,7 @@ public class RSPathfinder
         var incrX = x0 < x1;
         var incrY = y0 < y1;
 
-        if (!IsAccessible(x0, y0, z, pX, pY))
+        if (!IsAccessible(player, x0, y0, z, pX, pY))
         {
             return false;
         }
@@ -398,12 +398,12 @@ public class RSPathfinder
         return (Region.CanMove(x, y, z, (Direction)dir) && Region.CanMove(px, py, z, (Direction)dir2));
     }
 
-    public static bool IsAccessible(int x, int y, int z, int destX, int destY)
+    public static bool IsAccessible(Player player, int x, int y, int z, int destX, int destY)
     {
-        Location location = new Location(x, y, z);
+        // Location location = new Location(x, y, z);
 
-        if (destX == location.PositionRelativeToOffsetChunkX &&
-            destY == location.PositionRelativeToOffsetChunkY)
+        if (destX == player.Location.PositionRelativeToOffsetChunkX &&
+            destY == player.Location.PositionRelativeToOffsetChunkY)
         {
             return false;
         }
@@ -420,8 +420,8 @@ public class RSPathfinder
         List<int> tileQueueX = new List<int>(10000);
         List<int> tileQueueY = new List<int>(10000);
 
-        int curX = location.PositionRelativeToOffsetChunkX;
-        int curY = location.PositionRelativeToOffsetChunkY;
+        int curX = player.Location.PositionRelativeToOffsetChunkX;
+        int curY = player.Location.PositionRelativeToOffsetChunkY;
 
         via[curX][curY] = 99;
         cost[curX][curY] = 1;
@@ -431,16 +431,16 @@ public class RSPathfinder
         tileQueueX.Add(curX);
         tileQueueY.Add(curY);
 
-        destX = destX - 8 * location.CachedBuildAreaSwChunkX;
-        destY = destY - 8 * location.CachedBuildAreaSwChunkY;
+        destX = destX - 8 * player.Location.CachedBuildAreaSwChunkX;
+        destY = destY - 8 * player.Location.CachedBuildAreaSwChunkY;
 
         while (tail != tileQueueX.Count() && tileQueueX.Count() < 104)
         {
             curX = tileQueueX.ElementAt(tail);
             curY = tileQueueY.ElementAt(tail);
 
-            int curAbsX = location.CachedBuildAreaSwChunkX * 8 + curX;
-            int curAbsY = location.CachedBuildAreaSwChunkY * 8 + curY;
+            int curAbsX = player.Location.CachedBuildAreaSwChunkX * 8 + curX;
+            int curAbsY = player.Location.CachedBuildAreaSwChunkY * 8 + curY;
 
             if (curX == destX && curY == destY)
             {

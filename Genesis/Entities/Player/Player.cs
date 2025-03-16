@@ -21,6 +21,8 @@ public class Player : Entity
     public bool MovedThisTick { get; set; }
     public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
 
+    public CombatManager CombatManager { get; set; }
+
     public NetworkSession Session { get; set; }
     public PlayerUpdateFlags Flags { get; set; }
 
@@ -53,6 +55,7 @@ public class Player : Entity
         Flags = PlayerUpdateFlags.None;
         PlayerMovementHandler = new PlayerMovementHandler(this);
         EquipmentManager = new EquipmentManager(this);
+        CombatManager = new CombatManager(this);
 
         // InventoryManager = new InventoryManager(this);
         // BankManager = new BankManager(this);
@@ -137,11 +140,11 @@ public class Player : Entity
 
     public Damage RecentDamage { get; set; }
 
-    public void SetDamage(int amount, DamageType type)
+    public void SetDamage(int amount, DamageType type, Gfx gfx)
     {
         RecentDamage = new Damage(type, amount);
         SetCurrentAnimation(424);
-        // SetCurrentGfx(new Gfx() { Id = 369 });
+        SetCurrentGfx(gfx);
         if (CurrentHealth - amount <= 0)
         {
             CurrentHealth = 0;
