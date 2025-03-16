@@ -4,6 +4,7 @@ using Genesis.Configuration;
 using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills;
 using Genesis.Skills.Runecrafting;
@@ -90,7 +91,7 @@ public class RunecraftingInteraction : RSInteraction
 
     private void PlayRunecraftingEffects()
     {
-        _player.SetCurrentGfx(186);
+        _player.SetCurrentGfx(new Gfx() {Id = 186});
         _player.SetCurrentAnimation(791);
         _player.Session.PacketBuilder.SendSound(481, 0, 10);
     }

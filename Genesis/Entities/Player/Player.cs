@@ -138,7 +138,8 @@ public class Player : Entity
     {
         RecentDamage = new Damage(type, amount);
         SetCurrentAnimation(424);
-        if (CurrentHealth - amount == 0)
+        SetCurrentGfx(new Gfx() { Id = 369 });
+        if (CurrentHealth - amount <= 0)
         {
             CurrentHealth = 0;
             ActionHandler.AddAction(new RespawnAction(this));
@@ -153,8 +154,9 @@ public class Player : Entity
     }
 
 
-    public override void SetCurrentGfx(int gfx)
+    public override void SetCurrentGfx(Gfx gfx)
     {
+        if (gfx == null) return;
         CurrentGfx = gfx;
         Flags |= PlayerUpdateFlags.Graphics;
     }
@@ -194,6 +196,6 @@ public class Player : Entity
         PlayerMovementHandler.DiscardMovementQueue = false;
 
         CurrentAnimation = -1;
-        CurrentGfx = -1;
+        CurrentGfx = null;
     }
 }

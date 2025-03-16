@@ -12,7 +12,7 @@ public class RespawnAction : RSAction
     {
         _player = player;
         Priority = ActionPriority.Forceful;
-        ScheduledTick = World.CurrentTick + 1;
+        ScheduledTick = World.CurrentTick + 2;
     }
 
     public override bool Execute()

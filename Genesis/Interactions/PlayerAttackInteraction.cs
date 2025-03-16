@@ -48,6 +48,13 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
+        int targetX = _player.InteractingEntity.Location.X;
+        int targetY = _player.InteractingEntity.Location.Y;
+        int targetZ = _player.InteractingEntity.Location.Z;
+
+        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
+            targetX, targetY);
+        
         if (_target.CurrentHealth <= 0)
         {
             _player.CurrentInteraction = null;
@@ -56,12 +63,16 @@ public class PlayerAttackInteraction : RSInteraction
             return false;
         }
 
-        int targetX = _player.InteractingEntity.Location.X;
-        int targetY = _player.InteractingEntity.Location.Y;
-        int targetZ = _player.InteractingEntity.Location.Z;
-
-        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
-            targetX, targetY);
+        if (distance > 20)
+        {
+            _player.Following = null;
+            _player.CurrentInteraction = null;
+            _player.SetFacingEntity(null);
+            Target = null;
+            _player.PlayerMovementHandler.Reset();
+            return false;
+        }
+        
 
         if (_player.Following != null)
         {

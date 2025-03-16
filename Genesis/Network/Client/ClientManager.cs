@@ -55,7 +55,7 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(3, GameInterfaces.InventoryInterface);
         player.Session.PacketBuilder.SendSidebarInterface(4, GameInterfaces.EquipmentInterface);
         player.Session.PacketBuilder.SendSidebarInterface(5, GameInterfaces.PrayerInterface);
-        player.Session.PacketBuilder.SendSidebarInterface(6, GameInterfaces.NormalMagicInterface);
+        player.Session.PacketBuilder.SendSidebarInterface(6, GameInterfaces.AncientMagiksInterface);
         player.Session.PacketBuilder.SendSidebarInterface(8, GameInterfaces.FriendsInterface);
         player.Session.PacketBuilder.SendSidebarInterface(9, GameInterfaces.IgnoreInterface);
         player.Session.PacketBuilder.SendSidebarInterface(10, GameInterfaces.LogoutInterface);

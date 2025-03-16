@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using ArcticRS.Constants;
 using Genesis.Entities;
+using Genesis.Model;
 
 namespace Genesis.Commands;
 
@@ -9,7 +10,7 @@ public class PlayGfxCommand : RSCommand
     protected override PlayerRights RequiredRights { get; } = PlayerRights.ADMIN;
 
     private readonly Player _player;
-    private int _id;
+    private short _id;
 
     public PlayGfxCommand(Player player, string[] args) : base(player, args)
     {
@@ -24,7 +25,7 @@ public class PlayGfxCommand : RSCommand
             return false;
         }
 
-        if (!int.TryParse(Args[1], out _id))
+        if (!short.TryParse(Args[1], out _id))
         {
             Player.Session.PacketBuilder.SendMessage("Invalid gfx ID! Try ::gfx 1");
             return false;
@@ -35,7 +36,7 @@ public class PlayGfxCommand : RSCommand
 
     public override void Invoke()
     {
-        _player.SetCurrentGfx(_id);
+        _player.SetCurrentGfx(new Gfx() { Id = _id });
         _player.SetCurrentAnimation(199);
     }
 }

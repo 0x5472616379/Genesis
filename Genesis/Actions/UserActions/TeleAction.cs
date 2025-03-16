@@ -1,5 +1,6 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Model;
 
 namespace ArcticRS.Actions;
 
@@ -46,7 +47,7 @@ public class TeleAction : RSAction
     private void StartTeleport()
     {
         _player.SetCurrentAnimation(714);
-        _player.SetCurrentGfx(301);
+        _player.SetCurrentGfx(new Gfx() { Id = 301});
         _player.PlayerMovementHandler.Reset();
         _player.NormalDelayTicks = 4; /* Should be 3 according to docs, but 4 looks and feels better */
     }
@@ -65,7 +66,7 @@ public class TeleAction : RSAction
     private void CompleteTeleport()
     {
         _player.SetCurrentAnimation(-1);
-        _player.SetCurrentGfx(-1);
+        // _player.SetCurrentGfx(null);
         _player.Session.PacketBuilder.SendMessage("You arrive at your location.");
     }
 

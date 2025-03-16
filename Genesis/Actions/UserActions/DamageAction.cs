@@ -15,7 +15,7 @@ public class DamageAction : RSAction
     
     public override bool Execute()
     {
-        _player.SetDamage(0, DamageType.BLOCK);
+        _player.SetDamage(30, DamageType.HIT);
         return true;
     }
 }

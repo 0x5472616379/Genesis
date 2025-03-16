@@ -31,6 +31,7 @@ public class GameInterfaces
     public static int EquipmentInterface { get; } = 1644;
     public static int PrayerInterface { get; } = 5608;
     public static int NormalMagicInterface { get; } = 1151;
+    public static int AncientMagiksInterface { get; } = 12855;
     public static int FriendsInterface { get; } = 5065;
     public static int IgnoreInterface { get; } = 5715;
     public static int LogoutInterface { get; } = 2449;
