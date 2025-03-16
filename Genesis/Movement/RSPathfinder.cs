@@ -576,7 +576,7 @@ public class RSPathfinder
             }
         }
     }
-
+    
     public static void MeleeWalk(Player player, Location destination)
     {
         int x = player.Location.X, y = player.Location.Y;
