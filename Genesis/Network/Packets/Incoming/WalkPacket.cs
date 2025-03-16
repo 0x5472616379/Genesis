@@ -68,7 +68,7 @@ public class WalkPacket : IPacket
         }
 
         _player.CurrentInteraction = null;
-        _player.Following = null;
+        // _player.Following = null;
 
         _player.PlayerMovementHandler.Reset();
         RSPathfinder.FindPath(_player, _destX, _destY, true, 1, 1);

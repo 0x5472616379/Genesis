@@ -36,7 +36,7 @@ public class Player : Entity
     public SkillManager SkillManager { get; set; }
     public RSInteraction CurrentInteraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
-    public Player Following { get; set; }
+    // public Player Following { get; set; }
 
     public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
     public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
@@ -79,11 +79,14 @@ public class Player : Entity
 
     public void ProcessMovement()
     {
-        if (Following != null)
+        if (CurrentInteraction != null && InteractingEntity != null)
         {
-            PlayerMovementHandler.Reset();
-            RSPathfinder.FindPath(this, Following.Location.X, Following.Location.Y, true, 1, 1);
-            PlayerMovementHandler.Finish();
+            if (InteractingEntity is Player player)
+            {
+                PlayerMovementHandler.Reset();
+                RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
+                PlayerMovementHandler.Finish();
+            }
         }
         else
         {
@@ -138,7 +141,7 @@ public class Player : Entity
     {
         RecentDamage = new Damage(type, amount);
         SetCurrentAnimation(424);
-        SetCurrentGfx(new Gfx() { Id = 369 });
+        // SetCurrentGfx(new Gfx() { Id = 369 });
         if (CurrentHealth - amount <= 0)
         {
             CurrentHealth = 0;

@@ -8,7 +8,7 @@ namespace Genesis.Interactions;
 public class PlayerAttackInteraction : RSInteraction
 {
     private readonly Player _player;
-    private readonly Player _target;
+    private Player _target;
     public override int MaxDistance { get; } = 1;
     public override InteractingEntity Target { get; set; } = new();
 
@@ -21,9 +21,6 @@ public class PlayerAttackInteraction : RSInteraction
     {
         _player = player;
         _target = target;
-        Target.X = target.Location.X;
-        Target.Y = target.Location.Y;
-        Target.Z = target.Location.Z;
     }
 
     public override bool Execute()
@@ -48,24 +45,32 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        int targetX = _player.InteractingEntity.Location.X;
-        int targetY = _player.InteractingEntity.Location.Y;
-        int targetZ = _player.InteractingEntity.Location.Z;
+        if (_player.CurrentHealth <= 0)
+        {
+            return false;
+        }
+
+        if (_target.CurrentHealth <= 0)
+        {
+            _player.CurrentInteraction = null;
+            _player.InteractingEntity = null;
+            _target = null;
+            _player.SetFacingEntity(null);
+            _player.PlayerMovementHandler.Reset();
+            return false;
+        }
+        
+        int targetX = _target.Location.X;
+        int targetY = _target.Location.Y;
+        int targetZ = _target.Location.Z;
 
         var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
             targetX, targetY);
         
-        if (_target.CurrentHealth <= 0)
-        {
-            _player.CurrentInteraction = null;
-            _player.SetFacingEntity(null);
-            Target = null;
-            return false;
-        }
 
         if (distance > 20)
         {
-            _player.Following = null;
+            // _player.Following = null;
             _player.CurrentInteraction = null;
             _player.SetFacingEntity(null);
             Target = null;
@@ -74,12 +79,12 @@ public class PlayerAttackInteraction : RSInteraction
         }
         
 
-        if (_player.Following != null)
+        if (_target != null)
         {
             if (distance > (int)combatDistance)
             {
                 _player.PlayerMovementHandler.Reset();
-                RSPathfinder.MeleeFollow(_player, _player.Following);
+                RSPathfinder.MeleeFollow(_player, _target);
                 _player.PlayerMovementHandler.Finish();
                 _player.PlayerMovementHandler.Process();
             }
@@ -88,7 +93,7 @@ public class PlayerAttackInteraction : RSInteraction
             if (distance <= 0)
             {
                 _player.PlayerMovementHandler.Reset();
-                RSPathfinder.MeleeFollow(_player, _player.Following);
+                RSPathfinder.MeleeFollow(_player, _target);
                 _player.PlayerMovementHandler.Finish();
                 _player.PlayerMovementHandler.Process();
             }
@@ -113,55 +118,5 @@ public class PlayerAttackInteraction : RSInteraction
         
         return isValidDistance && projectilePathClear && !isDiagonal;
 
-        // return true;
-
-        // _player.PlayerMovementHandler.Reset();
-        // // RSPathfinder.MeleeWalk(_player, _player.Following.Location);
-        // RSPathfinder.FindPath(_player, _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, true,
-        //     1, 1);
-        // _player.PlayerMovementHandler.Finish();
-        // _player.PlayerMovementHandler.Process();
-        // _player.PlayerMovementHandler.Reset();
-        // return false;
-
-        // int targetX = _player.InteractingEntity.Location.X;
-        // int targetY = _player.InteractingEntity.Location.Y;
-        // int targetZ = _player.InteractingEntity.Location.Z;
-        //
-        // _player.Session.PacketBuilder.SendMessage("X: " + _player.Location.X + " Y: " + _player.Location.Y + "");
-        //
-        // var projectilePathClear = MeleePathing.IsLongMeleeDistanceClear(_player, _player.Location.X, _player.Location.Y,
-        //     _player.Location.Z, targetX, targetY, 2);
-        //
-        // var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
-        // int moveDistance = 1;
-        // if (_player.PlayerMovementHandler.IsWalking)
-        //     moveDistance = 2;
-        // if (_player.PlayerMovementHandler.IsRunning)
-        //     moveDistance = 3;
-        //
-        //
-        // bool isValidDistance = distance <= moveDistance;
-        // bool isDiagonal = MeleePathing.IsDiagonal(_player.Location.X, _player.Location.Y, targetX, targetY);
-        //
-        // if (!isValidDistance || !projectilePathClear || isDiagonal)
-        // {
-        //     // _player.PlayerMovementHandler.Finish();
-        //     // _player.PlayerMovementHandler.Reset();
-        //     // // RSPathfinder.MeleeWalk(_player, _player.Following.Location);
-        //     // RSPathfinder.FindPath(_player, _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y, true,
-        //     //     1, 1);
-        //     // _player.PlayerMovementHandler.Finish();
-        //     // _player.PlayerMovementHandler.Process();
-        //     // _player.PlayerMovementHandler.Reset();
-        //     return false;
-        // }
-        //
-        // _player.Session.PacketBuilder.SendMessage($"MoveDistance: {moveDistance}");
-        // _player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal}");
-        // _player.Session.PacketBuilder.SendMessage($"InValidDistance: {isValidDistance}");
-        // _player.Session.PacketBuilder.SendMessage("NoClipping: " + projectilePathClear);
-        //
-        // return isValidDistance && projectilePathClear && !isDiagonal;
     }
 }

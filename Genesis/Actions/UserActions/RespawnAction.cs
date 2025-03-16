@@ -46,13 +46,15 @@ public class RespawnAction : RSAction
         EnvironmentBuilder.UpdateBuildArea(_player);
         _player.SetCurrentAnimation(-1);
         _player.CurrentHealth = 10;
-        _currentPhase = RespawnPhase.Spawn;
+        _player.NormalDelayTicks = 1;
     }
 
     private void StartRespawn()
     {
         _player.SetCurrentAnimation(836);
         _player.PlayerMovementHandler.Reset();
+        _player.CurrentInteraction = null;
+        _player.SetFacingEntity(null);
     }
 
     private void ScheduleNext(int ticks)

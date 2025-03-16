@@ -23,8 +23,8 @@ public class FollowPlayerPacket : IPacket
         var player =  World.GetPlayers().Where(x => x.Session.Index == _index).FirstOrDefault();
         if (player == null) return;
 
-        _player.Following = player;
-        _player.Session.PacketBuilder.SendMessage($"Following player with index: {_index}");
-        _player.SetFacingEntity(_player.Following);
+        // _player.Following = player;
+        // _player.Session.PacketBuilder.SendMessage($"Following player with index: {_index}");
+        // _player.SetFacingEntity(_player.Following);
     }
 }
