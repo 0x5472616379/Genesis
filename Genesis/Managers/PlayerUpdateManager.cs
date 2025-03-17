@@ -167,6 +167,7 @@ public class PlayerUpdateManager
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
+        // if ((mask & PlayerUpdateFlags.DoubleHit) != 0) AppendDoubleHit(player, playerFlagUpdateBlock);
     }
 
 
@@ -184,6 +185,14 @@ public class PlayerUpdateManager
     }
 
     private static void AppendSingleHit(Player player, RSStream playerFlagUpdateBlock)
+    {
+        playerFlagUpdateBlock.WriteByte((byte)player.RecentDamage.Amount); //hitDamage
+        playerFlagUpdateBlock.WriteByteA((byte)player.RecentDamage.Type); //hitType
+        playerFlagUpdateBlock.WriteByteC(player.CurrentHealth); //currentHealth
+        playerFlagUpdateBlock.WriteByte(player.SkillManager.Skills[(int)SkillType.HITPOINTS].Level); //maxHealth
+    }
+    
+    private static void AppendDoubleHit(Player player, RSStream playerFlagUpdateBlock)
     {
         playerFlagUpdateBlock.WriteByte((byte)player.RecentDamage.Amount); //hitDamage
         playerFlagUpdateBlock.WriteByteA((byte)player.RecentDamage.Type); //hitType

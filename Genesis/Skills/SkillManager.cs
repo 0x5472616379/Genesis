@@ -76,7 +76,7 @@ public class SkillManager
     public void RefreshSkill(SkillType type)
     {
         var skill = Skills[(int)type];
-        _player.Session.PacketBuilder.SendSkillUpdate((int)type, skill.Experience, skill.Level);
+        _player.Session.PacketBuilder.SendSkillUpdate((int)type, skill.Experience, _player.CurrentHealth);
     }
 
     public static int GetCombatLevel(double atk, double str, double mag, double rng, double def, double hp, double pry)

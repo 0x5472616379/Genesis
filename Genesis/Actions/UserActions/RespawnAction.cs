@@ -1,5 +1,6 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Skills;
 
 namespace ArcticRS.Actions;
 
@@ -47,6 +48,7 @@ public class RespawnAction : RSAction
         _player.SetCurrentAnimation(-1);
         _player.CurrentHealth = 10;
         _player.NormalDelayTicks = 1;
+        _player.SkillManager.RefreshSkill(SkillType.HITPOINTS);
     }
 
     private void StartRespawn()

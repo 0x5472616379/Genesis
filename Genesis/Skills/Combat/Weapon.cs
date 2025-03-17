@@ -10,8 +10,9 @@ public class Weapon
     public Gfx AttackerGfx { get; set; }
     public Gfx TargetGfx { get; set; }
     public int Delay { get; set; }
+    public int Damage { get; set; }
 
-    public Weapon(int id, int attackSpeed, int attackerAnim, Gfx attackerGfx, Gfx targetGfx, int delay)
+    public Weapon(int id, int attackSpeed, int attackerAnim, Gfx attackerGfx, Gfx targetGfx, int delay, int damage)
     {
         Id = id;
         AttackSpeed = attackSpeed;
@@ -19,5 +20,6 @@ public class Weapon
         AttackerGfx = attackerGfx;
         TargetGfx = targetGfx;
         Delay = delay;
+        Damage = damage;
     }
 }

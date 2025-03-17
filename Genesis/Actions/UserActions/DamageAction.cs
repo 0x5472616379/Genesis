@@ -16,10 +16,15 @@ public class DamageAction : RSAction
         Priority = ActionPriority.Forceful;
         ScheduledTick = tick;
     }
+
+    public Weapon GetWeapon()
+    {
+        return _weapon;
+    }
     
     public override bool Execute()
     {
-        _player.SetDamage(1, DamageType.HIT, _weapon);
+        _player.SetDamage(_weapon.Damage, DamageType.HIT, _weapon);
         return true;
     }
 }

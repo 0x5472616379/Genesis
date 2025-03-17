@@ -30,6 +30,7 @@ public class PlayerAttackInteraction : RSInteraction
     {
         if (!CanExecute()) return false;
 
+        _weapon.Damage = 1;
         return _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
         
         // if (attackLoaded)

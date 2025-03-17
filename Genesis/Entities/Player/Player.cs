@@ -139,6 +139,7 @@ public class Player : Entity
     }
 
     public Damage RecentDamage { get; set; }
+    public Damage RecentDamage1 { get; set; }
 
     public void SetDamage(int amount, DamageType type, Weapon weapon)
     {
@@ -156,7 +157,7 @@ public class Player : Entity
             CurrentHealth -= amount;
         }
 
-        // SkillManager.Skills[(int)SkillType.HITPOINTS].
+        SkillManager.RefreshSkill(SkillType.HITPOINTS);
         Flags |= PlayerUpdateFlags.SingleHit;
     }
 

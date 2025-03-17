@@ -2,6 +2,7 @@
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Model;
+using Genesis.Movement;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Interactions;
@@ -25,6 +26,11 @@ public class SpellOnPlayerInteraction : RSInteraction
     {
         if (!CanExecute()) return false;
 
+        var distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
+            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
+
+        _weapon.Delay = GetSpellDelay(distance);
+        _weapon.Damage = 2;
         return _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
     }
 
@@ -47,4 +53,16 @@ public class SpellOnPlayerInteraction : RSInteraction
 
         return false;
     }
+    
+    private int GetSpellDelay(int distance) => distance switch
+    {
+        1 => 1,
+        >= 2 and <= 4 => 2,
+        >= 5 and <= 7 => 3,
+        >= 8 and <= 10 => 4,
+        >= 11 and <= 13 => 5,
+        >= 14 and <= 15 => 6,
+        > 15 => 6,
+        _ => 1
+    };
 }
