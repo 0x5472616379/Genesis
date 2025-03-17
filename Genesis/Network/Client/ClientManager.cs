@@ -6,6 +6,7 @@ using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;
+using Genesis.Skills;
 using Genesis.Skills.Woodcutting;
 
 namespace Genesis.Client;
@@ -77,6 +78,10 @@ public class ClientManager
         for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
             player.InventoryItemContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
 
+        player.InventoryItemContainer.AddItem(555, 1500);
+        player.InventoryItemContainer.AddItem(560, 550);
+        player.InventoryItemContainer.AddItem(565, 1000);
+        
         player.BankItemContainer.AddItem(995, 2147483640);
 
         player.InventoryItemContainer.Refresh(player, GameInterfaces.DefaultInventoryContainer);

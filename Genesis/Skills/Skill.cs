@@ -42,7 +42,7 @@ public class Skill
             player.Session.PacketBuilder.SendTextToInterface($"Your {skillData.SkillType.ToTitleCase()} level is now {Level}.", skillData.TertiaryId);
             player.Session.PacketBuilder.SendChatInterface(skillData.PrimaryId);
             player.Session.PacketBuilder.SendMessage($"Congratulations! You've reached level {Level} in {SkillType.ToTitleCase()}!");
-            player.SetCurrentGfx(new Gfx() { Id = 199 });
+            player.SetCurrentGfx(new Gfx(199,1,0));
             return true;
         }
 

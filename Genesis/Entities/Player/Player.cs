@@ -140,11 +140,12 @@ public class Player : Entity
 
     public Damage RecentDamage { get; set; }
 
-    public void SetDamage(int amount, DamageType type, Gfx gfx)
+    public void SetDamage(int amount, DamageType type, Weapon weapon)
     {
         RecentDamage = new Damage(type, amount);
-        SetCurrentAnimation(424);
-        SetCurrentGfx(gfx);
+        SetCurrentAnimation(424); /* Block animation */
+        
+        SetCurrentGfx(weapon.TargetGfx);
         if (CurrentHealth - amount <= 0)
         {
             CurrentHealth = 0;

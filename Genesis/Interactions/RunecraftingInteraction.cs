@@ -91,7 +91,7 @@ public class RunecraftingInteraction : RSInteraction
 
     private void PlayRunecraftingEffects()
     {
-        _player.SetCurrentGfx(new Gfx() {Id = 186});
+        _player.SetCurrentGfx(new Gfx(186,1,0));
         _player.SetCurrentAnimation(791);
         _player.Session.PacketBuilder.SendSound(481, 0, 10);
     }

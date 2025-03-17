@@ -1,6 +1,8 @@
 ﻿using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Interactions;
+using Genesis.Model;
+using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;
 
@@ -26,9 +28,12 @@ public class AttackPlayerPacket : IPacket
             return;
         }
         
+        var weapon = new Weapon(-1, 5, 422, null, null, 0);
+
+        
         // _player.Following = World.GetPlayers()[_index - 1];
         _player.InteractingEntity = World.GetPlayers()[_index - 1];
         _player.SetFacingEntity(_player.InteractingEntity);
-        _player.CurrentInteraction = new PlayerAttackInteraction(_player, _player.InteractingEntity as Player);
+        _player.CurrentInteraction = new PlayerAttackInteraction(_player, _player.InteractingEntity as Player, weapon);
     }
 }

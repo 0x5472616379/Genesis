@@ -40,6 +40,15 @@ public class SkillManager
 
                 continue;
             }
+            
+            if ((SkillType)i == SkillType.MAGIC)
+            {
+                Skills[i] = new Skill((SkillType)i);
+                Skills[i].Level = 99;
+                Skills[i].Experience = EXPERIENCE_TABLE[99];
+
+                continue;
+            }
 
             Skills[i] = new Skill((SkillType)i);
             Skills[i].Level = 1;
