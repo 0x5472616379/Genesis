@@ -19,7 +19,7 @@ public class CombatManager
 
     public bool Attack(Player target, int currentTick, Weapon weapon)
     {
-        if (LastAttackTick == -1 || (currentTick - LastAttackTick) >= weapon.AttackSpeed)
+        if (LastAttackTick == -1 || (currentTick - LastAttackTick) >= AttackedWith.AttackSpeed)
         {
             /* Perform Attack */
             LastAttackTick = currentTick;

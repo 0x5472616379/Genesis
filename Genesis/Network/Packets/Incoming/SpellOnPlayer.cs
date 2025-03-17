@@ -2,6 +2,7 @@
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Model;
+using Genesis.Movement;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;
@@ -31,12 +32,28 @@ public class SpellOnPlayer : IPacket
         {
             return;
         }
-        
-        var weapon = new Weapon(_spellId, 5, 1979, null, new Gfx(369, 0, 0), 3);
+
 
         _player.Session.PacketBuilder.SendMessage($"PlayerIndex: {_index}");
         _player.Session.PacketBuilder.SendMessage($"SpellId: {_spellId}");
         _player.InteractingEntity = World.GetPlayers()[_index - 1];
+        
+        var distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
+            _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
+        
+        var weapon = new Weapon(_spellId, 5, 1979, null, new Gfx(369, 0, 0), GetSpellDelay(distance));
         _player.CurrentInteraction = new SpellOnPlayerInteraction(_player, _player.InteractingEntity as Player, weapon);
     }
+
+    private int GetSpellDelay(int distance) => distance switch
+    {
+        1 => 1,
+        >= 2 and <= 4 => 2,
+        >= 5 and <= 7 => 3,
+        >= 8 and <= 10 => 4,
+        >= 11 and <= 13 => 5,
+        >= 14 and <= 15 => 6,
+        > 15 => 6,
+        _ => 1
+    };
 }
