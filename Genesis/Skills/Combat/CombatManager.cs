@@ -26,7 +26,7 @@ public class CombatManager
             _player.SetCurrentAnimation(weapon.AttackerAnim);
             target.ActionHandler.AddAction(new DamageAction(target, weapon, World.CurrentTick + weapon.Delay));
             AttackedWith = weapon;
-            return true;
+            return false;
         }
 
         return false;
