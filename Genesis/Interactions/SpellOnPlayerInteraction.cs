@@ -53,6 +53,7 @@ public class SpellOnPlayerInteraction : RSInteraction
 
         return false;
     }
+
     
     private int GetSpellDelay(int distance) => distance switch
     {

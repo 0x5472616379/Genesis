@@ -1,8 +1,8 @@
 ﻿using Genesis.Configuration;
 
-namespace Genesis.Shop;
+namespace Genesis.Shops;
 
-public class Shops
+public class ShopsContainer
 {
     public static Shop GeneralStore = new Shop("Lumbridge General Store", GameInterfaces.DefaultShopWindowInterface, GameInterfaces.DefaultShopInventoryInterface);
 }

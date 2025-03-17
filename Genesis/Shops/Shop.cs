@@ -3,7 +3,7 @@ using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Model;
 
-namespace Genesis.Shop;
+namespace Genesis.Shops;
 
 public class Shop
 {
@@ -38,7 +38,7 @@ public class Shop
         }
     }
 
-    public void OpenForPlayer(Player player)
+    public Shop OpenForPlayer(Player player)
     {
         player.InventoryItemContainer.CopyToContainer(PlayerMirror);
 
@@ -46,6 +46,7 @@ public class Shop
 
         player.Session.PacketBuilder.SendTextToInterface(Name, GameInterfaces.ShopWindowTitleInterface);
         player.Session.PacketBuilder.SendInterface(_shopInterfaceId, _inventoryInterfaceId);
+        return this;
     }
 
     public void BuyItem(Player player, int slot, int quantity)

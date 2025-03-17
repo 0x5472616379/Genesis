@@ -6,6 +6,7 @@ using Genesis.Interactions;
 using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
+using Genesis.Shops;
 using Genesis.Skills;
 using Genesis.Skills.Combat;
 
@@ -170,6 +171,7 @@ public class Player : Entity
     }
 
     public Entity InteractingEntity { get; set; }
+    public Shop OpenShop { get; set; }
 
     public void SetFacingEntity(Entity entity)
     {

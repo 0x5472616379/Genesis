@@ -35,6 +35,8 @@ public static class PacketFactory
                 return new FollowPlayerPacket(parameters);
             case 40:
                 return new DialogueClickPacket(parameters);
+            case 130:
+                return new CloseWindowPacket(parameters);
             case 192:
                 return new ItemOnWorldObjectPacket(parameters);
             case 117:

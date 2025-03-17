@@ -1,7 +1,7 @@
 ﻿using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Model;
-using Genesis.Shop;
+using Genesis.Shops;
 
 namespace Genesis.Packets.Incoming;
 
@@ -56,12 +56,12 @@ public class WithdrawSecondOptionFromContainerPacket : IPacket
         
         if (_fromContainer == GameInterfaces.DefaultShopWindowContainer)
         {
-            Shops.GeneralStore.BuyItem(_player, _from, 1);
+            ShopsContainer.GeneralStore.BuyItem(_player, _from, 1);
         }
         
         if (_fromContainer == GameInterfaces.DefaultShopInventoryContainer)
         {
-            Shops.GeneralStore.SellItem(_player, _from, 1);
+            ShopsContainer.GeneralStore.SellItem(_player, _from, 1);
         }
     }
 }

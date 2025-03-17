@@ -69,11 +69,12 @@ public class NetworkSession
             Fill(1);
 
             _opCode = (byte)(Reader.ReadUnsignedByte() - InEncryption.GetNextKey());
+            // Console.WriteLine($"Received opcode: {_opCode}");
             _packetLength = GameConstants.INCOMING_SIZES[_opCode];
 
             _state = _packetLength switch
             {
-                0 => FetchState.READ_OPCODE, // we should add this packet to the player even if its empty
+                0 => FetchState.READ_PAYLOAD, // we should add this packet to the player even if its empty
                 -1 => FetchState.READ_VAR_SIZE,
                 _ => FetchState.READ_PAYLOAD
             };
@@ -92,12 +93,22 @@ public class NetworkSession
         if (_state != FetchState.READ_PAYLOAD) return;
 
         if (_packetLength > Socket.Available) return;
+        if (_opCode == 0)
+        {
+            _state = FetchState.READ_OPCODE;
+            return;
+        }
+        
+        if (_packetLength > 0)
+        {
+            Fill(_packetLength);
+        }
 
-        Fill(_packetLength);
         Console.WriteLine($"[{_opCode}] Packet Received - Length: {_packetLength}");
 
-        var packet = PacketFactory.CreateClientPacket(_opCode, new PacketParameters { OpCode = _opCode, Length = _packetLength, Player = _owner });
-        
+        var packet = PacketFactory.CreateClientPacket(_opCode,
+            new PacketParameters { OpCode = _opCode, Length = _packetLength, Player = _owner });
+
         if (packet != null)
             PacketCache.Add(_opCode, packet);
 

@@ -3,7 +3,7 @@ using Genesis;
 using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Environment;
-using Genesis.Shop;
+using Genesis.Shops;
 
 var ifs = new IndexedFileSystem("../../../Data/cache", true);
 

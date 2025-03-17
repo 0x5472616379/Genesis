@@ -1,7 +1,8 @@
 ﻿using ArcticRS.Constants;
 using Genesis.Configuration;
 using Genesis.Entities;
-using Genesis.Shop;
+using Genesis.Environment;
+using Genesis.Shops;
 
 namespace Genesis.Commands;
 
@@ -20,7 +21,9 @@ public class OpenShopCommand : RSCommand
 
     public override void Invoke()
     {
-        Shops.GeneralStore.OpenForPlayer(Player);
+        Player.OpenShop = ShopsContainer.GeneralStore.OpenForPlayer(Player);
+        Player.Session.PacketBuilder.SendMessage($"Amount that has shop open: {World.GetPlayers().Count(x => x != null && x.OpenShop == ShopsContainer.GeneralStore)}");
+        
         // Player.InventoryItemContainer.CopyToContainer(Player.ShopInventoryItemContainer);
         //
         // Player.ShopItemContainer.Refresh(Player, GameInterfaces.DefaultBankContainer);
