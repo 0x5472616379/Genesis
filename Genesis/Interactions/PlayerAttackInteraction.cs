@@ -90,12 +90,6 @@ public class PlayerAttackInteraction : RSInteraction
                 return true;
             }
         }
-
-        _player.PlayerMovementHandler.Reset();
-        RSPathfinder.FindPath(_player, _target.Location.X, _target.Location.Y, true, 1, 1);
-        _player.PlayerMovementHandler.Finish();
-        _player.PlayerMovementHandler.Process();
-        _player.PlayerMovementHandler.Reset();
         
         return false;
     }

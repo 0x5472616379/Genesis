@@ -35,8 +35,8 @@ public class SkillManager
             if ((SkillType)i == SkillType.HITPOINTS)
             {
                 Skills[i] = new Skill((SkillType)i);
-                Skills[i].Level = 10;
-                Skills[i].Experience = EXPERIENCE_TABLE[10];
+                Skills[i].Level = 99;
+                Skills[i].Experience = EXPERIENCE_TABLE[99];
 
                 continue;
             }

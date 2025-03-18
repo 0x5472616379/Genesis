@@ -46,7 +46,7 @@ public class RespawnAction : RSAction
         _player.Session.PacketBuilder.SendNewBuildAreaPacket();
         EnvironmentBuilder.UpdateBuildArea(_player);
         _player.SetCurrentAnimation(-1);
-        _player.CurrentHealth = 10;
+        _player.CurrentHealth = _player.SkillManager.Skills[(int)SkillType.HITPOINTS].Level;
         _player.NormalDelayTicks = 1;
         _player.SkillManager.RefreshSkill(SkillType.HITPOINTS);
     }

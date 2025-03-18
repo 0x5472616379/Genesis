@@ -30,7 +30,7 @@ public class SpellOnPlayerInteraction : RSInteraction
             _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
 
         _weapon.Delay = GetSpellDelay(distance);
-        _weapon.Damage = 2;
+        _weapon.Damage = 1;
         _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
         return true;
     }
@@ -53,11 +53,11 @@ public class SpellOnPlayerInteraction : RSInteraction
         }
 
         
-        _player.PlayerMovementHandler.Reset();
-        RSPathfinder.FindPath(_player, _target.Location.X, _target.Location.Y, true, 1, 1);
-        _player.PlayerMovementHandler.Finish();
-        _player.PlayerMovementHandler.Process();
-        _player.PlayerMovementHandler.Reset();
+        // _player.PlayerMovementHandler.Reset();
+        // RSPathfinder.FindPath(_player, _target.Location.X, _target.Location.Y, true, 1, 1);
+        // _player.PlayerMovementHandler.Finish();
+        // _player.PlayerMovementHandler.Process();
+        // _player.PlayerMovementHandler.Reset();
         return false;
     }
 
