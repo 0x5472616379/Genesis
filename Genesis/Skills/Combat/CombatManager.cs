@@ -26,7 +26,7 @@ public class CombatManager
             _player.SetCurrentAnimation(weapon.AttackerAnim);
             target.ActionHandler.AddAction(new DamageAction(target, weapon, World.CurrentTick + weapon.Delay));
             AttackedWith = weapon;
-            return false;
+            return true;
         }
 
         return false;
@@ -56,19 +56,22 @@ public class CombatManager
 
         if (distance > (int)CombatDistances.Magic)
         {
-            _player.PlayerMovementHandler.Reset();
-            RSPathfinder.MeleeFollow(_player, target);
-            _player.PlayerMovementHandler.Finish();
-            _player.PlayerMovementHandler.Process();
+             // _player.PlayerMovementHandler.Reset();
+             // RSPathfinder.MeleeFollow(_player, target);
+             // RSPathfinder.FindPath(_player, targetX, targetY, true, 1, 1);
+             // _player.PlayerMovementHandler.Finish();
+             // _player.PlayerMovementHandler.Process();
+             return false;
         }
 
         /* If same tile step away */
         if (distance <= 0)
         {
-            _player.PlayerMovementHandler.Reset();
-            RSPathfinder.MeleeFollow(_player, target);
-            _player.PlayerMovementHandler.Finish();
-            _player.PlayerMovementHandler.Process();
+            // _player.PlayerMovementHandler.Reset();
+            // RSPathfinder.MeleeFollow(_player, target);
+            // _player.PlayerMovementHandler.Finish();
+            // _player.PlayerMovementHandler.Process();
+            return false;
         }
 
         bool isValidDistance = distance <= (int)CombatDistances.Magic;
@@ -101,19 +104,19 @@ public class CombatManager
 
         if (distance > (int)CombatDistances.Melee)
         {
-            _player.PlayerMovementHandler.Reset();
-            RSPathfinder.MeleeFollow(_player, target);
-            _player.PlayerMovementHandler.Finish();
-            _player.PlayerMovementHandler.Process();
+            // _player.PlayerMovementHandler.Reset();
+            // RSPathfinder.MeleeFollow(_player, target);
+            // _player.PlayerMovementHandler.Finish();
+            // _player.PlayerMovementHandler.Process();
         }
 
         /* If same tile step away */
         if (distance <= 0)
         {
-            _player.PlayerMovementHandler.Reset();
-            RSPathfinder.MeleeFollow(_player, target);
-            _player.PlayerMovementHandler.Finish();
-            _player.PlayerMovementHandler.Process();
+            // _player.PlayerMovementHandler.Reset();
+            // RSPathfinder.MeleeFollow(_player, target);
+            // _player.PlayerMovementHandler.Finish();
+            // _player.PlayerMovementHandler.Process();
         }
 
         int moveDistance = 1;

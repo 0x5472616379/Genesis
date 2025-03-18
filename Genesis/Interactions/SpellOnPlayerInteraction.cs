@@ -31,7 +31,8 @@ public class SpellOnPlayerInteraction : RSInteraction
 
         _weapon.Delay = GetSpellDelay(distance);
         _weapon.Damage = 2;
-        return _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
+        _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
+        return true;
     }
 
     public override bool CanExecute()
@@ -51,6 +52,12 @@ public class SpellOnPlayerInteraction : RSInteraction
             return true;
         }
 
+        
+        _player.PlayerMovementHandler.Reset();
+        RSPathfinder.FindPath(_player, _target.Location.X, _target.Location.Y, true, 1, 1);
+        _player.PlayerMovementHandler.Finish();
+        _player.PlayerMovementHandler.Process();
+        _player.PlayerMovementHandler.Reset();
         return false;
     }
 

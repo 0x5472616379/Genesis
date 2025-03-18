@@ -44,7 +44,7 @@ public class Player : Entity
     public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
     public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
     public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    
+
     public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
 
     public Player()
@@ -85,19 +85,20 @@ public class Player : Entity
 
     public void ProcessMovement()
     {
-        if (CurrentInteraction != null && InteractingEntity != null)
-        {
-            // if (InteractingEntity is Player player)
-            // {
-            //     PlayerMovementHandler.Reset();
-            //     RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
-            //     PlayerMovementHandler.Finish();
-            // }
-        }
-        else
-        {
-            // PlayerMovementHandler.Process();
-        }
+        // if (CurrentInteraction != null && InteractingEntity != null)
+        // {
+        //     // if (InteractingEntity is Player player)
+        //     // {
+        //     //     PlayerMovementHandler.Reset();
+        //     //     RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
+        //     //     PlayerMovementHandler.Finish();
+        //     // }
+        // }
+        // else
+        // {
+        //     PlayerMovementHandler.Process();
+        // }
+        
         PlayerMovementHandler.Process();
     }
 
@@ -149,7 +150,7 @@ public class Player : Entity
     {
         RecentDamage = new Damage(type, amount);
         SetCurrentAnimation(424); /* Block animation */
-        
+
         SetCurrentGfx(weapon.TargetGfx);
         if (CurrentHealth - amount <= 0)
         {

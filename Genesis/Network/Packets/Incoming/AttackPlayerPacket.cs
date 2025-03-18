@@ -28,6 +28,8 @@ public class AttackPlayerPacket : IPacket
             return;
         }
         
+        _player.PlayerMovementHandler.Reset();
+
         var weapon = new Weapon(-1, 4, 422, null, null, 0, 0);
         
         // _player.Following = World.GetPlayers()[_index - 1];

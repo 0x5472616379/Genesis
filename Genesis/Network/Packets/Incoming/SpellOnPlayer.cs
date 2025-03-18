@@ -33,7 +33,8 @@ public class SpellOnPlayer : IPacket
             return;
         }
 
-
+        _player.PlayerMovementHandler.Reset();
+        
         _player.Session.PacketBuilder.SendMessage($"PlayerIndex: {_index}");
         _player.Session.PacketBuilder.SendMessage($"SpellId: {_spellId}");
         _player.InteractingEntity = World.GetPlayers()[_index - 1];

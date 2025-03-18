@@ -19,6 +19,8 @@ public class PlayerAttackInteraction : RSInteraction
 
     private CombatDistances combatDistance = CombatDistances.Melee;
 
+    private bool UsingBow = false;
+
     public PlayerAttackInteraction(Player player, Player target, Weapon weapon)
     {
         _player = player;
@@ -29,10 +31,15 @@ public class PlayerAttackInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
-
         _weapon.Damage = 1;
+
+        if (UsingBow)
+            _weapon.AttackerAnim = 426;
+        else
+            _weapon.AttackerAnim = 422;
+
         return _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
-        
+
         // if (attackLoaded)
         // {
         //     _player.SetCurrentAnimation(422);
@@ -51,6 +58,7 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
+        UsingBow = false;
         if (_player.CurrentHealth <= 0)
         {
             return false;
@@ -65,13 +73,30 @@ public class PlayerAttackInteraction : RSInteraction
             _player.PlayerMovementHandler.Reset();
             return false;
         }
-        
-        if (_player.CombatManager.InValidMeleeDistance(_target))
+
+        if (UsingBow)
         {
-            _player.PlayerMovementHandler.Reset();
-            return true;
+            if (_player.CombatManager.InValidProjectileDistance(_target))
+            {
+                _player.PlayerMovementHandler.Reset();
+                return true;
+            }
+        }
+        else
+        {
+            if (_player.CombatManager.InValidMeleeDistance(_target))
+            {
+                _player.PlayerMovementHandler.Reset();
+                return true;
+            }
         }
 
+        _player.PlayerMovementHandler.Reset();
+        RSPathfinder.FindPath(_player, _target.Location.X, _target.Location.Y, true, 1, 1);
+        _player.PlayerMovementHandler.Finish();
+        _player.PlayerMovementHandler.Process();
+        _player.PlayerMovementHandler.Reset();
+        
         return false;
     }
 }
