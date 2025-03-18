@@ -27,8 +27,10 @@ public class EquipItemPacket : IPacket
 
     public void Process()
     {
-        return;
+        // return;
         // _player.ActionHandler.AddAction(new EquipAction(_player, new RSItem(_itemId, 1, _index), _index));
+        _player.EquipmentManager.Equip(new RSItem(_itemId, 1));
+        _player.EquipmentManager.Refresh();
         // _player.ClearInteraction();
     }
 }

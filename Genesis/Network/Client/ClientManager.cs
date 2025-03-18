@@ -74,23 +74,36 @@ public class ClientManager
         //
         // player.InventoryManager.AddItem(544);
         // player.InventoryManager.AddItem(542);
+        
+        LoadPVPGear(player);
 
-        for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
-            player.InventoryItemContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
-
-        player.InventoryItemContainer.AddItem(555, 1500);
-        player.InventoryItemContainer.AddItem(560, 550);
-        player.InventoryItemContainer.AddItem(565, 1000);
+        // for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
+        //     player.InventoryItemContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
+        //
+        // player.InventoryItemContainer.AddItem(555, 1500);
+        // player.InventoryItemContainer.AddItem(560, 550);
+        // player.InventoryItemContainer.AddItem(565, 1000);
         
         player.BankItemContainer.AddItem(995, 2147483640);
-
         player.InventoryItemContainer.Refresh(player, GameInterfaces.DefaultInventoryContainer);
+    }
 
-        // player.InventoryManager.RefreshInventory();
-        // player.EquipmentManager.Refresh();
-
-
-        // player.EquipmentManager.Equip(new RSItem(544, 1), EquipmentSlot.Chest);
-        // player.EquipmentManager.Equip(new RSItem(542, 1), EquipmentSlot.Legs);
+    static void LoadPVPGear(Player player)
+    {
+        player.InventoryItemContainer.AddItem(6107, 1); /* Ghost Robe Top*/
+        player.InventoryItemContainer.AddItem(4675, 1); /* Ancient Staff */
+        player.InventoryItemContainer.AddItem(2581, 1); /* Robin Hood Hat*/
+        player.InventoryItemContainer.AddItem(6737, 1); /* Bring */
+        player.InventoryItemContainer.AddItem(2497, 1); /* Black dhide chaps */
+        player.InventoryItemContainer.AddItem(3842, 1); /* unholy book */
+        player.InventoryItemContainer.AddItem(6585, 1); /* Amulet of Fury */
+        player.InventoryItemContainer.AddItem(5698, 1); /* Dds */
+        player.InventoryItemContainer.AddItem(861,  1); /* MSB */
+        player.InventoryItemContainer.AddItem(892, 1000); /* Rune Arrows */
+        player.InventoryItemContainer.AddItem(3105, 1); /* Climbing Boots */
+        player.InventoryItemContainer.AddItem(6570, 1); /* Fire cape */
+        player.InventoryItemContainer.AddItem(2491, 1); /* Black dhide vambs */
+        player.InventoryItemContainer.AddItem(4587, 1); /* Dscim */
+        
     }
 }

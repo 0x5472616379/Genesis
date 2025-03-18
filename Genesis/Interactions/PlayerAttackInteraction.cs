@@ -33,10 +33,12 @@ public class PlayerAttackInteraction : RSInteraction
         if (!CanExecute()) return false;
         _weapon.Damage = 1;
 
-        if (UsingBow)
-            _weapon.AttackerAnim = 426;
-        else
-            _weapon.AttackerAnim = 422;
+        _weapon.AttackerAnim = _player.AnimationManager.GetWeaponAnimation(_weapon.Id, 1);
+        
+        // if (UsingBow)
+        //     _weapon.AttackerAnim = 426;
+        // else
+        //     _weapon.AttackerAnim = 422;
 
         return _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
 

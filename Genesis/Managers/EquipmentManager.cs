@@ -47,7 +47,12 @@ public class EquipmentManager
     public void Equip(RSItem rsItem)
     {
          var slot = GetEquipmentSlotById(rsItem.Id);
-        
+
+         if (slot == EquipmentSlot.Weapon)
+         {
+             _player.AnimationManager.SetAnimations(string.Empty, rsItem.Id);
+         }
+         
          if (Equipment.ContainsKey(slot))
              Unequip(slot);
         
