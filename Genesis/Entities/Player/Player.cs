@@ -44,6 +44,8 @@ public class Player : Entity
     public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
     public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
     public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    
+    public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
 
     public Player()
     {
@@ -85,17 +87,18 @@ public class Player : Entity
     {
         if (CurrentInteraction != null && InteractingEntity != null)
         {
-            if (InteractingEntity is Player player)
-            {
-                PlayerMovementHandler.Reset();
-                RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
-                PlayerMovementHandler.Finish();
-            }
+            // if (InteractingEntity is Player player)
+            // {
+            //     PlayerMovementHandler.Reset();
+            //     RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
+            //     PlayerMovementHandler.Finish();
+            // }
         }
         else
         {
-            PlayerMovementHandler.Process();
+            // PlayerMovementHandler.Process();
         }
+        PlayerMovementHandler.Process();
     }
 
     public void AddLocalPlayer(Entity player)

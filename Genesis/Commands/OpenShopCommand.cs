@@ -22,7 +22,7 @@ public class OpenShopCommand : RSCommand
     public override void Invoke()
     {
         Player.OpenShop = ShopsContainer.GeneralStore.OpenForPlayer(Player);
-        Player.Session.PacketBuilder.SendMessage($"Amount that has shop open: {World.GetPlayers().Count(x => x != null && x.OpenShop == ShopsContainer.GeneralStore)}");
+        Player.Session.PacketBuilder.SendMessage($"Amount that has shop open: {World.GetPlayers().Count(x => x != null && x.OpenShop == Player.OpenShop)}");
         
         // Player.InventoryItemContainer.CopyToContainer(Player.ShopInventoryItemContainer);
         //

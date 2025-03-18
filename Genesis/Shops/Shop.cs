@@ -1,6 +1,7 @@
 ﻿using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Entities;
+using Genesis.Environment;
 using Genesis.Model;
 
 namespace Genesis.Shops;
@@ -9,7 +10,7 @@ public class Shop
 {
     public string Name { get; }
     public Container Stock { get; }
-    public Container PlayerMirror { get; }
+    // public Container PlayerMirror { get; }
     private int _shopInterfaceId;
     private int _inventoryInterfaceId;
 
@@ -17,7 +18,7 @@ public class Shop
     {
         Name = name;
         Stock = new Container(stockSize, true);
-        PlayerMirror = new Container(28, false); // Matches player inventory size
+        // PlayerMirror = new Container(28, false); // Matches player inventory size
         _shopInterfaceId = shopInterfaceId;
         _inventoryInterfaceId = inventoryInterfaceId;
 
@@ -40,7 +41,7 @@ public class Shop
 
     public Shop OpenForPlayer(Player player)
     {
-        player.InventoryItemContainer.CopyToContainer(PlayerMirror);
+        player.InventoryItemContainer.CopyToContainer(player.ShopInventoryItemContainer);
 
         RefreshInterfaces(player);
 
@@ -78,7 +79,7 @@ public class Shop
                 int transferred = InventorySystem.Transfer(Stock, player.InventoryItemContainer, itemId, quantityToBuy);
                 if (transferred > 0)
                 {
-                    player.InventoryItemContainer.CopyToContainer(PlayerMirror);
+                    player.InventoryItemContainer.CopyToContainer(player.ShopInventoryItemContainer);
                     RefreshInterfaces(player);
                     player.Session.PacketBuilder.SendMessage($"Purchased {transferred} items.");
                 }
@@ -103,7 +104,7 @@ public class Shop
             {
                 int totalCost = transferred * price;
                 player.InventoryItemContainer.RemoveItem(995, totalCost);
-                player.InventoryItemContainer.CopyToContainer(PlayerMirror);
+                player.InventoryItemContainer.CopyToContainer(player.ShopInventoryItemContainer);
                 RefreshInterfaces(player);
                 player.Session.PacketBuilder.SendMessage($"Purchased {transferred} items.");
             }
@@ -112,11 +113,14 @@ public class Shop
                 player.Session.PacketBuilder.SendMessage("Not enough space in inventory.");
             }
         }
+        
+        GlobalRefresh();
+
     }
 
     public void SellItem(Player player, int slot, int quantity)
     {
-        var playerItem = PlayerMirror.GetItem(slot);
+        var playerItem = player.ShopInventoryItemContainer.GetItem(slot);
         if (playerItem.IsEmpty) return;
 
 
@@ -135,18 +139,27 @@ public class Shop
         if (transferred > 0)
         {
             player.InventoryItemContainer.AddItem(995, totalValue);
-            player.InventoryItemContainer.CopyToContainer(PlayerMirror);
+            player.InventoryItemContainer.CopyToContainer(player.ShopInventoryItemContainer);
             RefreshInterfaces(player);
         }
+
+        GlobalRefresh();
     }
 
     private void RefreshInterfaces(Player player)
     {
         Stock.Refresh(player, GameInterfaces.DefaultShopWindowContainer);
-        PlayerMirror.Refresh(player, GameInterfaces.DefaultShopInventoryContainer);
+        player.ShopInventoryItemContainer.Refresh(player, GameInterfaces.DefaultShopInventoryContainer);
         player.InventoryItemContainer.Refresh(player, GameInterfaces.DefaultInventoryContainer);
     }
 
+     public void GlobalRefresh()
+     {
+         var players = World.GetPlayers().Where(x => x != null && x.OpenShop == this);
+         foreach (var player in players)
+             player.OpenShop.Stock.Refresh(player, GameInterfaces.DefaultShopWindowContainer);
+     }
+    
     private int CalculateBuyPrice(int itemId)
     {
         return 10;
