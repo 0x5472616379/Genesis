@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using ArcticRS.Appearance;
+using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Model;
@@ -30,7 +31,7 @@ public class AttackPlayerPacket : IPacket
         
         _player.PlayerMovementHandler.Reset();
 
-        var weapon = new Weapon(-1, 4, 422, null, null, 0, 0);
+        var weapon = new Weapon(_player.EquipmentManager.GetItem(EquipmentSlot.Weapon).Id, 4, 422, null, null, 0, 0);
         
         // _player.Following = World.GetPlayers()[_index - 1];
         _player.InteractingEntity = World.GetPlayers()[_index - 1];

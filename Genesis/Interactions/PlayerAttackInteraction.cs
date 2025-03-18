@@ -33,7 +33,7 @@ public class PlayerAttackInteraction : RSInteraction
         if (!CanExecute()) return false;
         _weapon.Damage = 1;
 
-        _weapon.AttackerAnim = _player.AnimationManager.GetWeaponAnimation(_weapon.Id, 1);
+        
         
         // if (UsingBow)
         //     _weapon.AttackerAnim = 426;
@@ -60,6 +60,8 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
+        _weapon.AttackerAnim = _player.AnimationManager.GetWeaponAnimation(_weapon.Id, 1);
+        
         UsingBow = false;
         if (_player.CurrentHealth <= 0)
         {
