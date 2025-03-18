@@ -66,7 +66,8 @@ public class Shop
             return;
         }
 
-        int quantityToBuy = Math.Min(quantity, maxAffordable);
+        int availableStock = shopItem.Quantity;
+        int quantityToBuy = Math.Min(quantity, Math.Min(maxAffordable, availableStock));
 
         /* Check if the player has the exact amount of coins needed */
         if (playerCoins == price * quantityToBuy)
