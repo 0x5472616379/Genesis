@@ -20,6 +20,9 @@ public class EatFoodAction : RSAction
 
     public override bool Execute()
     {
+        if (_player.CurrentHealth <= 0)
+            return true;
+
         switch (_currentState)
         {
             case EatState.Eat:
