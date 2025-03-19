@@ -42,8 +42,8 @@ public class SpawnItemCommand : RSCommand
 
     public override void Invoke()
     {
-         // var def = ItemDefinition.Lookup(_id);
-         // Player.InventoryItemContainer.AddItem(_id, _amount);
-         // Player.InventoryItemContainer.Refresh(Player, GameInterfaces.DefaultInventoryContainer);
+         var def = ItemDefinition.Lookup(_id);
+         Player.Inventory.AddItem(_id, _amount);
+         Player.Inventory.Refresh(Player, GameInterfaces.DefaultInventoryContainer);
     }
 }

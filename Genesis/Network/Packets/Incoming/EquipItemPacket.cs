@@ -12,7 +12,7 @@ public class EquipItemPacket : IPacket
     private readonly int _opcode;
     private readonly int _length;
     private readonly int _itemId;
-    private readonly int _index;
+    private readonly int _fromIndex;
     private readonly int _interfaceId;
 
     public EquipItemPacket(PacketParameters parameters)
@@ -22,18 +22,20 @@ public class EquipItemPacket : IPacket
         _length = parameters.Length;
 
         _itemId = _player.Session.Reader.ReadSignedWord();
-        _index = _player.Session.Reader.ReadSignedWordA();
+        _fromIndex = _player.Session.Reader.ReadSignedWordA();
         _interfaceId = _player.Session.Reader.ReadSignedWordA();
     }
 
     public void Process()
     {
-        if (!_player.Inventory.ContainsAt(_index, _itemId))
+        if (!_player.Inventory.ContainsAt(_fromIndex, _itemId))
             return;
         
-        if (_player.Equipment.TryEquip(_player, _itemId, 1))
+        var item = _player.Inventory.GetItemAtIndex(_fromIndex);
+        
+        if (_player.Equipment.TryEquip(_player, _itemId, item.Quantity, _fromIndex))
         {
-            _player.Inventory.RemoveAt(_index);
+            // _player.Inventory.RemoveAt(_fromIndex);
             _player.Inventory.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
             _player.Equipment.Refresh(_player, GameInterfaces.EquipmentContainer);
         }

@@ -25,6 +25,15 @@ public class RSContainer
             _slots.Add(new ItemSlot());
     }
 
+    public void OverrideAtIndex(int index, int itemId, int quantity)
+    {
+        _slots[index] = new ItemSlot
+        {
+            ItemId = itemId,
+            Quantity = quantity
+        };
+    }
+    
     public virtual bool ContainsAt(int index, int itemId, int minQuantity = 1)
     {
         // Validate index bounds first
@@ -177,6 +186,16 @@ public class RSContainer
         
         return removed;
     }
+    
+    public void Swap(int index1, int index2)
+    {
+        if (index1 < 0 || index1 >= _slots.Count || index2 < 0 || index2 >= _slots.Count)
+            throw new ArgumentOutOfRangeException();
+
+        (_slots[index1], _slots[index2]) = (_slots[index2], _slots[index1]);
+    }
+
+    public ItemSlot GetItemAtIndex(int index) => _slots[index];
     
     public void Refresh(Player player, int interfaceId)
     {

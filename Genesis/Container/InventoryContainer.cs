@@ -1,4 +1,6 @@
-﻿namespace Genesis.Container;
+﻿using Genesis.Model;
+
+namespace Genesis.Container;
 
 public class InventoryContainer : RSContainer
 {
@@ -6,4 +8,6 @@ public class InventoryContainer : RSContainer
     {
         
     }
+
+    
 }

@@ -34,7 +34,7 @@ public class MoveItemInContainerPacket : IPacket
 
         if (_containerId == GameInterfaces.DefaultInventoryContainer)
         {
-            // _player.InventoryItemContainer.Swap(_from, _to);
+            _player.Inventory.Swap(_from, _to);
         }
 
         if (_containerId == GameInterfaces.DefaultBankContainer)
