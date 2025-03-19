@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Actions;
 using Genesis.Client;
 using Genesis.Configuration;
+using Genesis.Container;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Managers;
@@ -41,11 +42,15 @@ public class Player : Entity
     public DialogueManager DialogueManager { get; set; }
     // public Player Following { get; set; }
 
-    public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
-    public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-
-    public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    // public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
+    // public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    // public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    // public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
+    // public Container EquipmentContainer { get; set; } = new(11, false);
+    
+    public RSContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
+    public RSContainer BankContainer { get; set; } = new BankContainer(ServerConfig.BANK_SIZE);
+    public EquipmentContainer Equipment { get; } = new EquipmentContainer();
 
     public Player()
     {

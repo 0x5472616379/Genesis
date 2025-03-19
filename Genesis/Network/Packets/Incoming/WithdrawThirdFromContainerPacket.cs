@@ -35,23 +35,23 @@ public class WithdrawThirdFromContainerPacket : IPacket
         /* Bank Inventory Container */
         if (_fromContainer == GameInterfaces.BankInventoryContainer)
         {
-            InventorySystem.Transfer(_player.InventoryItemContainer, _player.BankItemContainer, _itemId, 10);
-            _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
-
-            _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
-            _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
-            _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            // InventorySystem.Transfer(_player.InventoryItemContainer, _player.BankItemContainer, _itemId, 10);
+            // _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
+            //
+            // _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
+            // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
+            // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
 
         }
 
         if (_fromContainer == GameInterfaces.DefaultBankContainer)
         {
-            InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, 10);
-            _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
-            
-            _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
-            _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
-            _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            // InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, 10);
+            // _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
+            //
+            // _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
+            // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
+            // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
         }
         
         if (_fromContainer == GameInterfaces.DefaultShopWindowContainer)

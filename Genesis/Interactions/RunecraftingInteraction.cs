@@ -36,46 +36,46 @@ public class RunecraftingInteraction : RSInteraction
 
         if (_tick == 1)
         {
-            var altar = RunecraftingAltarData.GetAltar(_runecraftingAltar.Id);
-            if (altar == null)
-            {
-                _player.Session.PacketBuilder.SendMessage("Unknown altar.");
-                return false;
-            }
-
-            if (_skill.Level < altar.RequiredLevel)
-            {
-                _player.Session.PacketBuilder.SendMessage("You need a Runecrafting level of " + altar.RequiredLevel +
-                                                          " to craft this rune.");
-                return false;
-            }
-
-            var hasTalisman = _player.InventoryItemContainer.ContainsItemId(altar.TalismanId);
-            var tiara = _player.EquipmentManager.GetItem(EquipmentSlot.Helmet)?.Id;
-            if (!hasTalisman && tiara != altar.TiaraId)
-            {
-                _player.Session.PacketBuilder.SendMessage("You need to wear the required tiara or bring a talisman.");
-                return false;
-            }
-
-            var removedEssenceCount = _player.InventoryItemContainer.RemoveAllById(1436);
-            if (removedEssenceCount <= 0)
-            {
-                _player.Session.PacketBuilder.SendMessage("You don't have enough rune essence.");
-                return false;
-            }
-
-            int multiplier = RunecraftingAltarData.GetMultiplierForLevel(altar.Multipliers, _skill.Level);
-
-             int totalRunes = removedEssenceCount * multiplier;
-            
-             _player.InventoryItemContainer.AddItem(altar.RuneId, totalRunes);
-             _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
-
-            PlayRunecraftingEffects();
-
-            _skill.AddExperience((int)(removedEssenceCount * altar.XpPerRune) * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.RUNECRAFTING));
-            _player.SkillManager.RefreshSkill(SkillType.RUNECRAFTING);
+            // var altar = RunecraftingAltarData.GetAltar(_runecraftingAltar.Id);
+            // if (altar == null)
+            // {
+            //     _player.Session.PacketBuilder.SendMessage("Unknown altar.");
+            //     return false;
+            // }
+            //
+            // if (_skill.Level < altar.RequiredLevel)
+            // {
+            //     _player.Session.PacketBuilder.SendMessage("You need a Runecrafting level of " + altar.RequiredLevel +
+            //                                               " to craft this rune.");
+            //     return false;
+            // }
+            //
+            // var hasTalisman = _player.InventoryItemContainer.ContainsItemId(altar.TalismanId);
+            // var tiara = _player.EquipmentManager.GetItem(EquipmentSlot.Helmet)?.Id;
+            // if (!hasTalisman && tiara != altar.TiaraId)
+            // {
+            //     _player.Session.PacketBuilder.SendMessage("You need to wear the required tiara or bring a talisman.");
+            //     return false;
+            // }
+            //
+            // var removedEssenceCount = _player.InventoryItemContainer.RemoveAllById(1436);
+            // if (removedEssenceCount <= 0)
+            // {
+            //     _player.Session.PacketBuilder.SendMessage("You don't have enough rune essence.");
+            //     return false;
+            // }
+            //
+            // int multiplier = RunecraftingAltarData.GetMultiplierForLevel(altar.Multipliers, _skill.Level);
+            //
+            //  int totalRunes = removedEssenceCount * multiplier;
+            //
+            //  _player.InventoryItemContainer.AddItem(altar.RuneId, totalRunes);
+            //  _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            //
+            // PlayRunecraftingEffects();
+            //
+            // _skill.AddExperience((int)(removedEssenceCount * altar.XpPerRune) * ServerConfig.SKILL_BONUS_EXP, _player, SkillRepository.GetSkill(SkillType.RUNECRAFTING));
+            // _player.SkillManager.RefreshSkill(SkillType.RUNECRAFTING);
 
             return true;
         }

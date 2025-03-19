@@ -157,12 +157,12 @@ public class TreeInteraction : RSInteraction
 
     private bool HasEnoughInventorySpace()
     {
-        if (_player.InventoryItemContainer.FreeSlots <= 0)
-        {
-            _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
-            _player.ClearInteraction();
-            return false;
-        }
+        // if (_player.InventoryItemContainer.FreeSlots <= 0)
+        // {
+        //     _player.Session.PacketBuilder.SendMessage("You don't have enough inventory space.");
+        //     _player.ClearInteraction();
+        //     return false;
+        // }
 
         return true;
     }
@@ -184,21 +184,21 @@ public class TreeInteraction : RSInteraction
 
     private bool TryUseInventoryAxe(int playerLevel)
     {
-         var inventory = _player.InventoryItemContainer.GetItems;
-         var usableAxe = inventory
-             .Select(item => AxeData.GetAxe(item.ItemId))
-             .Where(axe => axe != null && playerLevel >= axe.RequiredLevel)
-             .OrderByDescending(axe => axe!.RequiredLevel)
-             .FirstOrDefault();
-        
-         if (usableAxe == null)
-         {
-             _player.ClearInteraction();
-             return false;
-         }
-        
-         axeAnimationId = usableAxe.AnimationId;
-         EquippedAxe = usableAxe;
+         // var inventory = _player.InventoryItemContainer.GetItems;
+         // var usableAxe = inventory
+         //     .Select(item => AxeData.GetAxe(item.ItemId))
+         //     .Where(axe => axe != null && playerLevel >= axe.RequiredLevel)
+         //     .OrderByDescending(axe => axe!.RequiredLevel)
+         //     .FirstOrDefault();
+         //
+         // if (usableAxe == null)
+         // {
+         //     _player.ClearInteraction();
+         //     return false;
+         // }
+         //
+         // axeAnimationId = usableAxe.AnimationId;
+         // EquippedAxe = usableAxe;
         return true;
     }
 }

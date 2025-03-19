@@ -84,7 +84,7 @@ public class EquipmentManager
     }
 
 
-    public EquipmentSlot GetEquipmentSlotById(int Id)
+    public static EquipmentSlot GetEquipmentSlotById(int Id)
     {
         if (GameConstants.IsItemInArray(Id, GameConstants.BOWS) ||
             GameConstants.IsItemInArray(Id, GameConstants.OTHER_RANGE_WEAPONS))
@@ -147,4 +147,22 @@ public class EquipmentManager
          _player.Flags |= PlayerUpdateFlags.Appearance;
      }
      
+     private int MapEquipmentSlotToContainerIndex(EquipmentSlot slot)
+     {
+         return slot switch
+         {
+             EquipmentSlot.Helmet => 0,
+             EquipmentSlot.Cape => 1,
+             EquipmentSlot.Amulet => 2,
+             EquipmentSlot.Weapon => 3,
+             EquipmentSlot.Chest => 4,
+             EquipmentSlot.Shield => 5,
+             EquipmentSlot.Legs => 7,
+             EquipmentSlot.Gloves => 9,
+             EquipmentSlot.Boots => 10,
+             EquipmentSlot.Ring => 12,
+             EquipmentSlot.Ammo => 13,
+             _ => -1
+         };
+     }
 }

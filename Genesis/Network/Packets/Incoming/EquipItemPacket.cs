@@ -1,4 +1,5 @@
 ﻿using ArcticRS.Actions;
+using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Managers;
 using Genesis.Model;
@@ -27,10 +28,14 @@ public class EquipItemPacket : IPacket
 
     public void Process()
     {
-        // return;
-        // _player.ActionHandler.AddAction(new EquipAction(_player, new RSItem(_itemId, 1, _index), _index));
-        _player.EquipmentManager.Equip(new RSItem(_itemId, 1));
-        _player.EquipmentManager.Refresh();
-        // _player.ClearInteraction();
+        if (!_player.Inventory.ContainsAt(_index, _itemId))
+            return;
+        
+        if (_player.Equipment.TryEquip(_player, _itemId, 1))
+        {
+            _player.Inventory.RemoveAt(_index);
+            _player.Inventory.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            _player.Equipment.Refresh(_player, GameInterfaces.EquipmentContainer);
+        }
     }
 }

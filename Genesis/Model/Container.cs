@@ -9,6 +9,12 @@ public class ItemSlot
     public int Quantity { get; set; }
 
     public bool IsEmpty => ItemId == 0 || Quantity <= 0;
+    
+    public void Clear()
+    {
+        ItemId = 0;
+        Quantity = 0;
+    }
 }
 
 public class Container
@@ -280,6 +286,7 @@ public class InventorySystem
 
         int possibleFromSource = Math.Min(available, amount);
         int addableToDest = destination.GetAddableQuantity(actualItemId, possibleFromSource);
+
         int transferAmount = Math.Min(possibleFromSource, addableToDest);
 
         if (transferAmount <= 0) return 0;
