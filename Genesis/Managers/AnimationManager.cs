@@ -70,7 +70,7 @@ public class AnimationManager
         var weaponName = ItemDefinition.Lookup(weaponId)?.Name.ToLower() ?? string.Empty;
 
         if (string.IsNullOrEmpty(weaponName))
-            return 451;
+            return 422;
 
         return (weaponName, weaponId) switch
         {
@@ -82,6 +82,7 @@ public class AnimationManager
                 ? (Random.Shared.Next(2) == 0 ? 400 : 401)
                 : 395,
             (var name, _) when name.Contains("dragon dagger") => 402,
+            (var name, _) when name.Contains("scimitar") => 451,
             (var name, _) when name.Contains("2h sword") || name.Contains("godsword") || name.Contains("aradomin sword")
                 => fightMode == 4 ? 406 : 407,
             (var name, _) when name.Contains("longsword") => fightMode == 3 ? 412 : 451,
@@ -103,7 +104,7 @@ public class AnimationManager
             (_, 6528) => 2661,
 
             // Default animation
-            _ => 451
+            _ => 422
         };
     }
 
