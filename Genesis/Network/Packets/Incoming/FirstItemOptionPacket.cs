@@ -27,26 +27,27 @@ public class FirstItemOptionPacket : IPacket
 
     public void Process()
     {
+        if (_player.CurrentHealth <= 0)
+            return;
+        
         Console.WriteLine(_containerId);
         Console.WriteLine(_index);
         Console.WriteLine(_itemId);
 
+        if (_itemId == 526)
+        {
+            if (_player.ActionHandler.ActionPipeline.Any(x => x is BuryAction))
+                return;
 
-        // if (_itemId == 526)
-        // {
-        //     if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.BURY))
-        //         return;
-        //     
-        //     _player.ActionHandler.AddAction(new BuryAction(_player));
-        // }
-        //
-        // if (_itemId == 379)
-        // {
-        //     if (_player.ActionHandler.ContainsActionOfCategory(ActionCategory.EAT))
-        //         return;
-        //     
-        //     _player.ActionHandler.AddAction(new EatAction(_player));
-        //     // _player.PacketBuilder.SendMessage($"Queued Eat On Tick: {World.CurrentTick}");
-        // }
+            _player.ActionHandler.AddAction(new BuryAction(_player));
+        }
+
+        if (_itemId == 385)
+        {
+            if (_player.ActionHandler.ActionPipeline.Any(x => x is EatFoodAction))
+                return;
+
+            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20));
+        }
     }
 }

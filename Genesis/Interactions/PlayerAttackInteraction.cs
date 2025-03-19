@@ -31,7 +31,7 @@ public class PlayerAttackInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
-        _weapon.Damage = 1;
+        _weapon.Damage = new Random().Next(1, 31);
 
         
         

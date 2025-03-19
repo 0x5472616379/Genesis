@@ -76,7 +76,7 @@ public class ClientManager
         // player.InventoryManager.AddItem(542);
         
         LoadPVPGear(player);
-
+        LoadTestItems(player);
         // for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
         //     player.InventoryItemContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
         //
@@ -105,5 +105,12 @@ public class ClientManager
         player.InventoryItemContainer.AddItem(2491, 1); /* Black dhide vambs */
         player.InventoryItemContainer.AddItem(4587, 1); /* Dscim */
         
+    }
+    
+    static void LoadTestItems(Player player)
+    {
+        player.InventoryItemContainer.AddItem(526, 1); /* Bones */
+        player.InventoryItemContainer.AddItem(385, 1); /* Shark */
+        player.InventoryItemContainer.AddItem(3144, 1); /* Karambwan */
     }
 }

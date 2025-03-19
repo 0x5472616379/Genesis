@@ -40,9 +40,14 @@ public class GameConstants
         800, 801, 802, 803, 804, 805, 6522
     };
 
-    public static Dictionary<int, int> FOODS = new()
+    public static Dictionary<int, int> HARD_FOOD = new()
     {
         { 385, 20 } // shark
+    };
+    
+    public static Dictionary<int, int> COMBO_FOOD = new()
+    {
+        { 3144, 18 } // karambwan
     };
 
 
