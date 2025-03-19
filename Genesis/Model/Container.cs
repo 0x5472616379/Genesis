@@ -9,7 +9,7 @@ public class ItemSlot
     public int Quantity { get; set; }
 
     public bool IsEmpty => ItemId == 0 || Quantity <= 0;
-    
+
     public void Clear()
     {
         ItemId = 0;

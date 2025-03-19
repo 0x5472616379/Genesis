@@ -37,6 +37,8 @@ public class BankInteraction : RSInteraction
         // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
         // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
 
+        _player.Inventory.Refresh(_player, GameInterfaces.BankInventoryContainer);
+        
         _player.Session.PacketBuilder.SendInterface(GameInterfaces.BankWindowInterface,
             GameInterfaces.BankInventorySidebarInterface);
 

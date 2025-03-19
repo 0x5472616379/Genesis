@@ -42,15 +42,10 @@ public class Player : Entity
     public DialogueManager DialogueManager { get; set; }
     // public Player Following { get; set; }
 
-    // public Container BankItemContainer { get; set; } = new(ServerConfig.BANK_SIZE, true);
-    // public Container InventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    // public Container BankInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    // public Container ShopInventoryItemContainer { get; set; } = new(ServerConfig.INVENTORY_SIZE, false);
-    // public Container EquipmentContainer { get; set; } = new(11, false);
-    
-    public RSContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
-    public RSContainer BankContainer { get; set; } = new BankContainer(ServerConfig.BANK_SIZE);
     public EquipmentContainer Equipment { get; } = new EquipmentContainer();
+    public RSContainer BankContainer { get; set; } = new BankContainer(ServerConfig.BANK_SIZE);
+    public RSContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
+    public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
 
     public Player()
     {

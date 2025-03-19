@@ -43,8 +43,7 @@ public class CombatManager
         int targetY = target.Location.Y;
         int targetZ = target.Location.Z;
 
-        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y,
-            targetX, targetY);
+        var distance = MovementHelper.EuclideanDistance(_player.Location.X, _player.Location.Y, targetX, targetY);
 
         if (distance > 20)
         {

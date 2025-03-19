@@ -112,18 +112,6 @@ public class RSContainer
         return quantity - remaining;
     }
     
-    public virtual int RemoveItem(int itemId, int quantity)
-    {
-        if (quantity <= 0) return 0;
-
-        var itemDef = ItemDefinition.Lookup(itemId);
-        bool isStackable = AlwaysStack || itemDef.Stackable || itemDef.IsNote();
-
-        return isStackable 
-            ? RemoveStackableItem(itemId, quantity) 
-            : RemoveNonStackableItem(itemId, quantity);
-    }
-    
     public virtual int RemoveAt(int index, int quantity = int.MaxValue)
     {
         if (index < 0 || index >= _slots.Count)
@@ -149,44 +137,6 @@ public class RSContainer
         return removeAmount;
     }
 
-    private int RemoveStackableItem(int itemId, int quantity)
-    {
-        int remaining = quantity;
-        
-        foreach (var slot in _slots.Where(s => s.ItemId == itemId).ToList())
-        {
-            if (remaining <= 0) break;
-
-            if (slot.Quantity <= remaining)
-            {
-                remaining -= slot.Quantity;
-                slot.Clear();
-            }
-            else
-            {
-                slot.Quantity -= remaining;
-                remaining = 0;
-            }
-        }
-        
-        return quantity - remaining;
-    }
-
-    private int RemoveNonStackableItem(int itemId, int quantity)
-    {
-        int removed = 0;
-        
-        foreach (var slot in _slots.Where(s => s.ItemId == itemId).ToList())
-        {
-            if (removed >= quantity) break;
-            
-            slot.Clear();
-            removed++;
-        }
-        
-        return removed;
-    }
-    
     public void Swap(int index1, int index2)
     {
         if (index1 < 0 || index1 >= _slots.Count || index2 < 0 || index2 >= _slots.Count)
