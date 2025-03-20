@@ -55,61 +55,72 @@ public class RSContainer
         return index >= 0 && index < _slots.Count;
     }
 
-    public virtual int AddItem(int itemId, int quantity)
+    public (int Added, int Index) AddItem(int itemId, int quantity)
     {
-        if (quantity <= 0) return 0;
+        if (quantity <= 0) return (0, -1);
 
         var itemDef = ItemDefinition.Lookup(itemId);
         bool forceStack = AlwaysStack;
-        bool naturalStack = itemDef.Stackable || itemDef.IsNote();
-        bool isStackable = forceStack || naturalStack;
-
-        return isStackable
-            ? AddStackableItem(itemId, quantity, itemDef)
+        bool naturalStack = itemDef?.Stackable == true || itemDef?.IsNote() == true;
+    
+        return (forceStack || naturalStack) 
+            ? AddStackableItem(itemId, quantity) 
             : AddNonStackableItem(itemId, quantity);
     }
 
-    private int AddStackableItem(int itemId, int quantity, ItemDefinition def)
+    private (int Added, int Index) AddStackableItem(int itemId, int quantity)
     {
         int remaining = quantity;
+        int destIndex = -1;
 
-        // Try existing stacks
-        foreach (var slot in _slots.Where(s => s.ItemId == itemId && s.Quantity < int.MaxValue))
+        // Add to existing stacks first
+        foreach (var slot in _slots)
         {
-            int available = int.MaxValue - slot.Quantity;
-            int add = Math.Min(remaining, available);
-            slot.Quantity += add;
-            remaining -= add;
-            if (remaining == 0) break;
+            if (slot.ItemId == itemId && slot.Quantity < int.MaxValue)
+            {
+                int available = int.MaxValue - slot.Quantity;
+                int add = Math.Min(remaining, available);
+            
+                if (destIndex == -1) destIndex = _slots.IndexOf(slot);
+            
+                slot.Quantity += add;
+                remaining -= add;
+                if (remaining == 0) break;
+            }
         }
 
-        // Use empty slots if needed
+        // Add to new slots if needed
         while (remaining > 0 && FreeSlots > 0)
         {
             var emptySlot = _slots.First(s => s.IsEmpty);
             int add = Math.Min(remaining, int.MaxValue);
+        
+            if (destIndex == -1) destIndex = _slots.IndexOf(emptySlot);
+        
             emptySlot.ItemId = itemId;
             emptySlot.Quantity = add;
             remaining -= add;
         }
 
-        return quantity - remaining;
+        return (quantity - remaining, destIndex);
     }
 
-    private int AddNonStackableItem(int itemId, int quantity)
+    private (int Added, int Index) AddNonStackableItem(int itemId, int quantity)
     {
-        int remaining = quantity;
-        int emptySlots = FreeSlots;
-        int canAdd = Math.Min(remaining, emptySlots);
+        int destIndex = -1;
+        int added = 0;
 
-        foreach (var slot in _slots.Where(s => s.IsEmpty).Take(canAdd))
+        foreach (var slot in _slots.Where(s => s.IsEmpty).Take(quantity))
         {
             slot.ItemId = itemId;
             slot.Quantity = 1;
-            remaining--;
+        
+            if (destIndex == -1) destIndex = _slots.IndexOf(slot);
+        
+            added++;
         }
 
-        return quantity - remaining;
+        return (added, destIndex);
     }
 
     public virtual int RemoveAt(int index, int quantity = int.MaxValue)

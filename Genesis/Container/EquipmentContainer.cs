@@ -13,11 +13,12 @@ public class EquipmentContainer : RSContainer
     {
     }
 
-    public override int AddItem(int itemId, int quantity)
-    {
-        // Equipment needs special handling - use TryEquip instead
-        throw new InvalidOperationException("Use TryEquip method for equipment");
-    }
+    // public override int AddItem(int itemId, int quantity)
+    // {
+    //     // Equipment needs special handling - use TryEquip instead
+    //     throw new InvalidOperationException("Use TryEquip method for equipment");
+    // }
+    
 
     public bool TryEquip(Player player, int itemId, int amount, int fromIndex)
     {
@@ -79,7 +80,7 @@ public class EquipmentContainer : RSContainer
         var item = _slots[index];
 
         // Try to add to inventory
-        if (player.Inventory.AddItem(item.ItemId, item.Quantity) > 0)
+        if (player.Inventory.AddItem(item.ItemId, item.Quantity).Added > 0)
         {
             RemoveAt(MapSlotToIndex(slot));
 
@@ -94,6 +95,7 @@ public class EquipmentContainer : RSContainer
 
             player.Session.PacketBuilder.UpdateSlot((int)slot, _slots[index].ItemId, _slots[index].Quantity,
                 GameInterfaces.EquipmentContainer);
+            
             player.Flags |= PlayerUpdateFlags.Appearance;
             return true;
         }

@@ -2,33 +2,40 @@
 
 namespace Genesis.Container;
 
+public struct TransferResult
+{
+    public int Amount;
+    public int DestinationIndex;
+}
+
 public static class ContainerTransfer
 {
-    public static int Transfer(RSContainer source, RSContainer destination, int itemId, int amount)
+    public static TransferResult Transfer(RSContainer source, RSContainer destination, 
+        int itemId, int amount)
     {
-        if (amount <= 0) return 0;
+        var result = new TransferResult();
+    
+        if (amount <= 0) return result;
 
-        // Handle noted item conversion
         int destinationItemId = ShouldConvertToUnnoted(destination, itemId) 
             ? ConvertToUnnoted(itemId) 
             : itemId;
 
-        // Calculate actual transfer amounts
-        int available = source.GetItemCount(itemId);
-        int removable = Math.Min(available, amount);
+        int removable = Math.Min(source.GetItemCount(itemId), amount);
         int addable = CalculateAddable(destination, destinationItemId, removable);
 
-        if (addable <= 0) return 0;
+        if (addable <= 0) return result;
 
-        // Perform the transfer
         int removed = source.RemoveItem(itemId, addable);
-        int added = destination.AddItem(destinationItemId, removed);
+        var (added, destIndex) = destination.AddItem(destinationItemId, removed);
 
-        // Handle partial transfers
+        result.Amount = added;
+        result.DestinationIndex = destIndex;
+
         if (removed > added)
             source.AddItem(itemId, removed - added);
 
-        return added;
+        return result;
     }
 
     private static int CalculateAddable(RSContainer container, int itemId, int desired)
@@ -37,7 +44,7 @@ public static class ContainerTransfer
         {
             // Find existing slot for this item
             var existingSlot = container._slots.FirstOrDefault(s => s.ItemId == itemId);
-        
+
             if (existingSlot != null)
             {
                 // Can only add to existing stack
@@ -48,18 +55,18 @@ public static class ContainerTransfer
             {
                 // Need at least 1 free slot to add new item
                 if (container.FreeSlots == 0) return 0;
-            
+
                 // New slot can hold full stack
                 return Math.Min(desired, int.MaxValue);
             }
         }
-        else 
+        else
         {
             // Regular container logic (inventory/etc)
             var def = ItemDefinition.Lookup(itemId);
             bool stackable = def?.Stackable == true || def?.IsNote() == true;
-        
-            return stackable 
+
+            return stackable
                 ? Math.Min(desired, container.GetStackableAddable(itemId))
                 : Math.Min(desired, container.FreeSlots);
         }

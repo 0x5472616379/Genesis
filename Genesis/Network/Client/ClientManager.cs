@@ -85,6 +85,9 @@ public class ClientManager
         // player.InventoryItemContainer.AddItem(565, 1000);
         
         player.BankContainer.AddItem(892, 2147483640);
+        for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
+            player.BankContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
+        
         // player.BankItemContainer.AddItem(385, 1000);
         player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
     }

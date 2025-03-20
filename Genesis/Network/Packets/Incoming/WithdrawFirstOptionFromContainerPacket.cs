@@ -34,75 +34,44 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
 
     public void Process()
     {
-        var item = ItemDefinition.Lookup(_itemId);
+        // var item = ItemDefinition.Lookup(_itemId);
 
         if (_fromContainer == GameInterfaces.BankInventoryContainer)
         {
             var inventorySlot = _player.Inventory.GetItemAtIndex(_fromIndex);
             if (inventorySlot == null) return;
-
-            int transferred = ContainerTransfer.Transfer(_player.Inventory, _player.BankContainer, _itemId, 1);
-            if (transferred <= 0) return;
-
-            /* Refresh bank slot */
-            int bankIndex = _player.BankContainer.GetIndexOfItemId(_itemId);
-            var bankSlot = _player.BankContainer.GetItemAtIndex(bankIndex);
-            _player.BankContainer.RefreshSlot(
-                _player, 
-                bankIndex, 
-                bankSlot.ItemId, 
-                bankSlot.Quantity, 
-                GameInterfaces.DefaultBankContainer
+            
+            var index = _player.Inventory.GetIndexOfItemId(inventorySlot.ItemId);
+            
+            var transferResult = ContainerTransfer.Transfer(
+                _player.Inventory, 
+                _player.BankContainer, 
+                _itemId, 
+                1
             );
 
-            /* Determine display values */
-            int displayItemId = inventorySlot.ItemId == 0 ? -1 : inventorySlot.ItemId;
-            int slotIndex = _fromIndex;
-            int quantity = inventorySlot.Quantity;
+            if (transferResult.Amount <= 0) return;
 
-            /* Refresh inventory interfaces */
-            var refreshInterfaces = new[] { 
-                GameInterfaces.BankInventoryContainer, 
-                GameInterfaces.DefaultInventoryContainer 
-            };
-
-            foreach (var interfaceId in refreshInterfaces)
-            {
-                _player.Inventory.RefreshSlot(
-                    _player, 
-                    slotIndex, 
-                    displayItemId, 
-                    quantity, 
-                    interfaceId
-                );
-            }
-        }
-
-        if (_fromContainer == GameInterfaces.DefaultBankContainer)
-        {
-            var bankSlot = _player.BankContainer.GetItemAtIndex(_fromIndex);
-            if (bankSlot == null) return;
-
-            int transferred = ContainerTransfer.Transfer(_player.BankContainer, _player.Inventory, _itemId, 1);
-            if (transferred <= 0) return;
-
-            /* Refresh bank slot */
-            int updatedBankQty = _player.BankContainer.GetItemAtIndex(_fromIndex).Quantity;
-            int displayBankItemId = updatedBankQty > 0 ? _itemId : -1;
+            /* Handle bank slot refresh */
+            var updatedBankSlot = _player.BankContainer.GetItemAtIndex(transferResult.DestinationIndex);
+            int displayBankItemId = updatedBankSlot.ItemId == 0 ? -1 : updatedBankSlot.ItemId;
+            
             _player.BankContainer.RefreshSlot(
                 _player,
-                _fromIndex,
+                transferResult.DestinationIndex,
                 displayBankItemId,
-                updatedBankQty,
+                updatedBankSlot.Quantity,
                 GameInterfaces.DefaultBankContainer
             );
-
-            /* Refresh inventory interfaces */
-            int inventoryIndex = _player.Inventory.GetIndexOfItemId(_itemId);
-            // if (inventoryIndex == -1) inventoryIndex = _player.Inventory.FirstFreeSlot();
-
-            var inventorySlot = _player.Inventory.GetItemAtIndex(inventoryIndex);
-            var refreshInterfaces = new[] {
+            
+            
+            /* Handle inventory slot refresh */
+            var updatedInventorySlot = _player.Inventory.GetItemAtIndex(index);
+            int displayInventoryItemId = updatedInventorySlot.ItemId == 0 ? -1 : updatedInventorySlot.ItemId;
+            
+            
+            var refreshInterfaces = new[]
+            {
                 GameInterfaces.BankInventoryContainer,
                 GameInterfaces.DefaultInventoryContainer
             };
@@ -111,10 +80,53 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
             {
                 _player.Inventory.RefreshSlot(
                     _player,
-                    inventoryIndex,
-                    inventorySlot.ItemId,
-                    inventorySlot.Quantity,
+                    index,
+                    displayInventoryItemId,
+                    updatedInventorySlot.Quantity,
                     interfaceId
+                );
+            }
+        }
+
+        if (_fromContainer == GameInterfaces.DefaultBankContainer)
+        {
+            var transferResult = ContainerTransfer.Transfer(
+                _player.BankContainer,
+                _player.Inventory,
+                _itemId,
+                1
+            );
+
+            if (transferResult.Amount > 0 && transferResult.DestinationIndex != -1)
+            {
+                var inventorySlot = _player.Inventory.GetItemAtIndex(transferResult.DestinationIndex);
+
+                // Refresh inventory interfaces
+                foreach (var interfaceId in new[] 
+                         {
+                             GameInterfaces.BankInventoryContainer,
+                             GameInterfaces.DefaultInventoryContainer
+                         })
+                {
+                    _player.Inventory.RefreshSlot(
+                        _player,
+                        transferResult.DestinationIndex,
+                        inventorySlot.ItemId,
+                        inventorySlot.Quantity,
+                        interfaceId
+                    );
+                }
+
+                // Refresh bank slot with proper display rules
+                var updatedBankSlot = _player.BankContainer.GetItemAtIndex(_fromIndex);
+                int displayItemId = updatedBankSlot.ItemId == 0 ? -1 : updatedBankSlot.ItemId;
+    
+                _player.BankContainer.RefreshSlot(
+                    _player,
+                    _fromIndex,
+                    displayItemId,  // Now properly handles 0 -> -1 conversion
+                    updatedBankSlot.Quantity,
+                    GameInterfaces.DefaultBankContainer
                 );
             }
         }
@@ -124,23 +136,17 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
             var slot = EquipmentManager.GetEquipmentSlotById(_itemId);
             if (_player.Equipment.TryUnequip(_player, slot))
             {
-                _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
-                _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
+                // _player.Inventory.RefreshSlot(_player, _fromIndex, -1,
+                //     0,
+                //     GameInterfaces.EquipmentContainer);
+                //
+                // _player.Inventory.RefreshSlot(_player, _fromIndex, -1,
+                //     0,
+                //     GameInterfaces.EquipmentContainer);
+
+                // _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
+                // _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
             }
-        }
-
-        if (_fromContainer == GameInterfaces.DefaultShopWindowContainer)
-        {
-            var itemDef = ItemDefinition.Lookup(_itemId);
-            if (itemDef == null) return;
-
-            _player.Session.PacketBuilder.SendMessage($"{itemDef.Name}: currently costs 1gp.");
-        }
-
-        if (_fromContainer == GameInterfaces.DefaultShopInventoryContainer)
-        {
-            var itemDef = ItemDefinition.Lookup(_itemId);
-            _player.Session.PacketBuilder.SendMessage($"{itemDef.Name}: shop will buy for 1gp.");
         }
     }
 }
