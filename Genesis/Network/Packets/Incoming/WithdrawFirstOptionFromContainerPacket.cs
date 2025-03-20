@@ -1,5 +1,6 @@
 ﻿using Genesis.Cache;
 using Genesis.Configuration;
+using Genesis.Container;
 using Genesis.Entities;
 using Genesis.Managers;
 using Genesis.Model;
@@ -35,68 +36,107 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
     {
         var item = ItemDefinition.Lookup(_itemId);
 
-        /* Bank Inventory Container */
         if (_fromContainer == GameInterfaces.BankInventoryContainer)
         {
-            // InventorySystem.Transfer(_player.InventoryItemContainer, _player.BankItemContainer, _itemId, 1);
-            // _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
-            //
-            // _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
-            // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
-            // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            var inventorySlot = _player.Inventory.GetItemAtIndex(_fromIndex);
+            if (inventorySlot == null) return;
 
+            int transferred = ContainerTransfer.Transfer(_player.Inventory, _player.BankContainer, _itemId, 1);
+            if (transferred <= 0) return;
+
+            /* Refresh bank slot */
+            int bankIndex = _player.BankContainer.GetIndexOfItemId(_itemId);
+            var bankSlot = _player.BankContainer.GetItemAtIndex(bankIndex);
+            _player.BankContainer.RefreshSlot(
+                _player, 
+                bankIndex, 
+                bankSlot.ItemId, 
+                bankSlot.Quantity, 
+                GameInterfaces.DefaultBankContainer
+            );
+
+            /* Determine display values */
+            int displayItemId = inventorySlot.ItemId == 0 ? -1 : inventorySlot.ItemId;
+            int slotIndex = _fromIndex;
+            int quantity = inventorySlot.Quantity;
+
+            /* Refresh inventory interfaces */
+            var refreshInterfaces = new[] { 
+                GameInterfaces.BankInventoryContainer, 
+                GameInterfaces.DefaultInventoryContainer 
+            };
+
+            foreach (var interfaceId in refreshInterfaces)
+            {
+                _player.Inventory.RefreshSlot(
+                    _player, 
+                    slotIndex, 
+                    displayItemId, 
+                    quantity, 
+                    interfaceId
+                );
+            }
         }
 
         if (_fromContainer == GameInterfaces.DefaultBankContainer)
         {
-            // var transfer =  InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, 1);
-            // if (transfer <= 0)
-            // {
-            //     _player.Session.PacketBuilder.SendMessage("You don't have enough free inventory space to do that.");
-            //     return;
-            // }
-            // _player.InventoryItemContainer.CopyToContainer(_player.BankInventoryItemContainer);
-            //
-            // _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
-            // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
-            // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            var bankSlot = _player.BankContainer.GetItemAtIndex(_fromIndex);
+            if (bankSlot == null) return;
+
+            int transferred = ContainerTransfer.Transfer(_player.BankContainer, _player.Inventory, _itemId, 1);
+            if (transferred <= 0) return;
+
+            /* Refresh bank slot */
+            int updatedBankQty = _player.BankContainer.GetItemAtIndex(_fromIndex).Quantity;
+            int displayBankItemId = updatedBankQty > 0 ? _itemId : -1;
+            _player.BankContainer.RefreshSlot(
+                _player,
+                _fromIndex,
+                displayBankItemId,
+                updatedBankQty,
+                GameInterfaces.DefaultBankContainer
+            );
+
+            /* Refresh inventory interfaces */
+            int inventoryIndex = _player.Inventory.GetIndexOfItemId(_itemId);
+            // if (inventoryIndex == -1) inventoryIndex = _player.Inventory.FirstFreeSlot();
+
+            var inventorySlot = _player.Inventory.GetItemAtIndex(inventoryIndex);
+            var refreshInterfaces = new[] {
+                GameInterfaces.BankInventoryContainer,
+                GameInterfaces.DefaultInventoryContainer
+            };
+
+            foreach (var interfaceId in refreshInterfaces)
+            {
+                _player.Inventory.RefreshSlot(
+                    _player,
+                    inventoryIndex,
+                    inventorySlot.ItemId,
+                    inventorySlot.Quantity,
+                    interfaceId
+                );
+            }
         }
-        
+
         if (_fromContainer == GameInterfaces.EquipmentContainer)
         {
             var slot = EquipmentManager.GetEquipmentSlotById(_itemId);
             if (_player.Equipment.TryUnequip(_player, slot))
             {
-                _player.Equipment.Refresh(_player, GameInterfaces.EquipmentContainer);
-                _player.Inventory.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+                _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
+                _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
             }
-            
-            // var equipped = _player.Equipment.TryEquip(_itemId);
-            // if (equipped)
-            // {
-            //     _player.Inventory.RemoveAt(_fromIndex);
-            // }
-            // var transfer =  InventorySystem.Transfer(_player.BankItemContainer, _player.InventoryItemContainer, _itemId, 1);
-            // if (transfer <= 0)
-            // {
-            //     _player.Session.PacketBuilder.SendMessage("You don't have enough free inventory space to do that.");
-            //     return;
-            // }
-            // _player.InventoryItemContainer.CopyToContainer(_player.InventoryItemContainer);
-            //
-            // // _player.BankItemContainer.Refresh(_player, GameInterfaces.DefaultBankContainer);
-            // // _player.BankInventoryItemContainer.Refresh(_player, GameInterfaces.BankInventoryContainer);
-            
         }
-        
+
         if (_fromContainer == GameInterfaces.DefaultShopWindowContainer)
         {
             var itemDef = ItemDefinition.Lookup(_itemId);
             if (itemDef == null) return;
-            
+
             _player.Session.PacketBuilder.SendMessage($"{itemDef.Name}: currently costs 1gp.");
         }
-        
+
         if (_fromContainer == GameInterfaces.DefaultShopInventoryContainer)
         {
             var itemDef = ItemDefinition.Lookup(_itemId);

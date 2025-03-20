@@ -84,9 +84,9 @@ public class ClientManager
         // player.InventoryItemContainer.AddItem(560, 550);
         // player.InventoryItemContainer.AddItem(565, 1000);
         
-        // player.BankContainer.AddItem(995, 2147483640);
+        player.BankContainer.AddItem(892, 2147483640);
         // player.BankItemContainer.AddItem(385, 1000);
-        player.Inventory.Refresh(player, GameInterfaces.DefaultInventoryContainer);
+        player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
     }
 
     static void LoadPVPGear(Player player)

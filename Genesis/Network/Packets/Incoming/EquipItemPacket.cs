@@ -36,8 +36,8 @@ public class EquipItemPacket : IPacket
         if (_player.Equipment.TryEquip(_player, _itemId, item.Quantity, _fromIndex))
         {
             // _player.Inventory.RemoveAt(_fromIndex);
-            _player.Inventory.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
-            _player.Equipment.Refresh(_player, GameInterfaces.EquipmentContainer);
+            _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
+            _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
         }
     }
 }

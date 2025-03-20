@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Configuration;
+using Genesis.Entities;
 
 namespace Genesis.Packets.Incoming;
 
@@ -18,5 +19,6 @@ public class CloseWindowPacket : IPacket
     public void Process()
     {
         _player.OpenShop = null;
+        // _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
     }
 }

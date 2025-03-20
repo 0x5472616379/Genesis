@@ -37,16 +37,15 @@ public class MoveItemInContainerPacket : IPacket
             _player.Inventory.Swap(_from, _to);
         }
 
-        if (_containerId == GameInterfaces.DefaultBankContainer)
-        {
-            // _player.BankItemContainer.Swap(_from, _to);
-        }
-
         if (_containerId == GameInterfaces.BankInventoryContainer)
         {
-            // _player.BankInventoryItemContainer.Swap(_from, _to);
-            // _player.InventoryItemContainer.Swap(_from, _to);
-            // _player.InventoryItemContainer.Refresh(_player, GameInterfaces.DefaultInventoryContainer);
+            _player.Inventory.Swap(_from, _to);
+            _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
+        }
+        
+        if (_containerId == GameInterfaces.DefaultBankContainer)
+        {
+            _player.BankContainer.Swap(_from, _to);
         }
     }
 }

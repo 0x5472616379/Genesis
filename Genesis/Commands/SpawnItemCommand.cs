@@ -43,6 +43,6 @@ public class SpawnItemCommand : RSCommand
     {
          var def = ItemDefinition.Lookup(_id);
          Player.Inventory.AddItem(_id, _amount);
-         Player.Inventory.Refresh(Player, GameInterfaces.DefaultInventoryContainer);
+         Player.Inventory.RefreshContainer(Player, GameInterfaces.DefaultInventoryContainer);
     }
 }

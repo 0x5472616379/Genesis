@@ -7,8 +7,8 @@ namespace Genesis.Container;
 public class RSContainer
 {
     protected readonly int _maxSize;
-    protected List<ItemSlot> _slots;
-    
+    public List<ItemSlot> _slots;
+
     public virtual bool AlwaysStack => false;
     public int FreeSlots => _slots.Count(s => s.IsEmpty);
 
@@ -33,7 +33,7 @@ public class RSContainer
             Quantity = quantity
         };
     }
-    
+
     public virtual bool ContainsAt(int index, int itemId, int minQuantity = 1)
     {
         // Validate index bounds first
@@ -41,7 +41,7 @@ public class RSContainer
             return false;
 
         ItemSlot slot = _slots[index];
-        
+
         // Check empty state and ID match
         if (slot.IsEmpty || slot.ItemId != itemId)
             return false;
@@ -54,7 +54,7 @@ public class RSContainer
     {
         return index >= 0 && index < _slots.Count;
     }
-    
+
     public virtual int AddItem(int itemId, int quantity)
     {
         if (quantity <= 0) return 0;
@@ -64,8 +64,8 @@ public class RSContainer
         bool naturalStack = itemDef.Stackable || itemDef.IsNote();
         bool isStackable = forceStack || naturalStack;
 
-        return isStackable 
-            ? AddStackableItem(itemId, quantity, itemDef) 
+        return isStackable
+            ? AddStackableItem(itemId, quantity, itemDef)
             : AddNonStackableItem(itemId, quantity);
     }
 
@@ -111,7 +111,7 @@ public class RSContainer
 
         return quantity - remaining;
     }
-    
+
     public virtual int RemoveAt(int index, int quantity = int.MaxValue)
     {
         if (index < 0 || index >= _slots.Count)
@@ -121,20 +121,60 @@ public class RSContainer
         if (slot.IsEmpty || quantity <= 0)
             return 0;
 
-        bool isStackable = AlwaysStack || 
+        bool isStackable = AlwaysStack ||
                            (ItemDefinition.Lookup(slot.ItemId)?.Stackable ?? false) ||
                            (ItemDefinition.Lookup(slot.ItemId)?.IsNote() ?? false);
 
-        int removeAmount = isStackable 
+        int removeAmount = isStackable
             ? Math.Min(quantity, slot.Quantity)
             : 1; // Non-stackables always remove 1
 
         slot.Quantity -= removeAmount;
-        
+
         if (slot.Quantity <= 0)
             slot.Clear();
 
         return removeAmount;
+    }
+
+    public virtual int RemoveItem(int itemId, int quantity)
+    {
+        if (quantity <= 0) return 0;
+
+        int remaining = quantity;
+        var itemDef = ItemDefinition.Lookup(itemId);
+        bool isStackable = AlwaysStack || (itemDef?.Stackable == true) || (itemDef?.IsNote() == true);
+
+        if (isStackable)
+        {
+            // Remove from all stacks until quantity is met
+            foreach (var slot in _slots.Where(s => s.ItemId == itemId).ToList())
+            {
+                if (remaining <= 0) break;
+
+                int removeAmount = Math.Min(remaining, slot.Quantity);
+                slot.Quantity -= removeAmount;
+                remaining -= removeAmount;
+
+                if (slot.Quantity <= 0) slot.Clear();
+            }
+        }
+        else
+        {
+            // Remove individual items until quantity is met
+            int removed = 0;
+            foreach (var slot in _slots.Where(s => s.ItemId == itemId).ToList())
+            {
+                if (removed >= quantity) break;
+
+                slot.Clear();
+                removed++;
+            }
+
+            remaining -= removed;
+        }
+
+        return quantity - remaining;
     }
 
     public void Swap(int index1, int index2)
@@ -146,9 +186,49 @@ public class RSContainer
     }
 
     public ItemSlot GetItemAtIndex(int index) => _slots[index];
+
+    public int GetItemCount(int itemId)
+    {
+        return _slots.Where(s => s.ItemId == itemId)
+            .Sum(s => AlwaysStack || ItemDefinition.Lookup(itemId)?.Stackable == true
+                ? s.Quantity
+                : 1);
+    }
+
+    public ItemSlot FindExistingStack(int itemId)
+    {
+        return _slots.FirstOrDefault(s => s.ItemId == itemId && s.Quantity < int.MaxValue);
+    }
+
+    public int GetStackableAddable(int itemId)
+    {
+        // Find existing stack for this item
+        var existingSlot = _slots.FirstOrDefault(s => s.ItemId == itemId);
     
-    public void Refresh(Player player, int interfaceId)
+        if (existingSlot != null)
+        {
+            // Can only add to existing stack
+            return int.MaxValue - existingSlot.Quantity;
+        }
+        else
+        {
+            // Need at least 1 free slot to create new stack
+            return FreeSlots > 0 ? int.MaxValue : 0;
+        }
+    }
+
+    public void RefreshContainer(Player player, int interfaceId)
     {
         player.Session.PacketBuilder.RefreshContainer(_slots, interfaceId, _maxSize);
+    }
+
+    public void RefreshSlot(Player player, int toIndex, int itemId, int amount, int interfaceId)
+    {
+        player.Session.PacketBuilder.UpdateSlot(toIndex, itemId, amount, interfaceId);
+    }
+
+    public int GetIndexOfItemId(int itemId)
+    {
+        return _slots.FindIndex(s => s.ItemId == itemId);
     }
 }
