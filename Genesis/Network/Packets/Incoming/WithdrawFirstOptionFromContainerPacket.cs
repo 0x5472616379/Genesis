@@ -38,7 +38,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
 
         if (_fromContainer == GameInterfaces.BankInventoryContainer)
         {
-            var inventorySlot = _player.Inventory.GetItemAtIndex(_fromIndex);
+            var inventorySlot = _player.Inventory.GetFirstItem(_itemId);
             if (inventorySlot == null) return;
             
             var index = _player.Inventory.GetIndexOfItemId(inventorySlot.ItemId);
@@ -86,10 +86,15 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                     interfaceId
                 );
             }
+
+            Console.WriteLine("Finished");
         }
 
         if (_fromContainer == GameInterfaces.DefaultBankContainer)
         {
+            var bankItem = _player.BankContainer.GetItemAtIndex(_fromIndex);
+            if (bankItem == null) return;
+            
             var transferResult = ContainerTransfer.Transfer(
                 _player.BankContainer,
                 _player.Inventory,

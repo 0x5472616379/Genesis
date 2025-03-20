@@ -197,6 +197,7 @@ public class RSContainer
     }
 
     public ItemSlot GetItemAtIndex(int index) => _slots[index];
+    public ItemSlot GetFirstItem(int itemId) => _slots.FirstOrDefault(x => x.ItemId == itemId);
 
     public int GetItemCount(int itemId)
     {
