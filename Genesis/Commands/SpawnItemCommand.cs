@@ -1,9 +1,8 @@
 ﻿using ArcticRS.Constants;
 using Genesis.Cache;
+using Genesis.Commands;
 using Genesis.Configuration;
 using Genesis.Entities;
-
-namespace Genesis.Commands;
 
 public class SpawnItemCommand : RSCommand
 {
@@ -30,10 +29,17 @@ public class SpawnItemCommand : RSCommand
             return false;
         }
 
-        if (Args.Length > 2 && !int.TryParse(Args[2], out _amount))
+        if (Args.Length > 2)
         {
-            Player.Session.PacketBuilder.SendMessage("Invalid item amount! Try ::item [id] [amount]");
-            return false;
+            // Attempt parsing _amount while checking if the input might be larger than int.MaxValue
+            if (!long.TryParse(Args[2], out long parsedAmount))
+            {
+                Player.Session.PacketBuilder.SendMessage("Invalid item amount! Try ::item [id] [amount]");
+                return false;
+            }
+
+            // If the value exceeds int.MaxValue, clamp it to the maximum size of an integer
+            _amount = parsedAmount > int.MaxValue ? int.MaxValue : (int)parsedAmount;
         }
 
         return true;
@@ -41,8 +47,8 @@ public class SpawnItemCommand : RSCommand
 
     public override void Invoke()
     {
-         var def = ItemDefinition.Lookup(_id);
-         Player.Inventory.AddItem(_id, _amount);
-         Player.Inventory.RefreshContainer(Player, GameInterfaces.DefaultInventoryContainer);
+        var def = ItemDefinition.Lookup(_id);
+        Player.Inventory.AddItem(_id, _amount);
+        Player.Inventory.RefreshContainer(Player, GameInterfaces.DefaultInventoryContainer);
     }
 }

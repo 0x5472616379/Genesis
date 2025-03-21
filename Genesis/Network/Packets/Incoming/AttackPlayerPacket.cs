@@ -31,11 +31,11 @@ public class AttackPlayerPacket : IPacket
         
         _player.PlayerMovementHandler.Reset();
 
-        var weapon = new Weapon(_player.Equipment.GetItem(EquipmentSlot.Weapon).Id, 4, 422, null, null, 0, 0);
+        // var weapon = new Weapon(_player.Equipment.GetItem(EquipmentSlot.Weapon).Id, 4, 422, null, null, 0, 0);
         
         // _player.Following = World.GetPlayers()[_index - 1];
         _player.InteractingEntity = World.GetPlayers()[_index - 1];
         _player.SetFacingEntity(_player.InteractingEntity);
-        _player.CurrentInteraction = new PlayerAttackInteraction(_player, _player.InteractingEntity as Player, weapon);
+        // _player.CurrentInteraction = new PlayerAttackInteraction(_player, _player.InteractingEntity as Player, weapon);
     }
 }

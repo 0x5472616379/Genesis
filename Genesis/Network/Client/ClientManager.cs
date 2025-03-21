@@ -65,6 +65,8 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(13, GameInterfaces.MusicInterface);
         player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
         player.SkillManager.RefreshSkills();
+        
+        
 
         // for (int i = 0; i <= 3; i++)
         //     player.InventoryManager.AddItem(526);
@@ -89,6 +91,7 @@ public class ClientManager
             player.BankContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
         
         // player.BankItemContainer.AddItem(385, 1000);
+        // player.Equipment.RefreshContainer(player, GameInterfaces.EquipmentContainer);
         player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
     }
 

@@ -38,7 +38,7 @@ public static class ContainerTransfer
         return result;
     }
 
-    private static int CalculateAddable(RSContainer container, int itemId, int desired)
+    public static int CalculateAddable(RSContainer container, int itemId, int desired)
     {
         if (container.AlwaysStack) // Bank container
         {

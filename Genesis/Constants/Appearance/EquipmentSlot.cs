@@ -2,6 +2,7 @@
 
 public enum EquipmentSlot
 {
+    None = -1,
     Helmet = 0,
     Cape = 1,
     Amulet = 2,

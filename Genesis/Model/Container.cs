@@ -10,11 +10,23 @@ public class ItemSlot
 
     public bool IsEmpty => ItemId == 0 || Quantity <= 0;
 
+    public ItemSlot(int itemId = -1, int quantity = 0)
+    {
+        ItemId = itemId;
+        Quantity = quantity;
+    }
+    
     public void Clear()
     {
         ItemId = 0;
         Quantity = 0;
     }
+    
+    public ItemSlot Copy() => new()
+    { 
+        ItemId = ItemId, 
+        Quantity = Quantity 
+    };
 }
 
 public class Container

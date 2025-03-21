@@ -34,7 +34,7 @@ public class Player : Entity
     public ActionHandler ActionHandler { get; set; }
 
     public PlayerAttributes Attributes { get; set; }
-    public EquipmentManager EquipmentManager { get; set; }
+    // public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public SkillManager SkillManager { get; set; }
@@ -42,10 +42,10 @@ public class Player : Entity
     public DialogueManager DialogueManager { get; set; }
     // public Player Following { get; set; }
 
-    public EquipmentContainer Equipment { get; } = new EquipmentContainer();
+    public EquipmentContainer Equipment { get; set; } = new EquipmentContainer(11);
     public RSContainer BankContainer { get; set; } = new BankContainer(ServerConfig.BANK_SIZE);
-    public RSContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
-    public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
+    public InventoryContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
+    // public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
 
     public Player()
     {
@@ -57,7 +57,7 @@ public class Player : Entity
     {
         Flags = PlayerUpdateFlags.None;
         PlayerMovementHandler = new PlayerMovementHandler(this);
-        EquipmentManager = new EquipmentManager(this);
+        // EquipmentManager = new EquipmentManager(this);
         CombatManager = new CombatManager(this);
 
         // InventoryManager = new InventoryManager(this);

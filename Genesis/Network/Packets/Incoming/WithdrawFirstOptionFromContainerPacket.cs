@@ -1,4 +1,5 @@
-﻿using Genesis.Cache;
+﻿using ArcticRS.Appearance;
+using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Container;
 using Genesis.Entities;
@@ -40,13 +41,13 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
         {
             var inventorySlot = _player.Inventory.GetFirstItem(_itemId);
             if (inventorySlot == null) return;
-            
+
             var index = _player.Inventory.GetIndexOfItemId(inventorySlot.ItemId);
-            
+
             var transferResult = ContainerTransfer.Transfer(
-                _player.Inventory, 
-                _player.BankContainer, 
-                _itemId, 
+                _player.Inventory,
+                _player.BankContainer,
+                _itemId,
                 1
             );
 
@@ -55,7 +56,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
             /* Handle bank slot refresh */
             var updatedBankSlot = _player.BankContainer.GetItemAtIndex(transferResult.DestinationIndex);
             int displayBankItemId = updatedBankSlot.ItemId == 0 ? -1 : updatedBankSlot.ItemId;
-            
+
             _player.BankContainer.RefreshSlot(
                 _player,
                 transferResult.DestinationIndex,
@@ -63,13 +64,13 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                 updatedBankSlot.Quantity,
                 GameInterfaces.DefaultBankContainer
             );
-            
-            
+
+
             /* Handle inventory slot refresh */
             var updatedInventorySlot = _player.Inventory.GetItemAtIndex(index);
             int displayInventoryItemId = updatedInventorySlot.ItemId == 0 ? -1 : updatedInventorySlot.ItemId;
-            
-            
+
+
             var refreshInterfaces = new[]
             {
                 GameInterfaces.BankInventoryContainer,
@@ -94,7 +95,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
         {
             var bankItem = _player.BankContainer.GetItemAtIndex(_fromIndex);
             if (bankItem == null) return;
-            
+
             var transferResult = ContainerTransfer.Transfer(
                 _player.BankContainer,
                 _player.Inventory,
@@ -107,7 +108,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                 var inventorySlot = _player.Inventory.GetItemAtIndex(transferResult.DestinationIndex);
 
                 // Refresh inventory interfaces
-                foreach (var interfaceId in new[] 
+                foreach (var interfaceId in new[]
                          {
                              GameInterfaces.BankInventoryContainer,
                              GameInterfaces.DefaultInventoryContainer
@@ -125,11 +126,11 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                 // Refresh bank slot with proper display rules
                 var updatedBankSlot = _player.BankContainer.GetItemAtIndex(_fromIndex);
                 int displayItemId = updatedBankSlot.ItemId == 0 ? -1 : updatedBankSlot.ItemId;
-    
+
                 _player.BankContainer.RefreshSlot(
                     _player,
                     _fromIndex,
-                    displayItemId,  // Now properly handles 0 -> -1 conversion
+                    displayItemId, // Now properly handles 0 -> -1 conversion
                     updatedBankSlot.Quantity,
                     GameInterfaces.DefaultBankContainer
                 );
@@ -138,20 +139,16 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
 
         if (_fromContainer == GameInterfaces.EquipmentContainer)
         {
-            var slot = EquipmentManager.GetEquipmentSlotById(_itemId);
-            if (_player.Equipment.TryUnequip(_player, slot))
-            {
-                // _player.Inventory.RefreshSlot(_player, _fromIndex, -1,
-                //     0,
-                //     GameInterfaces.EquipmentContainer);
-                //
-                // _player.Inventory.RefreshSlot(_player, _fromIndex, -1,
-                //     0,
-                //     GameInterfaces.EquipmentContainer);
-
-                // _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
-                // _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
-            }
+            // if (_player.Equipment.TryUnequip(_player, EquipmentManager.GetEquipmentSlotById(_itemId)))
+            // {
+            //     // _player.Inventory.RefreshSlot(_player, _fromIndex,
+            //     //     -1,
+            //     //     0,
+            //     //     GameInterfaces.EquipmentContainer
+            //     // );
+            //
+            //     _player.Flags |= PlayerUpdateFlags.Appearance;
+            // }
         }
     }
 }

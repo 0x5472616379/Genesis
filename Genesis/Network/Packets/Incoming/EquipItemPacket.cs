@@ -1,8 +1,7 @@
-﻿using ArcticRS.Actions;
+﻿using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Managers;
-using Genesis.Model;
 
 namespace Genesis.Packets.Incoming;
 
@@ -28,16 +27,27 @@ public class EquipItemPacket : IPacket
 
     public void Process()
     {
-        if (!_player.Inventory.ContainsAt(_fromIndex, _itemId))
-            return;
-        
-        var item = _player.Inventory.GetItemAtIndex(_fromIndex);
-        
-        if (_player.Equipment.TryEquip(_player, _itemId, item.Quantity, _fromIndex))
+        if (_interfaceId == GameInterfaces.DefaultInventoryContainer)
         {
-            // _player.Inventory.RemoveAt(_fromIndex);
-            _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
-            _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
+            var item = _player.Inventory.GetItemAtIndex(_fromIndex);
+            if (item.IsEmpty) return;
+
+            var slot = EquipmentManager.GetEquipmentSlotById(item.ItemId);
+            if (slot == EquipmentSlot.None) return;
+
+            if (_player.Equipment.TryEquipItem(_player, _fromIndex, slot))
+            {
+                _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
+                _player.Flags |= PlayerUpdateFlags.Appearance;
+            }
+
+            // if (_player.Equipment.TryEquipItem(_fromIndex))
+            // {
+            //     // Update client interface
+            //     _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
+            //     // _player.EquipmentManager.RefreshAllSlots();
+            //     _player.Flags |= PlayerUpdateFlags.Appearance;
+            // }
         }
     }
 }

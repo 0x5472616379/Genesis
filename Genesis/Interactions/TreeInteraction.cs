@@ -169,15 +169,15 @@ public class TreeInteraction : RSInteraction
 
     private bool TryUseEquippedAxe(int playerLevel)
     {
-        var weaponId = _player.EquipmentManager.GetWeapon();
-        var equippedAxe = AxeData.GetAxe(weaponId);
-
-        if (equippedAxe != null && playerLevel >= equippedAxe.RequiredLevel)
-        {
-            axeAnimationId = equippedAxe.AnimationId;
-            EquippedAxe = equippedAxe;
-            return true;
-        }
+        // var weaponId = _player.EquipmentManager.GetWeapon();
+        // var equippedAxe = AxeData.GetAxe(weaponId);
+        //
+        // if (equippedAxe != null && playerLevel >= equippedAxe.RequiredLevel)
+        // {
+        //     axeAnimationId = equippedAxe.AnimationId;
+        //     EquippedAxe = equippedAxe;
+        //     return true;
+        // }
 
         return false;
     }
