@@ -87,8 +87,6 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                     interfaceId
                 );
             }
-
-            Console.WriteLine("Finished");
         }
 
         if (_fromContainer == GameInterfaces.DefaultBankContainer)
@@ -107,7 +105,7 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
             {
                 var inventorySlot = _player.Inventory.GetItemAtIndex(transferResult.DestinationIndex);
 
-                // Refresh inventory interfaces
+                /* Refresh inventory interfaces */
                 foreach (var interfaceId in new[]
                          {
                              GameInterfaces.BankInventoryContainer,
@@ -139,16 +137,58 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
 
         if (_fromContainer == GameInterfaces.EquipmentContainer)
         {
-            // if (_player.Equipment.TryUnequip(_player, EquipmentManager.GetEquipmentSlotById(_itemId)))
-            // {
-            //     // _player.Inventory.RefreshSlot(_player, _fromIndex,
-            //     //     -1,
-            //     //     0,
-            //     //     GameInterfaces.EquipmentContainer
-            //     // );
-            //
-            //     _player.Flags |= PlayerUpdateFlags.Appearance;
-            // }
+            int containerIndex = _player.Equipment.MapClientSlotToContainerIndex(_fromIndex);
+            if (containerIndex == -1) return;
+
+            var equipmentSlot = _player.Equipment.GetItemAtIndex(containerIndex);
+            if (equipmentSlot.IsEmpty) return;
+
+            int amountToRemove = equipmentSlot.Quantity; // Or read from packet if partial unequip
+            var addResult = _player.Inventory.AddItem(equipmentSlot.ItemId, amountToRemove);
+
+            if (addResult.Added > 0)
+            {
+                // Update equipment slot
+                equipmentSlot.Quantity -= addResult.Added;
+                bool needsClear = equipmentSlot.Quantity <= 0;
+
+                if (needsClear)
+                {
+                    _player.Equipment.ClearSlot(EquipmentManager.GetEquipmentSlotById(_itemId));
+                }
+                else
+                {
+                    _player.Equipment.OverrideAtIndex(
+                        containerIndex,
+                        equipmentSlot.ItemId,
+                        equipmentSlot.Quantity
+                    );
+                }
+
+                // Refresh equipment slot
+                _player.Equipment.RefreshSlot(
+                    _player,
+                    _fromIndex,
+                    needsClear ? -1 : equipmentSlot.ItemId,
+                    needsClear ? 0 : equipmentSlot.Quantity,
+                    GameInterfaces.EquipmentContainer
+                );
+
+                // Refresh SPECIFIC inventory slot that received the items
+                if (addResult.Index != -1)
+                {
+                    var inventoryItem = _player.Inventory.GetItemAtIndex(addResult.Index);
+                    _player.Inventory.RefreshSlot(
+                        _player,
+                        addResult.Index,
+                        inventoryItem.ItemId,
+                        inventoryItem.Quantity,
+                        GameInterfaces.DefaultInventoryContainer
+                    );
+                }
+
+                _player.Flags |= PlayerUpdateFlags.Appearance;
+            }
         }
     }
 }

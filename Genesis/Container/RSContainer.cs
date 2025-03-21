@@ -91,7 +91,8 @@ public class RSContainer
 
                 slot.Quantity += add;
                 remaining -= add;
-                if (remaining == 0) break;
+                // if (remaining == 0) break;
+                return (quantity - remaining, destIndex);
             }
         }
 

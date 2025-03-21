@@ -91,7 +91,7 @@ public class ClientManager
             player.BankContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
         
         // player.BankItemContainer.AddItem(385, 1000);
-        // player.Equipment.RefreshContainer(player, GameInterfaces.EquipmentContainer);
+        player.Equipment.RefreshContainer(player, GameInterfaces.EquipmentContainer);
         player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
     }
 

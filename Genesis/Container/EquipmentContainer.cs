@@ -205,7 +205,7 @@ public class EquipmentContainer : RSContainer
         return false;
     }
 
-    private void ClearSlot(EquipmentSlot slot)
+    public void ClearSlot(EquipmentSlot slot)
     {
         var index = MapSlotToIndex(slot);
         if (index >= 0 && index < _slots.Count)
@@ -271,7 +271,7 @@ public class EquipmentContainer : RSContainer
         _ => -1
     };
 
-    private int MapClientSlotToContainerIndex(int clientSlotIndex)
+    public int MapClientSlotToContainerIndex(int clientSlotIndex)
     {
         return clientSlotIndex switch
         {

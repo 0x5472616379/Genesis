@@ -40,14 +40,6 @@ public class EquipItemPacket : IPacket
                 _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
                 _player.Flags |= PlayerUpdateFlags.Appearance;
             }
-
-            // if (_player.Equipment.TryEquipItem(_fromIndex))
-            // {
-            //     // Update client interface
-            //     _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
-            //     // _player.EquipmentManager.RefreshAllSlots();
-            //     _player.Flags |= PlayerUpdateFlags.Appearance;
-            // }
         }
     }
 }
