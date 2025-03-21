@@ -52,24 +52,12 @@ public class EquipmentContainer : RSContainer
             /* List to track items we've unequipped for rollback */
             var unequippedItems = new List<(EquipmentSlot slot, ItemSlot item)>();
 
-            /* 1. Unequip shield first */
-            var shieldItem = GetItemInSlot(EquipmentSlot.Shield);
-            if (!shieldItem.IsEmpty)
-            {
-                if (!TryUnequipToInventory(player, EquipmentSlot.Shield, inventoryIndex))
-                {
-                    return false; /* Abort if shield can't be moved */
-                }
-
-                unequippedItems.Add((EquipmentSlot.Shield, shieldItem.Copy()));
-            }
-
-            /* 2. Unequip existing weapon (1h or current 2h) */
+            /* 1. Unequip existing weapon (1h or current 2h) */
             var weaponItem = GetItemInSlot(EquipmentSlot.Weapon);
             if (!weaponItem.IsEmpty)
             {
                 /* Try to unequip to original slot + 1 first, then fallback */
-                bool weaponMoved = TryUnequipToInventory(player, EquipmentSlot.Weapon, inventoryIndex + 1) ||
+                bool weaponMoved = TryUnequipToInventory(player, EquipmentSlot.Weapon, inventoryIndex ) ||
                                    TryUnequipToInventory(player, EquipmentSlot.Weapon, -1); // -1 = any slot
 
                 if (!weaponMoved)
@@ -83,6 +71,18 @@ public class EquipmentContainer : RSContainer
 
                     return false;
                 }
+            }
+            
+            /* 2. Unequip shield first */
+            var shieldItem = GetItemInSlot(EquipmentSlot.Shield);
+            if (!shieldItem.IsEmpty)
+            {
+                if (!TryUnequipToInventory(player, EquipmentSlot.Shield, inventoryIndex))
+                {
+                    return false; /* Abort if shield can't be moved */
+                }
+
+                unequippedItems.Add((EquipmentSlot.Shield, shieldItem.Copy()));
             }
 
             return true;
