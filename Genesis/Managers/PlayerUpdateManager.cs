@@ -174,8 +174,8 @@ public class PlayerUpdateManager
     private static void AppendGraphics(Player player, RSStream playerFlagUpdateBlock)
     {
         playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentGfx.Id);
-        playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentGfx.Height); //0:on - 1:above
-        playerFlagUpdateBlock.WriteWordBigEndian(player.CurrentGfx.Delay); //delay
+        playerFlagUpdateBlock.WriteWord(player.CurrentGfx.Height); //0:on - 1:above
+        playerFlagUpdateBlock.WriteWord(player.CurrentGfx.Delay); //delay
     }
 
     private static void AppendAnimation(Player player, RSStream playerFlagUpdateBlock)

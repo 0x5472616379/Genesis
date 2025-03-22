@@ -9,10 +9,72 @@ public class GameConstants
         4219, 4220, 4221, 4222, 4223, 6724, 4734, 4934, 4935, 4936, 4937
     };
 
-    public static int[] CROSSBOWS =
+    public static readonly HashSet<int> Shortbows = new()
     {
-        837, 4734, 9174, 9177, 9179, 9181, 9183, 9185
+        841, 843, 849, 853, 857, 861
     };
+
+    public static readonly HashSet<int> Longbows = new()
+    {
+        839, 845, 847, 851, 855, 859
+    };
+
+    public static readonly HashSet<int> Crossbows = new()
+    {
+        839, 845, 847, 851, 855, 859
+    };
+
+    public static readonly HashSet<int> ThrowingKnives = new()
+    {
+        863, 864, 865, 866, 867, 868, 869
+    };
+
+    public static readonly HashSet<int> Darts = new()
+    {
+        806, 807, 808, 809, 810, 811
+    };
+
+
+    public static bool IsShortbow(int itemId) => Shortbows.Contains(itemId);
+    public static bool IsLongbow(int itemId) => Longbows.Contains(itemId);
+    public static bool IsCrossbow(int itemId) => Crossbows.Contains(itemId);
+    public static bool IsThrowingKnife(int itemId) => ThrowingKnives.Contains(itemId);
+    public static bool IsDart(int itemId) => Darts.Contains(itemId);
+
+    public static short GetArrowPullbackGfx(int itemId) => itemId switch
+    {
+        882 => 19,
+        884 => 18,
+        886 => 20,
+        888 => 21,
+        890 => 22,
+        892 => 24,
+        _ => 19
+    };
+
+    public static short GetThrowingKnifePullbackGfx(int itemId) => itemId switch
+    {
+        864 => 219, // Bronze
+        863 => 220, // Iron
+        865 => 221, // Steel
+        869 => 222, // Black
+        866 => 223, // Mithril
+        867 => 224, // Adamant
+        868 => 225, // Rune
+        _ => 219
+    };
+
+    public static short GetDartPullbackGfx(int itemId) => itemId switch
+    {
+        806 => 232, // Bronze
+        807 => 233, // Iron
+        808 => 234, // Steel
+        809 => 235, // Mithril
+        810 => 236, // Adamant
+        811 => 237, // Rune
+        _ => 232
+    };
+
 
     public static int[] ARROWS =
     {
@@ -44,7 +106,7 @@ public class GameConstants
     {
         { 385, 20 } // shark
     };
-    
+
     public static Dictionary<int, int> COMBO_FOOD = new()
     {
         { 3144, 18 } // karambwan

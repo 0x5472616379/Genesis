@@ -1,10 +1,7 @@
-﻿using ArcticRS.Actions;
-using ArcticRS.Appearance;
-using Genesis.Cache;
+﻿using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Environment;
-using Genesis.Movement;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Interactions;
@@ -33,37 +30,13 @@ public class PlayerAttackInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
-        // _weapon.Damage = new Random().Next(1, 31);
-
-        // WeaponSpeedLookup.GetWeaponInfo(ItemDefinition.Lookup(_itemId).Name);
-        // if (UsingBow)
-        //     _weapon.AttackerAnim = 426;
-        // else
-        //     _weapon.AttackerAnim = 422;
-
         return _player.CombatManager.Attack(_target, World.CurrentTick);
-
-        // if (attackLoaded)
-        // {
-        //     _player.SetCurrentAnimation(422);
-        //     _target.ActionHandler.AddAction(new DamageAction(_target, null, 0));
-        //     attackLoaded = false;
-        // }
-        //
-        // if (currentTick == 0 || currentTick % 4 == 0)
-        // {
-        //     attackLoaded = true;
-        // }
-        //
-        // currentTick++;
-        // return false;
     }
 
     public override bool CanExecute()
     {
-        // _weapon.AttackerAnim = _player.AnimationManager.GetWeaponAnimation(_weapon.Id, 1);
-        
-        UsingBow = GameConstants.BOWS.Contains(_player.Equipment.GetItemInSlot(EquipmentSlot.Weapon).ItemId);
+        var weaponId = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon).ItemId;
+        UsingBow = GameConstants.IsShortbow(weaponId) || GameConstants.IsLongbow(weaponId);
         
         if (_player.CurrentHealth <= 0)
         {

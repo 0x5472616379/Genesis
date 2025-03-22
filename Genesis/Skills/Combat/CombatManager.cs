@@ -1,5 +1,6 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Appearance;
+using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
@@ -25,30 +26,50 @@ public class CombatManager
     {
         if (LastAttackTick == -1 || (currentTick - LastAttackTick) >= AttackedWith.AttackSpeed)
         {
-            /* Perform Attack */
-
-            /* Get the current weapon equipped */
-            var equipped = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon);
-            var weapon = WeaponBuilder.GetWeapon(_player, equipped.ItemId);
-            _player.SetCurrentAnimation(weapon.AttackerAnim);
-
-            int dmg = r.Next(0, 31);
+            int dmg = r.Next(0, 2);
             var damage = new Damage(dmg == 0 ? DamageType.BLOCK : DamageType.HIT, dmg, null);
 
-            ProjectileCreator.CreateProjectile(_player, target);
-            
-            AttackedWith = weapon;
-            LastAttackTick = currentTick;
-            target.ActionHandler.AddAction(new DamageAction(target, damage));
+            /* Perform Attack */
+            var equipped = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon);
+            var weaponData = WeaponBuilder.GetWeaponData(_player, equipped.ItemId);
+
+            if (GameConstants.IsShortbow(equipped.ItemId) || GameConstants.IsLongbow(equipped.ItemId))
+            {
+                var arrowEquipped = _player.Equipment.GetItemInSlot(EquipmentSlot.Ammo);
+                _player.SetCurrentGfx(new Gfx(GameConstants.GetArrowPullbackGfx(arrowEquipped.ItemId), 90, 0));
+                ProjectileCreator.CreateProjectile(_player, target);
+                AttackedWith = weaponData;
+                LastAttackTick = currentTick;
+                target.ActionHandler.AddAction(new DamageAction(target, damage));
+                return false;
+            }
+
+            if (GameConstants.IsThrowingKnife(equipped.ItemId))
+            {
+                _player.SetCurrentAnimation(weaponData.AttackerAnim);
+                _player.SetCurrentGfx(new Gfx(GameConstants.GetThrowingKnifePullbackGfx(equipped.ItemId), 90, 0));
+                ProjectileCreator.CreateProjectile(_player, target);
+                AttackedWith = weaponData;
+                LastAttackTick = currentTick;
+                target.ActionHandler.AddAction(new DamageAction(target, damage));
+                return false;
+            }
+
+            if (GameConstants.IsDart(equipped.ItemId))
+            {
+                _player.SetCurrentAnimation(weaponData.AttackerAnim);
+                _player.SetCurrentGfx(new Gfx(GameConstants.GetDartPullbackGfx(equipped.ItemId), 90, 0));
+                ProjectileCreator.CreateProjectile(_player, target);
+                AttackedWith = weaponData;
+                LastAttackTick = currentTick;
+                target.ActionHandler.AddAction(new DamageAction(target, damage));
+                return false;
+            }
+
             return false;
         }
 
         return false;
-    }
-
-    public void SwitchWeapon(Weapon weapon)
-    {
-        AttackedWith = weapon;
     }
 
     public bool InValidProjectileDistance(Player target)
@@ -163,4 +184,14 @@ public class CombatManager
 
         return isValidDistance && projectilePathClear && !isDiagonal;
     }
+
+
+    private int GetRangeDelay(int distance) => distance switch
+    {
+        1 => 2,
+        2 => 2,
+        >= 3 and <= 8 => 3,
+        >= 9 => 4,
+        _ => 2
+    };
 }

@@ -66,7 +66,7 @@ public class ClientManager
         player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
         player.SkillManager.RefreshSkills();
         WeaponInterfaceManager.Refresh(player);
-        
+
 
         // for (int i = 0; i <= 3; i++)
         //     player.InventoryManager.AddItem(526);
@@ -76,20 +76,22 @@ public class ClientManager
         //
         // player.InventoryManager.AddItem(544);
         // player.InventoryManager.AddItem(542);
-        
-        LoadPVPGear(player);
+
+        // LoadPVPGear(player);
         // LoadTestItems(player);
-         for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
-             player.Inventory.AddItem(AxeData.GetAllAxeIds()[i], 1);
+        LoadRangeAmmo(player);
         
+        // for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
+        //     player.Inventory.AddItem(AxeData.GetAllAxeIds()[i], 1);
+
         // player.InventoryItemContainer.AddItem(555, 1500);
         // player.InventoryItemContainer.AddItem(560, 550);
         // player.InventoryItemContainer.AddItem(565, 1000);
-        
+
         player.BankContainer.AddItem(892, 2147483640);
         for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
             player.BankContainer.AddItem(AxeData.GetAllAxeIds()[i], 1);
-        
+
         // player.BankItemContainer.AddItem(385, 1000);
         player.Equipment.RefreshContainer(player, GameInterfaces.EquipmentContainer);
         player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
@@ -97,23 +99,44 @@ public class ClientManager
 
     static void LoadPVPGear(Player player)
     {
-         player.Inventory.AddItem(6107, 1); /* Ghost Robe Top*/
-         player.Inventory.AddItem(4675, 1); /* Ancient Staff */
-         player.Inventory.AddItem(2581, 1); /* Robin Hood Hat*/
-         player.Inventory.AddItem(6737, 1); /* Bring */
-         player.Inventory.AddItem(2497, 1); /* Black dhide chaps */
-         player.Inventory.AddItem(3842, 1); /* unholy book */
-         player.Inventory.AddItem(6585, 1); /* Amulet of Fury */
-         player.Inventory.AddItem(5698, 1); /* Dds */
-         player.Inventory.AddItem(861,  1); /* MSB */
-         player.Inventory.AddItem(892, 1000); /* Rune Arrows */
-         player.Inventory.AddItem(3105, 1); /* Climbing Boots */
-         player.Inventory.AddItem(6570, 1); /* Fire cape */
-         player.Inventory.AddItem(2491, 1); /* Black dhide vambs */
-         player.Inventory.AddItem(4587, 1); /* Dscim */
-        
+        player.Inventory.AddItem(6107, 1); /* Ghost Robe Top*/
+        player.Inventory.AddItem(4675, 1); /* Ancient Staff */
+        player.Inventory.AddItem(2581, 1); /* Robin Hood Hat*/
+        player.Inventory.AddItem(6737, 1); /* Bring */
+        player.Inventory.AddItem(2497, 1); /* Black dhide chaps */
+        player.Inventory.AddItem(3842, 1); /* unholy book */
+        player.Inventory.AddItem(6585, 1); /* Amulet of Fury */
+        player.Inventory.AddItem(5698, 1); /* Dds */
+        player.Inventory.AddItem(861, 1); /* MSB */
+        player.Inventory.AddItem(892, 1000); /* Rune Arrows */
+        player.Inventory.AddItem(3105, 1); /* Climbing Boots */
+        player.Inventory.AddItem(6570, 1); /* Fire cape */
+        player.Inventory.AddItem(2491, 1); /* Black dhide vambs */
+        player.Inventory.AddItem(4587, 1); /* Dscim */
+    }
+
+    static void LoadRangeAmmo(Player player)
+    {
+        foreach (var throwingKnife in GameConstants.ThrowingKnives)
+            player.Inventory.AddItem(throwingKnife, 1000);
+
+        foreach (var dart in GameConstants.Darts)
+            player.Inventory.AddItem(dart, 1000);
+
     }
     
+    static void LoadRangeWeapons(Player player)
+    {
+        foreach (var shortbow in GameConstants.Shortbows)
+            player.Inventory.AddItem(shortbow, 1);
+        
+        foreach (var longbow in GameConstants.Longbows)
+            player.Inventory.AddItem(longbow, 1);
+        
+        foreach (var crossbow in GameConstants.Crossbows)
+            player.Inventory.AddItem(crossbow, 1);
+    }
+
     static void LoadTestItems(Player player)
     {
         // player.InventoryItemContainer.AddItem(526, 1); /* Bones */

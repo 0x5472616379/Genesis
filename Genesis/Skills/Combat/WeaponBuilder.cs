@@ -6,7 +6,7 @@ namespace Genesis.Skills.Combat;
 
 public class WeaponBuilder
 {
-    public static Weapon GetWeapon(Player player, int itemId)
+    public static Weapon GetWeaponData(Player player, int itemId)
     {
         var def = ItemDefinition.Lookup(itemId);
         if (def == null) return null;
