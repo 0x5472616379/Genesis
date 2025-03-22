@@ -42,8 +42,8 @@ public class SpellOnPlayer : IPacket
         var distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
             _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
         
-        var weapon = new Weapon(_spellId, 5, 1979, null, new Gfx(369, 0, 0), 0, 0);
-        _player.CurrentInteraction = new SpellOnPlayerInteraction(_player, _player.InteractingEntity as Player, weapon);
+        // var weapon = new Weapon(_spellId, 5, 1979, null, new Gfx(369, 0, 0), 0, 0);
+        // _player.CurrentInteraction = new SpellOnPlayerInteraction(_player, _player.InteractingEntity as Player, weapon);
     }
 
     

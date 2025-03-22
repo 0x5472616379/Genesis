@@ -1,7 +1,9 @@
 ﻿using ArcticRS.Appearance;
+using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Managers;
+using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;
 
@@ -37,6 +39,12 @@ public class EquipItemPacket : IPacket
 
             if (_player.Equipment.TryEquipItem(_player, _fromIndex, slot))
             {
+                if (slot == EquipmentSlot.Weapon)
+                {
+                    WeaponInterfaceManager.Refresh(_player);
+                    // WeaponSpeedLookup.GetWeaponInfo(ItemDefinition.Lookup(_itemId).Name);
+                }
+
                 _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
                 _player.Flags |= PlayerUpdateFlags.Appearance;
             }

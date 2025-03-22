@@ -29,9 +29,9 @@ public class SpellOnPlayerInteraction : RSInteraction
         var distance = MovementHelper.GameSquareDistance(_player.Location.X, _player.Location.Y,
             _player.InteractingEntity.Location.X, _player.InteractingEntity.Location.Y);
 
-        _weapon.Delay = GetSpellDelay(distance);
-        _weapon.Damage = new Random().Next(1, 31);
-        _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
+        // _weapon.Delay = GetSpellDelay(distance);
+        // _weapon.Damage = new Random().Next(1, 31);
+        // _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
         return true;
     }
 

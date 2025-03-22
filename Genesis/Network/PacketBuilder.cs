@@ -250,6 +250,23 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteA(((xInZone & 0x7) << 4) | (yInZone & 0x7));
     }
 
+    public void SpawnProjectile(int pos, sbyte deltaX, sbyte deltaZ, int targetID, int spotanimID,
+                                int srcY, int dstY, int delay, int duration, int peakPitch, int arcSize)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.PROJECTILE);
+        _player.Session.Writer.WriteByte((byte)pos);
+        _player.Session.Writer.WriteByte(deltaX);
+        _player.Session.Writer.WriteByte(deltaZ);
+        _player.Session.Writer.WriteWord(targetID);
+        _player.Session.Writer.WriteWord(spotanimID);
+        _player.Session.Writer.WriteByte(srcY);
+        _player.Session.Writer.WriteByte(dstY);
+        _player.Session.Writer.WriteWord(delay);
+        _player.Session.Writer.WriteWord(duration);
+        _player.Session.Writer.WriteByte(peakPitch);
+        _player.Session.Writer.WriteByte(arcSize);
+    }
+
     public void SendActiveRegion(int x, int y, Player player, List<ModifiedEntity> modifiedEntitiesInBuildArea)
     {
         _player.Session.Writer.CreateFrameVarSize(ServerOpCodes.REGION_UPDATE);

@@ -37,8 +37,8 @@ public class RespawnAction : RSAction
 
     private void FinalizePlayerSpawn()
     {
-        _player.Location.X = 3222;
-        _player.Location.Y = 3218;
+        _player.Location.X = 3100; //3222
+        _player.Location.Y = 3830; //3218
         _player.Location.Z = 0;
 
         _player.PerformedTeleport = true;

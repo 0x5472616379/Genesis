@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Appearance;
 using Genesis.Cache;
 using Genesis.Entities;
+using Genesis.Skills.Combat;
 
 namespace Genesis.Managers;
 
@@ -34,7 +35,9 @@ public class AnimationManager
         int defaultRun = DefaultRun;
 
         // Normalize weapon name
-        weaponName = string.IsNullOrEmpty(weaponName) ? ItemDefinition.Lookup(weaponId)?.Name.ToLower() ?? string.Empty : weaponName.ToLower();
+        weaponName = string.IsNullOrEmpty(weaponName)
+            ? ItemDefinition.Lookup(weaponId)?.Name.ToLower() ?? string.Empty
+            : weaponName.ToLower();
 
         // Update animations using a switch expression
         (Stand, Walk, Run) = weaponName switch
@@ -56,13 +59,12 @@ public class AnimationManager
                 4153 => (1662, 1663, 1664), // Granite Maul
                 11694 or 11696 or 11730 or 11698 or 11700 => (4300, 4306, 4305), // Godswords
                 1305 => (809, defaultWalk, defaultRun), // Dragon Longsword (only Stand changes)
-                
+
                 // Default case: reset to original default values
                 _ => (defaultStand, defaultWalk, defaultRun)
             }
         };
     }
-
 
 
     public int GetWeaponAnimation(int weaponId, int fightMode)
@@ -82,7 +84,8 @@ public class AnimationManager
                 ? (Random.Shared.Next(2) == 0 ? 400 : 401)
                 : 395,
             (var name, _) when name.Contains("dragon dagger") => 402,
-            (var name, _) when name.Contains("scimitar") => 451,
+            (var name, _) when name.Contains("scimitar") => fightMode == (int)FightMode.CONTROLLED ? 412 : 451,
+            (var name, _) when name.Contains("axe") => 451,
             (var name, _) when name.Contains("2h sword") || name.Contains("godsword") || name.Contains("aradomin sword")
                 => fightMode == 4 ? 406 : 407,
             (var name, _) when name.Contains("longsword") => fightMode == 3 ? 412 : 451,
@@ -102,6 +105,13 @@ public class AnimationManager
             (_, 4734) => 2075, // Karil
             (_, 4151) => 1658,
             (_, 6528) => 2661,
+            (_, -1) => fightMode switch
+            {
+                (int)FightMode.ACCURATE => 422,
+                (int)FightMode.AGGRESSIVE => 423,
+                (int)FightMode.DEFENSIVE => 422,
+                _ => throw new ArgumentOutOfRangeException(nameof(fightMode), "Invalid fight mode")
+            },
 
             // Default animation
             _ => 422

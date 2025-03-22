@@ -65,7 +65,7 @@ public class ClientManager
         player.Session.PacketBuilder.SendSidebarInterface(13, GameInterfaces.MusicInterface);
         player.Session.PacketBuilder.SendFriendListStatus(FriendListStatus.LOADED);
         player.SkillManager.RefreshSkills();
-        
+        WeaponInterfaceManager.Refresh(player);
         
 
         // for (int i = 0; i <= 3; i++)

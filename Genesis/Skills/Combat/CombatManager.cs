@@ -1,6 +1,8 @@
 ﻿using ArcticRS.Actions;
+using ArcticRS.Appearance;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
 
@@ -17,15 +19,27 @@ public class CombatManager
         _player = player;
     }
 
-    public bool Attack(Player target, int currentTick, Weapon weapon)
+    Random r = new();
+
+    public bool Attack(Player target, int currentTick)
     {
         if (LastAttackTick == -1 || (currentTick - LastAttackTick) >= AttackedWith.AttackSpeed)
         {
             /* Perform Attack */
-            LastAttackTick = currentTick;
+
+            /* Get the current weapon equipped */
+            var equipped = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon);
+            var weapon = WeaponBuilder.GetWeapon(_player, equipped.ItemId);
             _player.SetCurrentAnimation(weapon.AttackerAnim);
-            target.ActionHandler.AddAction(new DamageAction(target, weapon, World.CurrentTick + weapon.Delay));
+
+            int dmg = r.Next(0, 31);
+            var damage = new Damage(dmg == 0 ? DamageType.BLOCK : DamageType.HIT, dmg, null);
+
+            ProjectileCreator.CreateProjectile(_player, target);
+            
             AttackedWith = weapon;
+            LastAttackTick = currentTick;
+            target.ActionHandler.AddAction(new DamageAction(target, damage));
             return false;
         }
 
@@ -60,7 +74,7 @@ public class CombatManager
             _player.PlayerMovementHandler.Finish();
             _player.PlayerMovementHandler.Process();
             _player.PlayerMovementHandler.Reset();
-             return false;
+            return false;
         }
 
         /* If same tile step away */

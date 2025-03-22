@@ -1,30 +1,25 @@
 ﻿using Genesis.Entities;
-using Genesis.Model;
+using Genesis.Environment;
 using Genesis.Skills.Combat;
 
 namespace ArcticRS.Actions;
 
 public class DamageAction : RSAction
 {
+    private readonly Damage _damage;
     private readonly Player _player;
-    private readonly Weapon _weapon;
 
-    public DamageAction(Player player, Weapon weapon, int tick)
+    public DamageAction(Player player, Damage damage, int delay = 0)
     {
+        _damage = damage;
         _player = player;
-        _weapon = weapon;
         Priority = ActionPriority.Forceful;
-        ScheduledTick = tick;
+        ScheduledTick = World.CurrentTick + delay;
     }
 
-    public Weapon GetWeapon()
-    {
-        return _weapon;
-    }
-    
     public override bool Execute()
     {
-        _player.SetDamage(_weapon.Damage, DamageType.HIT, _weapon);
+        _player.SetDamage(_damage);
         return true;
     }
 }

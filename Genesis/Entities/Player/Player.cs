@@ -47,6 +47,8 @@ public class Player : Entity
     public InventoryContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
     // public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
 
+    public FightMode FightMode { get; set; } = FightMode.ACCURATE;
+    
     public Player()
     {
         Session = new NetworkSession(this);
@@ -146,20 +148,20 @@ public class Player : Entity
     public Damage RecentDamage { get; set; }
     public Damage RecentDamage1 { get; set; }
 
-    public void SetDamage(int amount, DamageType type, Weapon weapon)
+    public void SetDamage(Damage damage)
     {
-        RecentDamage = new Damage(type, amount);
+        RecentDamage = damage;
         SetCurrentAnimation(424); /* Block animation */
 
-        SetCurrentGfx(weapon.TargetGfx);
-        if (CurrentHealth - amount <= 0)
+        SetCurrentGfx(damage.Gfx);
+        if (CurrentHealth - damage.Amount <= 0)
         {
             CurrentHealth = 0;
             ActionHandler.AddAction(new RespawnAction(this));
         }
         else
         {
-            CurrentHealth -= amount;
+            CurrentHealth -= damage.Amount;
         }
 
         SkillManager.RefreshSkill(SkillType.HITPOINTS);
