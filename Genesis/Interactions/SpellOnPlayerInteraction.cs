@@ -31,7 +31,7 @@ public class SpellOnPlayerInteraction : RSInteraction
 
         // _weapon.Delay = GetSpellDelay(distance);
         // _weapon.Damage = new Random().Next(1, 31);
-        // _player.CombatManager.Attack(_target, World.CurrentTick, _weapon);
+        // _player.CombatManager.Attack(_target, World.CurrentTick);
         return true;
     }
 
@@ -46,11 +46,11 @@ public class SpellOnPlayerInteraction : RSInteraction
             return false;
         }
         
-        if (_player.CombatManager.InValidProjectileDistance(_target))
-        {
-            _player.PlayerMovementHandler.Reset();
-            return true;
-        }
+        // if (_player.CombatManager.InValidProjectileDistance(_target))
+        // {
+        //     _player.PlayerMovementHandler.Reset();
+        //     return true;
+        // }
 
         
         // _player.PlayerMovementHandler.Reset();

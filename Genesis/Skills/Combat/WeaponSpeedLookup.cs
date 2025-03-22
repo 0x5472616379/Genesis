@@ -10,6 +10,7 @@ public class WeaponSpeedLookup
         { "dagger", new WeaponInfo(6, 4, 0, 0) },
         { "sword", new WeaponInfo(6, 4, 0, 0) },
         { "scimitar", new WeaponInfo(6, 4, 0, 0) },
+        { "whip", new WeaponInfo(6, 4, 0, 0) },
         { "claws", new WeaponInfo(6, 4, 0, 0) },
         { "pickaxe", new WeaponInfo(5, 5, 0, 0) },
         { "staff", new WeaponInfo(5, 5, 0, 0) },

@@ -5,7 +5,7 @@ namespace Genesis.Skills.Combat;
 public class ProjectileCreator
 {
     // Define your method here
-    public static void CreateProjectile(Player player, Player target, int spotAnimId = 91, int delay = 50,
+    public static void CreateProjectile(Player player, Player target, int spotAnimId = 91, int delay = 0,
         int duration = 70, int peakPitch = 16, int arcSize = 64)
     {
         int pX = player.Location.X;
@@ -27,14 +27,14 @@ public class ProjectileCreator
         int deltaX = targetX - pX;
         int deltaZ = targetY - pY;
 
-        int srcY = (1 + 64) / 4;
+        int srcY = (75 + 64) / 4;
         int dstY = (1 + 64) / 4;
 
         player.Session.PacketBuilder.SendActiveChunk(relZoneX, relZoneY);
 
         player.Session.PacketBuilder.SpawnProjectile(pos, (sbyte)deltaX, (sbyte)deltaZ,
-            target.Session.Index, spotAnimId, srcY, dstY, delay,
-            duration, peakPitch, arcSize
+            target.Session.Index, spotAnimId, srcY, dstY, 40,
+            60, peakPitch, arcSize
         );
     }
 }

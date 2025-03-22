@@ -19,8 +19,6 @@ public class PlayerAttackInteraction : RSInteraction
 
     private CombatDistances combatDistance = CombatDistances.Melee;
 
-    private bool UsingBow = false;
-
     public PlayerAttackInteraction(Player player, Player target)
     {
         _player = player;
@@ -35,41 +33,44 @@ public class PlayerAttackInteraction : RSInteraction
 
     public override bool CanExecute()
     {
-        var weaponId = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon).ItemId;
-        UsingBow = GameConstants.IsShortbow(weaponId) || GameConstants.IsLongbow(weaponId);
-        
-        if (_player.CurrentHealth <= 0)
-        {
-            return false;
-        }
+        // var weaponId = _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon).ItemId;
+        //
+        // var UsingBow = GameConstants.IsShortbow(weaponId) || GameConstants.IsLongbow(weaponId)
+        //                                                        || GameConstants.IsDart(weaponId)
+        //                                                        || GameConstants.IsThrowingKnife(weaponId);
+        //
+        // if (_player.CurrentHealth <= 0)
+        // {
+        //     return false;
+        // }
+        //
+        // if (_target.CurrentHealth <= 0)
+        // {
+        //     _player.CurrentInteraction = null;
+        //     _player.InteractingEntity = null;
+        //     _target = null;
+        //     _player.SetFacingEntity(null);
+        //     _player.PlayerMovementHandler.Reset();
+        //     return false;
+        // }
+        //
+        // if (UsingBow)
+        // {
+        //     if (_player.CombatManager.InValidProjectileDistance(_target))
+        //     {
+        //         _player.PlayerMovementHandler.Reset();
+        //         return true;
+        //     }
+        // }
+        // else
+        // {
+        //     if (_player.CombatManager.InValidMeleeDistance(_target))
+        //     {
+        //         _player.PlayerMovementHandler.Reset();
+        //         return true;
+        //     }
+        // }
 
-        if (_target.CurrentHealth <= 0)
-        {
-            _player.CurrentInteraction = null;
-            _player.InteractingEntity = null;
-            _target = null;
-            _player.SetFacingEntity(null);
-            _player.PlayerMovementHandler.Reset();
-            return false;
-        }
-
-        if (UsingBow)
-        {
-            if (_player.CombatManager.InValidProjectileDistance(_target))
-            {
-                _player.PlayerMovementHandler.Reset();
-                return true;
-            }
-        }
-        else
-        {
-            if (_player.CombatManager.InValidMeleeDistance(_target))
-            {
-                _player.PlayerMovementHandler.Reset();
-                return true;
-            }
-        }
-        
-        return false;
+        return true;
     }
 }

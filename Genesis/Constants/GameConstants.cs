@@ -75,6 +75,39 @@ public class GameConstants
         _ => 232
     };
 
+    public static short GetThrowingKnifeProjectile(int itemId) => itemId switch
+    {
+        864 => 212, // Bronze
+        863 => 213, // Iron
+        865 => 214, // Steel
+        869 => 215, // Black
+        866 => 216, // Mithril
+        867 => 217, // Adamant
+        868 => 218, // Rune
+        _ => 212
+    };
+    
+    public static short GetDartProjectile(int itemId) => itemId switch
+    {
+        806 => 226, // Bronze
+        807 => 227, // Iron
+        808 => 228, // Steel
+        809 => 229, // Mithril
+        810 => 230, // Adamant
+        811 => 231, // Rune
+        _ => 226
+    };
+    
+    public static short GetArrowProjectile(int itemId) => itemId switch
+    {
+        882 => 10,
+        884 => 9,
+        886 => 11,
+        888 => 12,
+        890 => 13,
+        892 => 15,
+        _ => 10
+    };
 
     public static int[] ARROWS =
     {
