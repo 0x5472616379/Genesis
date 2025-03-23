@@ -43,10 +43,13 @@ public class CombatHelper
 
     private bool TryRangedAttack(Player target, int currentTick, ItemSlot weapon, Weapon weaponData)
     {
-        return GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId) ? HandleBowAttack(target, currentTick, weaponData) 
-             : GameConstants.IsThrowingKnife(weapon.ItemId) ? HandleThrowingAttack(target, currentTick, weaponData) 
-             : GameConstants.IsDart(weapon.ItemId) ? HandleDartAttack(target, currentTick, weaponData) 
-             : false;
+        return GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId)
+            ? HandleBowAttack(target, currentTick, weaponData)
+            : GameConstants.IsThrowingKnife(weapon.ItemId)
+                ? HandleThrowingAttack(target, currentTick, weaponData)
+                : GameConstants.IsDart(weapon.ItemId)
+                    ? HandleDartAttack(target, currentTick, weaponData)
+                    : false;
 
         // GameConstants.IsThrowingKnife(weapon.ItemId) ? HandleThrowingAttack(target, currentTick, weapon) :
         //     GameConstants.IsDart(weapon.ItemId) ? HandleDartAttack(target, currentTick, weapon) :
@@ -101,7 +104,7 @@ public class CombatHelper
     {
         return GameConstants.GetThrowingKnifeProjectile(itemId);
     }
-    
+
     public Gfx GetDartGraphics(int itemId)
     {
         return new Gfx(GameConstants.GetDartPullbackGfx(itemId), 90, 0);
@@ -131,6 +134,7 @@ public class CombatHelper
 
     private Damage CalculateDamage()
     {
+        // int damageValue = _random.Next(0, MaxHitCalculator.GetRangeMaxHit(_player));
         int damageValue = _random.Next(0, 2);
         return new Damage(damageValue == 0 ? DamageType.BLOCK : DamageType.HIT, damageValue, null);
     }
@@ -145,7 +149,7 @@ public class CombatHelper
     {
         return (int)CalculateDistance(target);
     }
-    
+
     private int CalculateRangeDelay(Player target)
     {
         int distance = (int)CalculateDistance(target);

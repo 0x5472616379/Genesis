@@ -80,6 +80,7 @@ public class ClientManager
         // LoadPVPGear(player);
         // LoadTestItems(player);
         LoadRangeAmmo(player);
+        LoadRangeWeapons(player);
         
         // for (int i = 0; i < AxeData.GetAllAxeIds().Count; i++)
         //     player.Inventory.AddItem(AxeData.GetAllAxeIds()[i], 1);
@@ -130,11 +131,13 @@ public class ClientManager
         foreach (var shortbow in GameConstants.Shortbows)
             player.Inventory.AddItem(shortbow, 1);
         
-        foreach (var longbow in GameConstants.Longbows)
-            player.Inventory.AddItem(longbow, 1);
+        player.Inventory.AddItem(892, 1000);
         
-        foreach (var crossbow in GameConstants.Crossbows)
-            player.Inventory.AddItem(crossbow, 1);
+        // foreach (var longbow in GameConstants.Longbows)
+        //     player.Inventory.AddItem(longbow, 1);
+        //
+        // foreach (var crossbow in GameConstants.Crossbows)
+        //     player.Inventory.AddItem(crossbow, 1);
     }
 
     static void LoadTestItems(Player player)
