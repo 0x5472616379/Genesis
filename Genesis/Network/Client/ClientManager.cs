@@ -2,6 +2,7 @@
 using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Constants;
+using Genesis.Definitions;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
@@ -67,6 +68,18 @@ public class ClientManager
         player.SkillManager.RefreshSkills();
         WeaponInterfaceManager.Refresh(player);
 
+        player.BonusManager.Reset();
+
+        foreach (var itemslot in player.Equipment._slots)
+        {
+            if (itemslot.ItemId == -1)
+                continue;
+
+            var itemBonuses = ItemParser.GetBonusesById(itemslot.ItemId).Bonuses;
+            player.BonusManager.CalculateBonuses(itemBonuses);
+        }
+
+        player.BonusManager.UpdateBonus();
 
         // for (int i = 0; i <= 3; i++)
         //     player.InventoryManager.AddItem(526);

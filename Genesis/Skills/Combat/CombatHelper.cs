@@ -22,7 +22,7 @@ public class CombatHelper
     private static readonly Random _random = new();
 
     public CombatStyle CombatStyle { get; set; } = CombatStyle.Melee;
-    
+
     public int LastAttackTick { get; private set; } = -1;
     public Weapon AttackedWith { get; private set; }
 
@@ -35,11 +35,11 @@ public class CombatHelper
     {
         var weapon = GetEquippedWeapon();
         var weaponData = GetWeaponData(weapon.ItemId);
-        var isRanged = GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId) 
-                                                               || GameConstants.IsThrowingKnife(weapon.ItemId) 
-                                                               || GameConstants.IsDart(weapon.ItemId) 
+        var isRanged = GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId)
+                                                               || GameConstants.IsThrowingKnife(weapon.ItemId)
+                                                               || GameConstants.IsDart(weapon.ItemId)
                                                                || GameConstants.IsCrossbow(weapon.ItemId);
-        
+
         CombatStyle = isRanged ? CombatStyle.Ranged : CombatStyle.Melee;
 
         if (target.CurrentHealth <= 0 || _player.CurrentHealth <= 0)
@@ -47,11 +47,11 @@ public class CombatHelper
             _player.SetFacingEntity(null);
             return true;
         }
-        
+
         /* Process Movement */
         if (!ValidateCombatDistance(target, CombatStyle))
             return false;
-        
+
         /* Check if can attack */
         if (!CanAttack(currentTick))
             return false;
@@ -88,11 +88,11 @@ public class CombatHelper
             _ => false
         };
     }
-    
+
     private bool ValidateRangedDistance(Player target)
     {
         var distance = CalculateDistance(target);
-        
+
         if (distance > (int)CombatDistances.Magic)
         {
             HandleDistanceTooFar(target);
@@ -105,7 +105,7 @@ public class CombatHelper
     private bool ValidateMeleeDistance(Player target)
     {
         var distance = CalculateDistance(target);
-        
+
         if (distance > (int)CombatDistances.Melee)
         {
             HandleMeleeFollow(target);
@@ -114,7 +114,7 @@ public class CombatHelper
 
         return IsValidMeleePosition(target);
     }
-    
+
     private void HandleDistanceTooFar(Player target)
     {
         if (CalculateDistance(target) > 20)
@@ -135,11 +135,12 @@ public class CombatHelper
     private bool HasClearProjectilePath(Player target)
     {
         return RSPathfinder.IsProjectilePathClear(
-            _player, 
+            _player,
             _player.Location.X, _player.Location.Y, _player.Location.Z,
             target.Location.X, target.Location.Y
         );
     }
+
     private void ResetInteraction()
     {
         _player.CurrentInteraction = null;
@@ -161,7 +162,7 @@ public class CombatHelper
         _player.PlayerMovementHandler.Reset();
     }
 
-    
+
     private bool IsValidMeleePosition(Player target)
     {
         return MeleePathing.IsLongMeleeDistanceClear(
@@ -173,7 +174,7 @@ public class CombatHelper
             target.Location.X, target.Location.Y
         );
     }
-    
+
     private void PerformMeleeAttack(Player target, int currentTick, Weapon weaponData)
     {
         CombatStyle = CombatStyle.Melee;
@@ -182,16 +183,16 @@ public class CombatHelper
         QueueDamageAction(target);
         UpdateAttackState(currentTick, weaponData);
     }
-    
+
     private bool HandleBowAttack(Player target, int currentTick, Weapon weaponData)
     {
         CombatStyle = CombatStyle.Ranged;
-        
+
         var arrow = _player.Equipment.GetItemInSlot(EquipmentSlot.Ammo);
         if (arrow == null) return false;
 
         // ValidateCombatDistance(target, CombatStyle.Ranged);
-        
+
         SetupAttack(weaponData, GetArrowGraphics(arrow.ItemId));
         CreateProjectile(target, GetArrowProjectile(arrow.ItemId));
         QueueDamageAction(target, CalculateRangeDelay(target));
@@ -264,11 +265,20 @@ public class CombatHelper
 
     private void QueueDamageAction(Player target, int delay = 0)
     {
-        var damage = CalculateDamage(target);
-        target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+        if (CombatStyle == CombatStyle.Melee)
+        {
+            var damage = CalculateMeleeDamage(target);
+            target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+        }
+
+        if (CombatStyle == CombatStyle.Ranged)
+        {
+            var damage = CalculateRangeDamage(target);
+            target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+        }
     }
 
-    private Damage CalculateDamage(Player target)
+    private Damage CalculateRangeDamage(Player target)
     {
         var attackBonus = _player.BonusManager.GetTotalForBonusType(BonusType.RangeAttack);
         var defenceBonus = target.BonusManager.GetTotalForBonusType(BonusType.RangeDefence);
@@ -290,6 +300,32 @@ public class CombatHelper
         }
 
         int damageValue = _random.Next(1, MaxHitCalculator.GetRangeMaxHit(_player) + 1);
+        return new Damage(DamageType.HIT, damageValue, null);
+    }
+
+    private Damage CalculateMeleeDamage(Player target)
+    {
+        /* Figure out how we can use the _player.FightMode to map it correctly */
+        var attackBonus = _player.BonusManager.GetTotalForBonusType(BonusType.SlashAttack);
+        var defenceBonus = target.BonusManager.GetTotalForBonusType(BonusType.SlashDefence);
+
+        var playerRangeLevel = _player.SkillManager.Skills[(int)SkillType.STRENGTH].Level;
+        var targetDefenceLevel = target.SkillManager.Skills[(int)SkillType.DEFENCE].Level;
+
+        int attackRoll = (playerRangeLevel + 8) * (attackBonus + 64);
+        int defenceRoll = (targetDefenceLevel + 9) * (defenceBonus + 64);
+        double hitChance = (double)attackRoll / (attackRoll + defenceRoll);
+        double hitChancePercentage = hitChance * 100;
+
+        _player.Session.PacketBuilder.SendMessage("Hit Chance: " + hitChancePercentage + "%");
+
+        bool isHit = _random.NextDouble() < hitChance;
+        if (!isHit)
+        {
+            return new Damage(DamageType.BLOCK, 0, null);
+        }
+
+        int damageValue = _random.Next(1, MaxHitCalculator.GetMeleeMaxHit(_player) + 1);
         return new Damage(DamageType.HIT, damageValue, null);
     }
 
