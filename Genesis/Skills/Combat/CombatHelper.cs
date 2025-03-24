@@ -33,14 +33,28 @@ public class CombatHelper
 
     public bool Attack(Player target, int currentTick)
     {
-        if (!ValidateCombatDistance(target, CombatStyle))
-            return false;
-
-        if (!CanAttack(currentTick))
-            return false;
-
         var weapon = GetEquippedWeapon();
         var weaponData = GetWeaponData(weapon.ItemId);
+        var isRanged = GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId) 
+                                                               || GameConstants.IsThrowingKnife(weapon.ItemId) 
+                                                               || GameConstants.IsDart(weapon.ItemId) 
+                                                               || GameConstants.IsCrossbow(weapon.ItemId);
+        
+        CombatStyle = isRanged ? CombatStyle.Ranged : CombatStyle.Melee;
+
+        if (target.CurrentHealth <= 0 || _player.CurrentHealth <= 0)
+        {
+            _player.SetFacingEntity(null);
+            return true;
+        }
+        
+        /* Process Movement */
+        if (!ValidateCombatDistance(target, CombatStyle))
+            return false;
+        
+        /* Check if can attack */
+        if (!CanAttack(currentTick))
+            return false;
 
         if (TryRangedAttack(target, currentTick, weapon, weaponData))
             return false;
