@@ -40,6 +40,7 @@ public class Player : Entity
     public SkillManager SkillManager { get; set; }
     public RSInteraction CurrentInteraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
+    public BonusManager BonusManager { get; set; }
     // public Player Following { get; set; }
 
     public EquipmentContainer Equipment { get; set; } = new EquipmentContainer(11);
@@ -68,6 +69,7 @@ public class Player : Entity
         SkillManager = new SkillManager(this);
         DialogueManager = new DialogueManager(this);
         ActionHandler = new ActionHandler(this);
+        BonusManager = new BonusManager(this);
 
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
@@ -196,8 +198,8 @@ public class Player : Entity
         CurrentFaceY = y;
         Flags |= PlayerUpdateFlags.FaceDirection;
     }
-
-
+    
+    
     public void ClearInteraction() => CurrentInteraction = null;
 
     public void Reset()

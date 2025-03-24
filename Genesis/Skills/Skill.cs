@@ -63,4 +63,10 @@ public class Skill
         // If experience exceeds all thresholds, return the max level
         return experienceTable.Length - 1;
     }
+    
+    public void SetLevel(int level)
+    {
+        Level = level;
+        Experience = SkillManager.EXPERIENCE_TABLE[level];
+    }
 }

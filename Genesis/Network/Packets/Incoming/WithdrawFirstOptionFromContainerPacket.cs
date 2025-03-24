@@ -2,6 +2,7 @@
 using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Container;
+using Genesis.Definitions;
 using Genesis.Entities;
 using Genesis.Managers;
 using Genesis.Model;
@@ -187,6 +188,19 @@ public class WithdrawFirstOptionFromContainerPacket : IPacket
                     );
                 }
 
+                _player.BonusManager.Reset();
+
+                foreach (var itemslot in _player.Equipment._slots)
+                {
+                    if (itemslot.ItemId == -1)
+                        continue;
+
+                    var itemBonuses = ItemParser.GetBonusesById(itemslot.ItemId).Bonuses;
+                    _player.BonusManager.CalculateBonuses(itemBonuses);
+                }
+
+                _player.BonusManager.UpdateBonus();
+                
                 _player.Flags |= PlayerUpdateFlags.Appearance;
             }
         }

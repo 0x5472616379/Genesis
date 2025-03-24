@@ -1,10 +1,12 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Appearance;
 using Genesis.Configuration;
+using Genesis.Definitions;
 using Genesis.Entities;
 using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
+using Genesis.Skills.Combat.Maxhit;
 
 namespace Genesis.Skills.Combat;
 
@@ -128,15 +130,33 @@ public class CombatHelper
 
     private void QueueDamageAction(Player target, int delay = 0)
     {
-        var damage = CalculateDamage();
+        var damage = CalculateDamage(target);
         target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
     }
 
-    private Damage CalculateDamage()
+    private Damage CalculateDamage(Player target)
     {
-        // int damageValue = _random.Next(0, MaxHitCalculator.GetRangeMaxHit(_player));
-        int damageValue = _random.Next(0, 2);
-        return new Damage(damageValue == 0 ? DamageType.BLOCK : DamageType.HIT, damageValue, null);
+        var attackBonus = _player.BonusManager.GetTotalForBonusType(BonusType.RangeAttack);
+        var defenceBonus = target.BonusManager.GetTotalForBonusType(BonusType.RangeDefence);
+
+        var playerRangeLevel = _player.SkillManager.Skills[(int)SkillType.RANGED].Level;
+        var targetDefenceLevel = target.SkillManager.Skills[(int)SkillType.DEFENCE].Level;
+
+        int attackRoll = (playerRangeLevel + 8) * (attackBonus + 64);
+        int defenceRoll = (targetDefenceLevel + 9) * (defenceBonus + 64);
+        double hitChance = (double)attackRoll / (attackRoll + defenceRoll);
+        double hitChancePercentage = hitChance * 100;
+
+        _player.Session.PacketBuilder.SendMessage("Hit Chance: " + hitChancePercentage + "%");
+
+        bool isHit = _random.NextDouble() < hitChance;
+        if (!isHit)
+        {
+            return new Damage(DamageType.BLOCK, 0, null);
+        }
+
+        int damageValue = _random.Next(1, MaxHitCalculator.GetRangeMaxHit(_player) + 1);
+        return new Damage(DamageType.HIT, damageValue, null);
     }
 
     private void UpdateAttackState(int currentTick, Weapon weapon)

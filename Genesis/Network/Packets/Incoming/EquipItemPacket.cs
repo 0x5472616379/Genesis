@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Appearance;
 using Genesis.Cache;
 using Genesis.Configuration;
+using Genesis.Definitions;
 using Genesis.Entities;
 using Genesis.Managers;
 using Genesis.Skills.Combat;
@@ -44,6 +45,19 @@ public class EquipItemPacket : IPacket
                     WeaponInterfaceManager.Refresh(_player);
                     // WeaponSpeedLookup.GetWeaponInfo(ItemDefinition.Lookup(_itemId).Name);
                 }
+
+                _player.BonusManager.Reset();
+
+                foreach (var itemslot in _player.Equipment._slots)
+                {
+                    if (itemslot.ItemId == -1)
+                        continue;
+
+                    var itemBonuses = ItemParser.GetBonusesById(itemslot.ItemId).Bonuses;
+                    _player.BonusManager.CalculateBonuses(itemBonuses);
+                }
+
+                _player.BonusManager.UpdateBonus();
 
                 _player.Inventory.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
                 _player.Flags |= PlayerUpdateFlags.Appearance;

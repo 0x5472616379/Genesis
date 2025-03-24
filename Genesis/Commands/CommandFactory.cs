@@ -12,6 +12,8 @@ public class CommandFactory
         return commandName switch
         {
             "tele" => new TeleportCommand(player, _commandArgs),
+            "bonuses" => new UpdateBonusesCommand(player, _commandArgs),
+            "setlvl" => new SetLevelCommand(player, _commandArgs),
             "gfx" => new PlayGfxCommand(player, _commandArgs),
             "getobj" => new GetWorldObjectCommand(player, _commandArgs),
             "worldobj" => new SpawnWorldObjectCommand(player, _commandArgs),

@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Appearance;
 using Genesis.Cache;
 using Genesis.Configuration;
+using Genesis.Definitions;
 using Genesis.Entities;
 using Genesis.Model;
 
@@ -57,7 +58,7 @@ public class EquipmentContainer : RSContainer
             if (!weaponItem.IsEmpty)
             {
                 /* Try to unequip to original slot + 1 first, then fallback */
-                bool weaponMoved = TryUnequipToInventory(player, EquipmentSlot.Weapon, inventoryIndex ) ||
+                bool weaponMoved = TryUnequipToInventory(player, EquipmentSlot.Weapon, inventoryIndex) ||
                                    TryUnequipToInventory(player, EquipmentSlot.Weapon, -1); // -1 = any slot
 
                 if (!weaponMoved)
@@ -72,7 +73,7 @@ public class EquipmentContainer : RSContainer
                     return false;
                 }
             }
-            
+
             /* 2. Unequip shield first */
             var shieldItem = GetItemInSlot(EquipmentSlot.Shield);
             if (!shieldItem.IsEmpty)
@@ -288,5 +289,11 @@ public class EquipmentContainer : RSContainer
             13 => 10, // Ammo
             _ => -1 // Invalid
         };
+    }
+
+    public int GetRangeStrength()
+    {
+        // ItemParser.GetBonusValue(4151, BonusType.MeleeStrength);
+        return 0;
     }
 }
