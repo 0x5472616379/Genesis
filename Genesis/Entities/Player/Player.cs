@@ -155,7 +155,7 @@ public class Player : Entity
         RecentDamage = damage;
         SetCurrentAnimation(424); /* Block animation */
 
-        SetCurrentGfx(damage.Gfx);
+        // SetCurrentGfx(damage.Gfx);
         if (CurrentHealth - damage.Amount <= 0)
         {
             CurrentHealth = 0;
@@ -170,10 +170,30 @@ public class Player : Entity
         Flags |= PlayerUpdateFlags.SingleHit;
     }
 
+    public void SetDoubleDamage(Damage damage1)
+    {
+        var totalDamage = damage1.Amount;
+        
+        RecentDamage1 = damage1;
+        SetCurrentAnimation(424); /* Block animation */
+        if (CurrentHealth - totalDamage <= 0)
+        {
+            CurrentHealth = 0;
+            ActionHandler.AddAction(new RespawnAction(this));
+        }
+        else
+        {
+            CurrentHealth -= totalDamage;
+        }
+
+        SkillManager.RefreshSkill(SkillType.HITPOINTS);
+        Flags |= PlayerUpdateFlags.DoubleHit;
+    }
 
     public override void SetCurrentGfx(Gfx gfx)
     {
         if (gfx == null) return;
+        
         CurrentGfx = gfx;
         Flags |= PlayerUpdateFlags.Graphics;
     }

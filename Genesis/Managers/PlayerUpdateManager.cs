@@ -152,13 +152,15 @@ public class PlayerUpdateManager
 
         if ((int)mask >= 0x100)
         {
-            mask |= PlayerUpdateFlags.FullMask;
-            playerFlagUpdateBlock.WriteByte((byte)((int)mask & 0xFF));
-            playerFlagUpdateBlock.WriteByte((byte)((int)mask >> 8));
+            // Add only the 0x40 (bit 7 in first byte) to signal two-byte flag
+            mask |= (PlayerUpdateFlags)(0x40); 
+
+            playerFlagUpdateBlock.WriteByte((byte)((int)mask & 0xFF)); // Write lower byte
+            playerFlagUpdateBlock.WriteByte((byte)((int)mask >> 8));  // Write upper byte
         }
         else
         {
-            playerFlagUpdateBlock.WriteByte((byte)mask);
+            playerFlagUpdateBlock.WriteByte((byte)mask); // Single byte for lower masks
         }
 
         if ((mask & PlayerUpdateFlags.Graphics) != 0) AppendGraphics(player, playerFlagUpdateBlock);
@@ -167,7 +169,7 @@ public class PlayerUpdateManager
         if ((mask & PlayerUpdateFlags.Appearance) != 0) AppendAppearance(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.FaceDirection) != 0) AppendInteractingEntity(player, playerFlagUpdateBlock);
         if ((mask & PlayerUpdateFlags.SingleHit) != 0) AppendSingleHit(player, playerFlagUpdateBlock);
-        // if ((mask & PlayerUpdateFlags.DoubleHit) != 0) AppendDoubleHit(player, playerFlagUpdateBlock);
+        if ((mask & PlayerUpdateFlags.DoubleHit) != 0) AppendDoubleHit(player, playerFlagUpdateBlock);
     }
 
 
@@ -194,10 +196,10 @@ public class PlayerUpdateManager
     
     private static void AppendDoubleHit(Player player, RSStream playerFlagUpdateBlock)
     {
-        playerFlagUpdateBlock.WriteByte((byte)player.RecentDamage.Amount); //hitDamage
-        playerFlagUpdateBlock.WriteByteA((byte)player.RecentDamage.Type); //hitType
-        playerFlagUpdateBlock.WriteByteC(player.CurrentHealth); //currentHealth
-        playerFlagUpdateBlock.WriteByte(player.SkillManager.Skills[(int)SkillType.HITPOINTS].Level); //maxHealth
+        playerFlagUpdateBlock.WriteByte((byte)player.RecentDamage1.Amount); //hitDamage
+        playerFlagUpdateBlock.WriteByteS((byte)player.RecentDamage1.Type); //hitType
+        playerFlagUpdateBlock.WriteByte(player.CurrentHealth); //currentHealth
+        playerFlagUpdateBlock.WriteByteC(player.SkillManager.Skills[(int)SkillType.HITPOINTS].Level); //maxHealth
     }
 
     private static void AppendNPCInteract(Player player, RSStream updatetempBlock)

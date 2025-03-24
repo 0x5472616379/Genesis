@@ -4,6 +4,7 @@ using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Skills.Combat;
+using Genesis.Skills.Combat.Specials;
 
 namespace Genesis.Managers;
 
@@ -77,6 +78,21 @@ public class ButtonManager
         if (_fightModeMappings.TryGetValue(buttonId, out FightMode fightMode))
         {
             player.FightMode = fightMode;
+            return;
+        }
+
+        if (buttonId == 29113)
+        {
+            if (player.CombatManager.SpecialAttack == null)
+            {
+                player.CombatManager.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
+            }
+            else
+            {
+                player.CombatManager.SpecialAttack = null;
+            }
+
+            player.CombatManager.UpdateSpecialAttack();
             return;
         }
 

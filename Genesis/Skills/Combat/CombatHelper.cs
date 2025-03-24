@@ -6,6 +6,7 @@ using Genesis.Entities;
 using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills.Combat.Maxhit;
+using Genesis.Skills.Combat.Specials;
 
 namespace Genesis.Skills.Combat;
 
@@ -22,6 +23,9 @@ public class CombatHelper
     private static readonly Random _random = new();
 
     public CombatStyle CombatStyle { get; set; } = CombatStyle.Melee;
+
+    public SpecialAttack SpecialAttack { get; set; } = null;
+    public int SpecialAmount { get; set; } = 10;
 
     public int LastAttackTick { get; private set; } = -1;
     public Weapon AttackedWith { get; private set; }
@@ -178,7 +182,6 @@ public class CombatHelper
     private void PerformMeleeAttack(Player target, int currentTick, Weapon weaponData)
     {
         CombatStyle = CombatStyle.Melee;
-        // ValidateCombatDistance(target, CombatStyle.Melee);
         _player.SetCurrentAnimation(weaponData.AttackerAnim);
         QueueDamageAction(target);
         UpdateAttackState(currentTick, weaponData);
@@ -191,8 +194,6 @@ public class CombatHelper
         var arrow = _player.Equipment.GetItemInSlot(EquipmentSlot.Ammo);
         if (arrow == null) return false;
 
-        // ValidateCombatDistance(target, CombatStyle.Ranged);
-
         SetupAttack(weaponData, GetArrowGraphics(arrow.ItemId));
         CreateProjectile(target, GetArrowProjectile(arrow.ItemId));
         QueueDamageAction(target, CalculateRangeDelay(target));
@@ -203,7 +204,6 @@ public class CombatHelper
     private bool HandleThrowingAttack(Player target, int currentTick, Weapon weapon)
     {
         CombatStyle = CombatStyle.Ranged;
-        // ValidateCombatDistance(target, CombatStyle.Ranged);
         SetupAttack(GetWeaponData(weapon.Id), GetThrowingKnifeGraphics(weapon.Id));
         CreateProjectile(target, GetThrowingKnifeProjectile(weapon.Id));
         QueueDamageAction(target, CalculateThrowingDelay(target));
@@ -214,7 +214,6 @@ public class CombatHelper
     private bool HandleDartAttack(Player target, int currentTick, Weapon weapon)
     {
         CombatStyle = CombatStyle.Ranged;
-        // ValidateCombatDistance(target, CombatStyle.Ranged);
         SetupAttack(GetWeaponData(weapon.Id), GetDartGraphics(weapon.Id));
         CreateProjectile(target, GetDartProjectile(weapon.Id));
         QueueDamageAction(target, 2); // Fixed dart delay
@@ -254,13 +253,29 @@ public class CombatHelper
 
     private void SetupAttack(Weapon weaponData, Gfx graphics)
     {
-        _player.SetCurrentAnimation(weaponData.AttackerAnim);
-        _player.SetCurrentGfx(graphics);
+        if (SpecialAttack != null)
+        {
+            _player.SetCurrentAnimation(SpecialAttack.Animation);
+            _player.SetCurrentGfx(SpecialAttack.Gfx);
+        }
+        else
+        {
+            _player.SetCurrentAnimation(weaponData.AttackerAnim);
+            _player.SetCurrentGfx(graphics);
+        }
     }
 
     private void CreateProjectile(Player target, int projectileId)
     {
-        ProjectileCreator.CreateProjectile(_player, target, projectileId);
+        if (SpecialAttack == SpecialAttacks.MAGIC_SHORTBOW)
+        {
+            ProjectileCreator.CreateProjectile(_player, target, 249, delay: 25, duration: 40, sY: 100);
+            _player.ActionHandler.AddAction(new SendMsbGfxAction(_player, target));
+        }
+        else
+        {
+            ProjectileCreator.CreateProjectile(_player, target, projectileId); //249 msb arrow
+        }
     }
 
     private void QueueDamageAction(Player target, int delay = 0)
@@ -273,8 +288,22 @@ public class CombatHelper
 
         if (CombatStyle == CombatStyle.Ranged)
         {
-            var damage = CalculateRangeDamage(target);
-            target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+            if (SpecialAttack == SpecialAttacks.MAGIC_SHORTBOW)
+            {
+                var damage = CalculateRangeDamage(target);
+                target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+
+                var damage1 = CalculateRangeDamage(target);
+                target.ActionHandler.AddAction(new DoubleDamageAction(target, damage1, delay));
+                SpecialAttack = null;
+                SpecialAmount -= 5;
+                UpdateSpecialAttack();
+            }
+            else
+            {
+                var damage = CalculateRangeDamage(target);
+                target.ActionHandler.AddAction(new DamageAction(target, damage, delay));
+            }
         }
     }
 
@@ -349,6 +378,48 @@ public class CombatHelper
             >= 3 and <= 8 => 3,
             _ => 4
         };
+    }
+
+    public void UpdateSpecialAttack()
+    {
+        if (SpecialAttack != null)
+        {
+            _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7549); /* 7561 Spec bar */
+            for (int i = 0; i < 10; i++)
+            {
+                _player.Session.PacketBuilder.SendInterfaceOffset(i < SpecialAmount ? 500 : 0, 0, 7551 + i);
+            }
+
+            _player.Session.PacketBuilder.SendTextToInterface(GetSpecialBarText(), 7561);
+        }
+        else
+        {
+            _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7549); /* 7561 Spec bar */
+            for (int i = 0; i < 10; i++)
+            {
+                _player.Session.PacketBuilder.SendInterfaceOffset(i < SpecialAmount ? 500 : 0, 0, 7551 + i);
+            }
+            DisableSpecialBarText(7561);
+        }
+    }
+
+
+    private string GetSpecialBarText()
+    {
+        string[] letters = { "S P", " E ", "C I ", "A L ", " A ", "T T", " A ", "C ", "K " };
+        string textToDisplay = "";
+
+        for (int i = 0; i < letters.Length; i++)
+        {
+            textToDisplay += SpecialAmount >= i + 2 ? "@yel@" + letters[i] : "@bla@" + letters[i];
+        }
+
+        return textToDisplay;
+    }
+
+    private void DisableSpecialBarText(int SpecBarId)
+    {
+        _player.Session.PacketBuilder.SendTextToInterface("@bla@S P E C I A L  A T T A C K", SpecBarId);
     }
 
     private double CalculateDistance(Player target)

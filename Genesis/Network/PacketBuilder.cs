@@ -107,10 +107,10 @@ public class PacketBuilder
         _player.Session.Writer.WriteWordBigEndian(interfaceId);
     }
 
-    public void DisplayHiddenInterface(int _mainFrame, int _frameId)
+    public void DisplayHiddenInterface(int hide, int _frameId)
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.INTF_HIDDEN);
-        _player.Session.Writer.WriteByte(_mainFrame); /* What to display inside that tab */
+        _player.Session.Writer.WriteByte(hide); /* What to display inside that tab */
         _player.Session.Writer.WriteWord(_frameId); /* Which tab */
     }
 
@@ -122,11 +122,11 @@ public class PacketBuilder
         _player.Session.Writer.WriteWord(itemId);
     }
 
-    public void SendInterfaceOffset(int a, int b, int barId)
+    public void SendInterfaceOffset(int x, int y, int barId)
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.INTF_OFFSET);
-        _player.Session.Writer.WriteWord(a);
-        _player.Session.Writer.WriteWordBigEndian(b);
+        _player.Session.Writer.WriteWord(x);
+        _player.Session.Writer.WriteWordBigEndian(y);
         _player.Session.Writer.WriteWordBigEndian(barId);
     }
 
