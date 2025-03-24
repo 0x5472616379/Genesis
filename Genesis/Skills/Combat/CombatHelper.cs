@@ -3,18 +3,26 @@ using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Definitions;
 using Genesis.Entities;
-using Genesis.Managers;
 using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills.Combat.Maxhit;
 
 namespace Genesis.Skills.Combat;
 
+public enum CombatStyle
+{
+    Melee,
+    Ranged,
+    Magic
+}
+
 public class CombatHelper
 {
     private readonly Player _player;
     private static readonly Random _random = new();
 
+    public CombatStyle CombatStyle { get; set; } = CombatStyle.Melee;
+    
     public int LastAttackTick { get; private set; } = -1;
     public Weapon AttackedWith { get; private set; }
 
@@ -25,6 +33,9 @@ public class CombatHelper
 
     public bool Attack(Player target, int currentTick)
     {
+        if (!ValidateCombatDistance(target, CombatStyle))
+            return false;
+
         if (!CanAttack(currentTick))
             return false;
 
@@ -34,7 +45,7 @@ public class CombatHelper
         if (TryRangedAttack(target, currentTick, weapon, weaponData))
             return false;
 
-        // PerformMeleeAttack(target, currentTick, weaponData);
+        PerformMeleeAttack(target, currentTick, weaponData);
         return false;
     }
 
@@ -52,16 +63,121 @@ public class CombatHelper
                 : GameConstants.IsDart(weapon.ItemId)
                     ? HandleDartAttack(target, currentTick, weaponData)
                     : false;
-
-        // GameConstants.IsThrowingKnife(weapon.ItemId) ? HandleThrowingAttack(target, currentTick, weapon) :
-        //     GameConstants.IsDart(weapon.ItemId) ? HandleDartAttack(target, currentTick, weapon) :
     }
 
+    public bool ValidateCombatDistance(Player target, CombatStyle style)
+    {
+        return style switch
+        {
+            CombatStyle.Ranged => ValidateRangedDistance(target),
+            CombatStyle.Melee => ValidateMeleeDistance(target),
+            _ => false
+        };
+    }
+    
+    private bool ValidateRangedDistance(Player target)
+    {
+        var distance = CalculateDistance(target);
+        
+        if (distance > (int)CombatDistances.Magic)
+        {
+            HandleDistanceTooFar(target);
+            return false;
+        }
+
+        return HasClearProjectilePath(target);
+    }
+
+    private bool ValidateMeleeDistance(Player target)
+    {
+        var distance = CalculateDistance(target);
+        
+        if (distance > (int)CombatDistances.Melee)
+        {
+            HandleMeleeFollow(target);
+            return false;
+        }
+
+        return IsValidMeleePosition(target);
+    }
+    
+    private void HandleDistanceTooFar(Player target)
+    {
+        if (CalculateDistance(target) > 20)
+        {
+            ResetInteraction();
+            return;
+        }
+
+        FindPathToTarget(target.Location.X, target.Location.Y);
+    }
+
+    private void HandleMeleeFollow(Player target)
+    {
+        RSPathfinder.MeleeFollow(_player, target);
+        ProcessMovement();
+    }
+
+    private bool HasClearProjectilePath(Player target)
+    {
+        return RSPathfinder.IsProjectilePathClear(
+            _player, 
+            _player.Location.X, _player.Location.Y, _player.Location.Z,
+            target.Location.X, target.Location.Y
+        );
+    }
+    private void ResetInteraction()
+    {
+        _player.CurrentInteraction = null;
+        _player.SetFacingEntity(null);
+        _player.PlayerMovementHandler.Reset();
+    }
+
+    private void FindPathToTarget(int x, int y)
+    {
+        _player.PlayerMovementHandler.Reset();
+        RSPathfinder.FindPath(_player, x, y, true, 1, 1);
+        ProcessMovement();
+    }
+
+    private void ProcessMovement()
+    {
+        _player.PlayerMovementHandler.Finish();
+        _player.PlayerMovementHandler.Process();
+        _player.PlayerMovementHandler.Reset();
+    }
+
+    
+    private bool IsValidMeleePosition(Player target)
+    {
+        return MeleePathing.IsLongMeleeDistanceClear(
+            _player,
+            _player.Location.X, _player.Location.Y, _player.Location.Z,
+            target.Location.X, target.Location.Y, 2
+        ) && !MeleePathing.IsDiagonal(
+            _player.Location.X, _player.Location.Y,
+            target.Location.X, target.Location.Y
+        );
+    }
+    
+    private void PerformMeleeAttack(Player target, int currentTick, Weapon weaponData)
+    {
+        CombatStyle = CombatStyle.Melee;
+        // ValidateCombatDistance(target, CombatStyle.Melee);
+        _player.SetCurrentAnimation(weaponData.AttackerAnim);
+        QueueDamageAction(target);
+        UpdateAttackState(currentTick, weaponData);
+    }
+    
     private bool HandleBowAttack(Player target, int currentTick, Weapon weaponData)
     {
+        CombatStyle = CombatStyle.Ranged;
+        
         var arrow = _player.Equipment.GetItemInSlot(EquipmentSlot.Ammo);
         if (arrow == null) return false;
 
+        // ValidateCombatDistance(target, CombatStyle.Ranged);
+        
         SetupAttack(weaponData, GetArrowGraphics(arrow.ItemId));
         CreateProjectile(target, GetArrowProjectile(arrow.ItemId));
         QueueDamageAction(target, CalculateRangeDelay(target));
@@ -71,6 +187,8 @@ public class CombatHelper
 
     private bool HandleThrowingAttack(Player target, int currentTick, Weapon weapon)
     {
+        CombatStyle = CombatStyle.Ranged;
+        // ValidateCombatDistance(target, CombatStyle.Ranged);
         SetupAttack(GetWeaponData(weapon.Id), GetThrowingKnifeGraphics(weapon.Id));
         CreateProjectile(target, GetThrowingKnifeProjectile(weapon.Id));
         QueueDamageAction(target, CalculateThrowingDelay(target));
@@ -80,6 +198,8 @@ public class CombatHelper
 
     private bool HandleDartAttack(Player target, int currentTick, Weapon weapon)
     {
+        CombatStyle = CombatStyle.Ranged;
+        // ValidateCombatDistance(target, CombatStyle.Ranged);
         SetupAttack(GetWeaponData(weapon.Id), GetDartGraphics(weapon.Id));
         CreateProjectile(target, GetDartProjectile(weapon.Id));
         QueueDamageAction(target, 2); // Fixed dart delay
