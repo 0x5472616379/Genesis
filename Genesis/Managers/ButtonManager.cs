@@ -81,18 +81,38 @@ public class ButtonManager
             return;
         }
 
+        /* Msb special attack */
         if (buttonId == 29113)
         {
-            if (player.CombatHelper.SpecialAttack == null)
-            {
-                player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
-            }
-            else
-            {
-                player.CombatHelper.SpecialAttack = null;
-            }
-
-            player.CombatHelper.UpdateSpecialAttack();
+            /* Invert if clicked again */
+            // if (player.CombatHelper.SpecialAttack == null)
+            // {
+            //     player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
+            // }
+            // else
+            // {
+            //     player.CombatHelper.SpecialAttack = null;
+            // }
+            //
+            // player.CombatHelper.UpdateSpecialAttack();
+            return;
+        }
+        
+        /* Dds special attack */
+        if (buttonId == 29138)
+        {
+            /* Invert if clicked again */
+            // if (player.CombatHelper.SpecialAttack == null)
+            // {
+            //     player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
+            // }
+            // else
+            // {
+            //     player.CombatHelper.SpecialAttack = null;
+            // }
+            //
+            // player.CombatHelper.UpdateSpecialAttack();
+            player.CombatHelper.SpecialAttack = new DragonDaggerSpecialAttack();
             return;
         }
 

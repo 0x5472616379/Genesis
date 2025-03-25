@@ -44,7 +44,7 @@ public class EquipItemPacket : IPacket
                 {
                     WeaponInterfaceManager.Refresh(_player);
                     // WeaponSpeedLookup.GetWeaponInfo(ItemDefinition.Lookup(_itemId).Name);
-                    _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7549); /* 7561 Spec bar */
+                    _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7574); /* 7561 Spec bar */
 
                     for (int i = 0; i < 10; i++)
                         _player.Session.PacketBuilder.SendInterfaceOffset(i < _player.CombatHelper.SpecialAmount ? 500 : 0, 0, 7551 + i);

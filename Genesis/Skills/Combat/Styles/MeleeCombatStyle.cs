@@ -15,6 +15,13 @@ public class MeleeCombatStyle : ICombatStyle
         var weapon = player.CombatHelper.GetEquippedWeapon();
         var weaponData = WeaponBuilder.GetWeaponData(player, weapon.ItemId);
 
+        var specialHandler = player.CombatHelper.SpecialAttack;
+        if (specialHandler != null && specialHandler.CanExecute(player))
+        {
+            specialHandler.Execute(player, target, currentTick, weaponData);
+            return; // Skip regular attack logic
+        }
+
         player.SetCurrentAnimation(weaponData.AttackerAnim);
 
         var damage = CalculateDamage(player, target);
@@ -38,7 +45,7 @@ public class MeleeCombatStyle : ICombatStyle
 
         if (distance >= 20)
             player.CombatHelper.ResetInteraction();
-        
+
         RSPathfinder.MeleeFollow(player, target);
         player.PlayerMovementHandler.Finish();
         player.PlayerMovementHandler.Process();

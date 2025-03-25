@@ -17,10 +17,9 @@ public class CombatHelper
 {
     private readonly Player _player;
     private static readonly Random _random = new();
-    public SpecialAttack SpecialAttack { get; set; } = null;
-    public int SpecialAmount { get; set; } = 10;
-
-    public int LastAttackTick { get; private set; } = -1;
+    public ISpecialAttack SpecialAttack { get; set; } = null;
+    public double SpecialAmount { get; set; } = 10;
+    public int LastAttackTick { get; set; } = -1;
     public Weapon AttackedWith { get; private set; }
 
     private ICombatStyle _combatStyle;
