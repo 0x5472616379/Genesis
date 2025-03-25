@@ -28,7 +28,7 @@ public class PlayerAttackInteraction : RSInteraction
     public override bool Execute()
     {
         if (!CanExecute()) return false;
-        return _player.CombatManager.Attack(_target, World.CurrentTick);
+        return _player.CombatHelper.Attack(_target, World.CurrentTick);
     }
 
     public override bool CanExecute()

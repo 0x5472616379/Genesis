@@ -23,7 +23,7 @@ public class Player : Entity
     public bool MovedThisTick { get; set; }
     public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
 
-    public CombatHelper CombatManager { get; set; }
+    public CombatHelper CombatHelper { get; set; }
 
     public NetworkSession Session { get; set; }
     public PlayerUpdateFlags Flags { get; set; }
@@ -61,7 +61,7 @@ public class Player : Entity
         Flags = PlayerUpdateFlags.None;
         PlayerMovementHandler = new PlayerMovementHandler(this);
         // EquipmentManager = new EquipmentManager(this);
-        CombatManager = new CombatHelper(this);
+        CombatHelper = new CombatHelper(this);
 
         // InventoryManager = new InventoryManager(this);
         // BankManager = new BankManager(this);

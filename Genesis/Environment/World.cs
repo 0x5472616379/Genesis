@@ -11,6 +11,11 @@ public class World
 
     public static void Process()
     {
+        // foreach (var p in Players)
+        // {
+        //     if (p == null) continue;
+        //     p.Session.PacketBuilder.SendMessage($"Start Tick #{CurrentTick}");
+        // }
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
@@ -24,12 +29,20 @@ public class World
         /* 5. Client Visual Updates */
         PlayerUpdateManager.Update();
 
+        // foreach (var p in Players)
+        // {
+        //     if (p == null) continue;
+        //     p.Session.PacketBuilder.SendMessage($"End Tick #{CurrentTick}");
+        // }
+        
         /* 6. Flush */
         FlushAllPlayers();
 
         /* 7. Reset */
         Reset();
 
+        
+        
         CurrentTick++;
     }
 

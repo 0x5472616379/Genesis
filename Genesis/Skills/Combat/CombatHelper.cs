@@ -30,42 +30,74 @@ public class CombatHelper
     public int LastAttackTick { get; private set; } = -1;
     public Weapon AttackedWith { get; private set; }
 
+    private ICombatStyle _combatStyle;
+
     public CombatHelper(Player player)
     {
         _player = player;
+        SetCombatStyle(CombatStyle.Ranged);
+
     }
 
     public bool Attack(Player target, int currentTick)
     {
-        var weapon = GetEquippedWeapon();
-        var weaponData = GetWeaponData(weapon.ItemId);
-        var isRanged = GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId)
-                                                               || GameConstants.IsThrowingKnife(weapon.ItemId)
-                                                               || GameConstants.IsDart(weapon.ItemId)
-                                                               || GameConstants.IsCrossbow(weapon.ItemId);
-
-        CombatStyle = isRanged ? CombatStyle.Ranged : CombatStyle.Melee;
-
-        if (target.CurrentHealth <= 0 || _player.CurrentHealth <= 0)
-        {
-            _player.SetFacingEntity(null);
-            return true;
-        }
-
-        /* Process Movement */
-        if (!ValidateCombatDistance(target, CombatStyle))
-            return false;
-
-        /* Check if can attack */
-        if (!CanAttack(currentTick))
-            return false;
-
-        if (TryRangedAttack(target, currentTick, weapon, weaponData))
-            return false;
-
-        PerformMeleeAttack(target, currentTick, weaponData);
+        if (!_combatStyle.ValidateDistance(_player, target)) return false;
+        if (!_combatStyle.CanAttack(_player, target, currentTick)) return false;
+    
+        _combatStyle.Attack(_player, target, currentTick);
         return false;
     }
+    
+    public void SetCombatStyle(CombatStyle combatStyle)
+    {
+        _combatStyle = combatStyle switch
+        {
+            CombatStyle.Melee => new MeleeCombatStyle(),
+            CombatStyle.Ranged => new RangedCombatStyle(),
+            // CombatStyle.Magic => new MageCombatStyle(),
+            _ => throw new ArgumentException("Unknown combat style: " + combatStyle)
+        };
+    }
+
+
+    
+    // public bool Attack(Player target, int currentTick)
+    // {
+    //     
+    //     if (target.CurrentHealth <= 0 || _player.CurrentHealth <= 0)
+    //     {
+    //         _player.SetFacingEntity(null);
+    //         return true;
+    //     }
+    //     
+    //     
+    //     /* Determine Combat Style */
+    //     
+    //     var weapon = GetEquippedWeapon();
+    //     var weaponData = GetWeaponData(weapon.ItemId);
+    //     var isRanged = GameConstants.IsShortbow(weapon.ItemId) || GameConstants.IsLongbow(weapon.ItemId)
+    //                                                            || GameConstants.IsThrowingKnife(weapon.ItemId)
+    //                                                            || GameConstants.IsDart(weapon.ItemId)
+    //                                                            || GameConstants.IsCrossbow(weapon.ItemId);
+    //
+    //     CombatStyle = isRanged ? CombatStyle.Ranged : CombatStyle.Melee;
+    //
+    //     
+    //
+    //     /* Process Movement */
+    //     if (!ValidateCombatDistance(target, CombatStyle))
+    //         return false;
+    //
+    //     /* Check if can attack */
+    //     if (!CanAttack(currentTick))
+    //         return false;
+    //
+    //     if (TryRangedAttack(target, currentTick, weapon, weaponData))
+    //         return false;
+    //
+    //     PerformMeleeAttack(target, currentTick, weaponData);
+    //     return false;
+    // }
 
     private bool CanAttack(int currentTick)
     {
@@ -165,8 +197,7 @@ public class CombatHelper
         _player.PlayerMovementHandler.Process();
         _player.PlayerMovementHandler.Reset();
     }
-
-
+    
     private bool IsValidMeleePosition(Player target)
     {
         return MeleePathing.IsLongMeleeDistanceClear(
@@ -358,7 +389,7 @@ public class CombatHelper
         return new Damage(DamageType.HIT, damageValue, null);
     }
 
-    private void UpdateAttackState(int currentTick, Weapon weapon)
+    public void UpdateAttackState(int currentTick, Weapon weapon)
     {
         LastAttackTick = currentTick;
         AttackedWith = weapon;
@@ -430,7 +461,7 @@ public class CombatHelper
         );
     }
 
-    private ItemSlot GetEquippedWeapon()
+    public ItemSlot GetEquippedWeapon()
     {
         return _player.Equipment.GetItemInSlot(EquipmentSlot.Weapon);
     }

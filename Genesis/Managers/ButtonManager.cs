@@ -83,16 +83,16 @@ public class ButtonManager
 
         if (buttonId == 29113)
         {
-            if (player.CombatManager.SpecialAttack == null)
+            if (player.CombatHelper.SpecialAttack == null)
             {
-                player.CombatManager.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
+                player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
             }
             else
             {
-                player.CombatManager.SpecialAttack = null;
+                player.CombatHelper.SpecialAttack = null;
             }
 
-            player.CombatManager.UpdateSpecialAttack();
+            player.CombatHelper.UpdateSpecialAttack();
             return;
         }
 

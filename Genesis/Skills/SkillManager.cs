@@ -80,6 +80,11 @@ public class SkillManager
         _player.Session.PacketBuilder.SendSkillUpdate((int)type, skill.Experience, _player.CurrentHealth);
     }
 
+    public int GetSkillLevel(SkillType type)
+    {
+        return Skills[(int)type].Level;
+    }
+    
     public static int GetCombatLevel(double atk, double str, double mag, double rng, double def, double hp, double pry)
     {
         // Source: http://runescape.wikia.com/wiki/Combat_level#History
