@@ -3,6 +3,6 @@
 public enum CombatDistances
 {
     Melee = 1,
-    Range = 10,
+    Range = 7,
     Magic = 10
 }

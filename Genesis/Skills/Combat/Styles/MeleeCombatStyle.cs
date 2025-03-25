@@ -33,13 +33,16 @@ public class MeleeCombatStyle : ICombatStyle
 
     public bool ValidateDistance(Player player, Player target)
     {
+        var distance = MovementHelper.EuclideanDistance(player.Location.X, player.Location.Y, target.Location.X,
+            target.Location.Y);
+
+        if (distance >= 20)
+            player.CombatHelper.ResetInteraction();
+        
         RSPathfinder.MeleeFollow(player, target);
         player.PlayerMovementHandler.Finish();
         player.PlayerMovementHandler.Process();
         player.PlayerMovementHandler.Reset();
-
-        var distance = MovementHelper.EuclideanDistance(player.Location.X, player.Location.Y, target.Location.X,
-            target.Location.Y);
 
         var isDiagonal = MeleePathing.IsDiagonal(
             player.Location.X, player.Location.Y,
@@ -50,10 +53,10 @@ public class MeleeCombatStyle : ICombatStyle
             target.Location.X, target.Location.Y, 2
         );
 
-        player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal && distance <= 2}");
-        player.Session.PacketBuilder.SendMessage($"Clipping Clear: {isLongMeleeDistanceClear}");
-        player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
-        player.Session.PacketBuilder.SendMessage($"WalkedThisTick: {player.PlayerMovementHandler.IsWalking}");
+        // player.Session.PacketBuilder.SendMessage($"IsDiagonal: {isDiagonal && distance <= 2}");
+        // player.Session.PacketBuilder.SendMessage($"Clipping Clear: {isLongMeleeDistanceClear}");
+        // player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
+        // player.Session.PacketBuilder.SendMessage($"WalkedThisTick: {player.PlayerMovementHandler.IsWalking}");
 
         var walked = player.PlayerMovementHandler.IsWalking;
         var ran = player.PlayerMovementHandler.IsRunning;
@@ -62,8 +65,7 @@ public class MeleeCombatStyle : ICombatStyle
 
         if (!isDiagonal && isLongMeleeDistanceClear && distance <= validDistance)
         {
-            player.Session.PacketBuilder.SendMessage("Hit!");
-            player.PlayerMovementHandler.Reset();
+            // player.PlayerMovementHandler.Reset();
             return true;
         }
 

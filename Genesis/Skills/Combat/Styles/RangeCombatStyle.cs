@@ -44,28 +44,23 @@ public class RangedCombatStyle : ICombatStyle
     {
         var distance = MovementHelper.EuclideanDistance(player.Location.X, player.Location.Y, target.Location.X,
             target.Location.Y);
-        player.PlayerMovementHandler.Reset();
-        RSPathfinder.MeleeFollow(player, target);
-        if (distance >= 5)
-        {
-            player.PlayerMovementHandler.Finish();
-            player.PlayerMovementHandler.Process();
-            player.PlayerMovementHandler.Reset();    
-        }
-        
-        
-        if (distance <= 5 && RSPathfinder.IsProjectilePathClear(player, player.Location.X, player.Location.Y, player.Location.Z,
-                                                                target.Location.X, target.Location.Y))
+
+        if (distance > (int)CombatDistances.Range - 1)
         {
             player.PlayerMovementHandler.Reset();
+            RSPathfinder.MeleeFollow(player, target);
+            player.PlayerMovementHandler.Finish();
+            player.PlayerMovementHandler.Process();
+            player.PlayerMovementHandler.Reset();
+        }
+
+        if (distance <= (int)CombatDistances.Range && RSPathfinder.IsProjectilePathClear(player, player.Location.X, player.Location.Y,
+                player.Location.Z,
+                target.Location.X, target.Location.Y))
+        {
             return true;
         }
-        
-        // RSPathfinder.MeleeFollow(player, target);
-        // player.PlayerMovementHandler.Finish();
-        // player.PlayerMovementHandler.Process();
-        // player.PlayerMovementHandler.Reset();
-        
+
         return false;
     }
 
