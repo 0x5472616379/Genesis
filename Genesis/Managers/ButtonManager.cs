@@ -136,11 +136,6 @@ public class ButtonManager
         //GameInterfaces.DragonDaggerDefaultSpecialBar
         {
             29138, (new DragonDaggerSpecialAttack(), GameInterfaces.DragonDaggerDefaultSpecialBar)
-        }, // DDS special attack and bar ID
-        {
-            29163, (new DragonDaggerSpecialAttack(), GameInterfaces.DragonScimitarDefaultSpecialBar)
-        }, // DScim special attack and bar ID
-        // { 29113, (new MagicShortbowSpecialAttack(), 7549) }, // MSB special attack and bar ID
-        // Add more button-to-attack mappings here
+        }
     };
 }
