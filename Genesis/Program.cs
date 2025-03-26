@@ -6,7 +6,10 @@ using Genesis.Definitions;
 using Genesis.Environment;
 using Genesis.Shops;
 
-var ifs = new IndexedFileSystem("../../../Data/cache", true);
+Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, @"..\..\.."));
+
+string DataDirectory = "./Data/cache";
+var ifs = new IndexedFileSystem(DataDirectory, true);
 
 Benchmark(() => { new ObjectDefinitionDecoder(ifs).Run(); }, "Loaded Objects in");
 Benchmark(() => { RegionFactory.Load(ifs); }, "Loaded Regions in");

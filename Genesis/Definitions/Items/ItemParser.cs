@@ -13,8 +13,8 @@ public static class ItemParser
 
     private static bool _isInitialized = false;
 
-    public static string RootPath { get; set; } = "../../../Data";
-    private static string DataDirectory => "../../../Data";
+    // private static string DataDirectory => "../../../Data";
+    private static string DataDirectory => "./Data";
 
     public static void Initialize()
     {
