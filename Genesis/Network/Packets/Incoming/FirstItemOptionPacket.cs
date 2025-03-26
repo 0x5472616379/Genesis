@@ -29,7 +29,7 @@ public class FirstItemOptionPacket : IPacket
     {
         if (_player.CurrentHealth <= 0)
             return;
-        
+
         Console.WriteLine(_containerId);
         Console.WriteLine(_index);
         Console.WriteLine(_itemId);
@@ -44,10 +44,24 @@ public class FirstItemOptionPacket : IPacket
 
         if (_itemId == 385)
         {
-            if (_player.ActionHandler.ActionPipeline.Any(x => x is EatFoodAction))
+            if (_player.ActionHandler.ActionPipeline.Any(x =>
+                    x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
+            {
                 return;
+            }
 
-            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20));
+            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20, _index, _itemId, false));
+        }
+
+        if (_itemId == 3144)
+        {
+            if (_player.ActionHandler.ActionPipeline.Any(x =>
+                    x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
+            {
+                return;
+            }
+
+            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20, _index, _itemId, true));
         }
     }
 }

@@ -53,6 +53,15 @@ public class RangedCombatStyle : ICombatStyle
             player.PlayerMovementHandler.Process();
             player.PlayerMovementHandler.Reset();
         }
+        
+        if (distance <= 0)
+        {
+            player.PlayerMovementHandler.Reset();
+            RSPathfinder.MeleeFollow(player, target);
+            player.PlayerMovementHandler.Finish();
+            player.PlayerMovementHandler.Process();
+            player.PlayerMovementHandler.Reset();
+        }
 
         if (distance <= (int)CombatDistances.Range && RSPathfinder.IsProjectilePathClear(player, player.Location.X, player.Location.Y,
                 player.Location.Z,

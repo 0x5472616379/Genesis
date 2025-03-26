@@ -113,7 +113,7 @@ public class CombatHelper
 
         for (int i = 0; i < letters.Length; i++)
         {
-            textToDisplay += SpecialAmount >= i + 2 ? "@yel@" + letters[i] : "@bla@" + letters[i];
+            textToDisplay += SpecialAmount >= i + 2 ? "@yel@" + letters[i] : "@yel@" + letters[i];
         }
 
         return textToDisplay;

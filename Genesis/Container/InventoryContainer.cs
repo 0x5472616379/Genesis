@@ -13,7 +13,15 @@ public class InventoryContainer : RSContainer
     {
         if (IsValidIndex(index))
         {
-            _slots[index] = new ItemSlot() { ItemId = 0, Quantity = 0 }; // Resets to ItemId=0, Quantity=0
+            _slots[index] = new ItemSlot() { ItemId = -1, Quantity = 0 }; // Resets to ItemId=0, Quantity=0
+        }
+    }
+
+    public void Clear()
+    {
+        for (int i = 0; i < _maxSize; i++)
+        {
+            ClearSlot(i);
         }
     }
     

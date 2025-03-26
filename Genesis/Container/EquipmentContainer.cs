@@ -13,6 +13,8 @@ public class EquipmentContainer : RSContainer
     {
         _slots = new List<ItemSlot>(Enumerable.Repeat(new ItemSlot(), maxSize));
     }
+    
+    
 
     public bool TryEquipItem(Player player, int inventoryIndex, EquipmentSlot slot)
     {
@@ -212,6 +214,17 @@ public class EquipmentContainer : RSContainer
         if (index >= 0 && index < _slots.Count)
         {
             _slots[index] = new ItemSlot();
+        }
+    }
+
+    public void ClearAll()
+    {
+        foreach (EquipmentSlot slot in Enum.GetValues(typeof(EquipmentSlot)))
+        {
+            if (slot == EquipmentSlot.None)
+                continue;
+
+            _slots[MapSlotToIndex(slot)] = new ItemSlot();
         }
     }
 

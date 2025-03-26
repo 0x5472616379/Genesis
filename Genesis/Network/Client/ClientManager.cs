@@ -90,7 +90,7 @@ public class ClientManager
         // player.InventoryManager.AddItem(544);
         // player.InventoryManager.AddItem(542);
 
-        LoadPVPGear(player);
+        // LoadPVPGear(player);
         // LoadTestItems(player);
         // LoadRangeAmmo(player);
         // LoadRangeWeapons(player);

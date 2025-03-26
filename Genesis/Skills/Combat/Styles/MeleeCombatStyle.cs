@@ -79,7 +79,7 @@ public class MeleeCombatStyle : ICombatStyle
         return false;
     }
 
-    private Damage CalculateDamage(Player player, Player target)
+    public Damage CalculateDamage(Player player, Player target)
     {
         var attackBonus = player.BonusManager.GetTotalForBonusType(BonusType.SlashAttack);
         var defenseBonus = target.BonusManager.GetTotalForBonusType(BonusType.SlashDefence);

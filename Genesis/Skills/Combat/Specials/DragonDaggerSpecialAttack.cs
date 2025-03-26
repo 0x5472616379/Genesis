@@ -14,9 +14,11 @@ public class DragonDaggerSpecialAttack : ISpecialAttack
 
         for (int i = 0; i < 2; i++)
         {
-            var damage = CalculateDamage(player, target);
-            target.ActionHandler.AddAction(new DamageAction(target, damage));
-            target.ActionHandler.AddAction(new DoubleDamageAction(target, damage));
+            var damage0 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
+            var damage1 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
+            
+            target.ActionHandler.AddAction(new DamageAction(target, damage0));
+            target.ActionHandler.AddAction(new DoubleDamageAction(target, damage1));
         }
 
         /* Update the player's special attack state */
@@ -29,11 +31,14 @@ public class DragonDaggerSpecialAttack : ISpecialAttack
 
     public bool CanExecute(Player player)
     {
-        return player.CombatHelper.SpecialAmount >= 2.5;
-    }
+        if (player.CombatHelper.SpecialAmount >= 2.5)
+        {
+            return true;
+        }
 
-    private Damage CalculateDamage(Player player, Player target)
-    {
-        return new Damage(DamageType.HIT,1, null);
+        player.Session.PacketBuilder.SendMessage("You don't have enough power left.");
+        player.CombatHelper.SpecialAttack = null;
+        player.CombatHelper.UpdateSpecialAttack(GameInterfaces.DragonDaggerDefaultSpecialBar);
+        return false;
     }
 }

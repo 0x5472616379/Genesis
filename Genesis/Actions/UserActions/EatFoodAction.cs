@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Configuration;
+using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Skills;
 
@@ -8,12 +9,18 @@ public class EatFoodAction : RSAction
 {
     private readonly Player _player;
     private readonly int _health;
+    private readonly int _index;
+    private readonly int _itemId;
+    public bool IsCombo { get; set; }
     private EatState _currentState;
 
-    public EatFoodAction(Player player, int health)
+    public EatFoodAction(Player player, int health, int index, int itemId, bool isCombo)
     {
         _player = player;
         _health = health;
+        _index = index;
+        _itemId = itemId;
+        IsCombo = isCombo;
         Priority = ActionPriority.Forceful;
         ScheduledTick = World.CurrentTick;
     }
@@ -47,6 +54,8 @@ public class EatFoodAction : RSAction
         _player.CurrentHealth = newHealth;
         _player.SkillManager.RefreshSkill(SkillType.HITPOINTS);
         _player.Session.PacketBuilder.SendMessage("You eat the food.");
+        _player.Inventory.ClearSlot(_index);
+        _player.Inventory.RefreshSlot(_player, _index, -1, 0, GameInterfaces.DefaultInventoryContainer);
     }
 
     private void ScheduleNext(int ticks)

@@ -35,18 +35,8 @@ public class SkillManager
             if ((SkillType)i == SkillType.HITPOINTS)
             {
                 Skills[i] = new Skill((SkillType)i);
-                Skills[i].Level = 99;
-                Skills[i].Experience = EXPERIENCE_TABLE[99];
+                Skills[i].SetLevel(99);
                 _player.CurrentHealth = 99;
-
-                continue;
-            }
-
-            if ((SkillType)i == SkillType.MAGIC)
-            {
-                Skills[i] = new Skill((SkillType)i);
-                Skills[i].Level = 99;
-                Skills[i].Experience = EXPERIENCE_TABLE[99];
 
                 continue;
             }

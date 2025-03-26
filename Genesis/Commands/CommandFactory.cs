@@ -11,6 +11,9 @@ public class CommandFactory
         var commandName = _commandArgs[0];
         return commandName switch
         {
+            "pure" => new LoadoutCommand(player, _commandArgs),
+            "zerker" => new LoadoutCommand(player, _commandArgs),
+            "getfood" => new GetFoodCommand(player, _commandArgs),
             "tele" => new TeleportCommand(player, _commandArgs),
             "bonuses" => new UpdateBonusesCommand(player, _commandArgs),
             "setlvl" => new SetLevelCommand(player, _commandArgs),

@@ -93,15 +93,7 @@ public class ButtonManager
             else
             {
                 // Enable the selected special attack
-                if (specialAttack.CanExecute(player))
-                {
-                    player.CombatHelper.SpecialAttack = specialAttack;
-                    Console.WriteLine($"Assigned special attack: {specialAttack.GetType().Name}");
-                }
-                else
-                {
-                    Console.WriteLine("Cannot execute this special attack.");
-                }
+                player.CombatHelper.SpecialAttack = specialAttack;
             }
 
             // Always update the special attack bar, even when disabling

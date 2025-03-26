@@ -39,6 +39,8 @@ public class EquipItemPacket : IPacket
         _itemId = _player.Session.Reader.ReadSignedWord();
         _fromIndex = _player.Session.Reader.ReadSignedWordA();
         _interfaceId = _player.Session.Reader.ReadSignedWordA();
+        _player.CurrentInteraction = null;
+        ResetInteraction();
     }
 
     public void Process()
@@ -81,5 +83,11 @@ public class EquipItemPacket : IPacket
                 _player.Flags |= PlayerUpdateFlags.Appearance;
             }
         }
+    }
+    
+    public void ResetInteraction()
+    {
+        _player.CurrentInteraction = null;
+        _player.SetFacingEntity(null);
     }
 }
