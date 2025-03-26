@@ -1,11 +1,10 @@
 ﻿using ArcticRS.Actions;
-using Genesis.Configuration;
 using Genesis.Entities;
 using Genesis.Model;
 
 namespace Genesis.Skills.Combat.Specials;
 
-public class DragonDaggerSpecialAttack : ISpecialAttack
+public class MsbSpecialAttack: ISpecialAttack
 {
     public void Execute(Player player, Player target, int currentTick, Weapon weaponData)
     {
@@ -19,12 +18,10 @@ public class DragonDaggerSpecialAttack : ISpecialAttack
             target.ActionHandler.AddAction(new DoubleDamageAction(target, damage));
         }
 
-        /* Update the player's special attack state */
-        player.CombatHelper.SpecialAmount -= 2.5; /* DDS uses 25% energy */
+        // Update the player's special attack state
+        player.CombatHelper.SpecialAmount -= 2.5; // DDS uses 25% energy
         player.CombatHelper.LastAttackTick = currentTick;
         player.CombatHelper.UpdateAttackState(currentTick, weaponData);
-        player.CombatHelper.SpecialAttack = null;
-        player.CombatHelper.UpdateSpecialAttack(GameInterfaces.DragonDaggerDefaultSpecialBar);
     }
 
     public bool CanExecute(Player player)

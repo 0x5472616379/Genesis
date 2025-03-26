@@ -1,5 +1,6 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Commands;
+using Genesis.Configuration;
 using Genesis.Constants;
 using Genesis.Entities;
 using Genesis.Environment;
@@ -12,6 +13,7 @@ public class ButtonManager
 {
     private readonly Dictionary<ButtonId, Action<Player>> _buttonActions;
     private readonly Dictionary<int, FightMode> _fightModeMappings;
+
 
     public ButtonManager()
     {
@@ -75,47 +77,39 @@ public class ButtonManager
 
     public void HandleButtonClick(Player player, int buttonId)
     {
-        if (_fightModeMappings.TryGetValue(buttonId, out FightMode fightMode))
+        // Check if the buttonId corresponds to a special attack
+        if (_specialAttackMappings.TryGetValue(buttonId, out var specialMapping))
         {
-            player.FightMode = fightMode;
+            var (specialAttack, baseSpecBarId) = specialMapping;
+
+            // Invert behavior: Check if the current special attack matches the clicked one
+            if (player.CombatHelper.SpecialAttack != null &&
+                player.CombatHelper.SpecialAttack.GetType() == specialAttack.GetType())
+            {
+                // Disable special attack if it matches the current one
+                player.CombatHelper.SpecialAttack = null;
+                Console.WriteLine("Special attack disabled.");
+            }
+            else
+            {
+                // Enable the selected special attack
+                if (specialAttack.CanExecute(player))
+                {
+                    player.CombatHelper.SpecialAttack = specialAttack;
+                    Console.WriteLine($"Assigned special attack: {specialAttack.GetType().Name}");
+                }
+                else
+                {
+                    Console.WriteLine("Cannot execute this special attack.");
+                }
+            }
+
+            // Always update the special attack bar, even when disabling
+            player.CombatHelper.UpdateSpecialAttack(baseSpecBarId);
             return;
         }
 
-        /* Msb special attack */
-        if (buttonId == 29113)
-        {
-            /* Invert if clicked again */
-            // if (player.CombatHelper.SpecialAttack == null)
-            // {
-            //     player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
-            // }
-            // else
-            // {
-            //     player.CombatHelper.SpecialAttack = null;
-            // }
-            //
-            // player.CombatHelper.UpdateSpecialAttack();
-            return;
-        }
-        
-        /* Dds special attack */
-        if (buttonId == 29138)
-        {
-            /* Invert if clicked again */
-            // if (player.CombatHelper.SpecialAttack == null)
-            // {
-            //     player.CombatHelper.SpecialAttack = SpecialAttacks.MAGIC_SHORTBOW;
-            // }
-            // else
-            // {
-            //     player.CombatHelper.SpecialAttack = null;
-            // }
-            //
-            // player.CombatHelper.UpdateSpecialAttack();
-            player.CombatHelper.SpecialAttack = new DragonDaggerSpecialAttack();
-            return;
-        }
-
+        // Handle other buttons not related to special attacks
         if (Enum.IsDefined(typeof(ButtonId), buttonId) &&
             _buttonActions.TryGetValue((ButtonId)buttonId, out var action))
         {
@@ -136,4 +130,17 @@ public class ButtonManager
         player.ActionHandler.AddAction(
             new TeleAction(player, new Location(varrock.Item1, varrock.Item2, varrock.Item3)));
     }
+
+    private readonly Dictionary<int, (ISpecialAttack Attack, int BaseSpecBarId)> _specialAttackMappings = new()
+    {
+        //GameInterfaces.DragonDaggerDefaultSpecialBar
+        {
+            29138, (new DragonDaggerSpecialAttack(), GameInterfaces.DragonDaggerDefaultSpecialBar)
+        }, // DDS special attack and bar ID
+        {
+            29163, (new DragonDaggerSpecialAttack(), GameInterfaces.DragonScimitarDefaultSpecialBar)
+        }, // DScim special attack and bar ID
+        // { 29113, (new MagicShortbowSpecialAttack(), 7549) }, // MSB special attack and bar ID
+        // Add more button-to-attack mappings here
+    };
 }

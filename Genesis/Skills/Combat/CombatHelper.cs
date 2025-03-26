@@ -74,27 +74,35 @@ public class CombatHelper
         AttackedWith = weapon;
     }
 
-    public void UpdateSpecialAttack()
+    public void UpdateSpecialAttack(int baseSpecBarId)
     {
+        /* Text interface ID for the special attack description*/
+        int textInterfaceId = baseSpecBarId + 12;
+
+        /* Update the special bar slots based on the player's special amount */
+        UpdateSpecialBarSlots(baseSpecBarId + 2);
+
+        /* Update the special bar text or disable it */
         if (SpecialAttack != null)
         {
-            _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7549); /* 7561 Spec bar */
-            for (int i = 0; i < 10; i++)
-            {
-                _player.Session.PacketBuilder.SendInterfaceOffset(i < SpecialAmount ? 500 : 0, 0, 7551 + i);
-            }
-
-            _player.Session.PacketBuilder.SendTextToInterface(GetSpecialBarText(), 7561);
+            _player.Session.PacketBuilder.SendTextToInterface(GetSpecialBarText(), textInterfaceId);
         }
         else
         {
-            _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7549); /* 7561 Spec bar */
-            for (int i = 0; i < 10; i++)
-            {
-                _player.Session.PacketBuilder.SendInterfaceOffset(i < SpecialAmount ? 500 : 0, 0, 7551 + i);
-            }
+            DisableSpecialBarText(textInterfaceId);
+        }
+    }
 
-            DisableSpecialBarText(7561);
+
+    private void UpdateSpecialBarSlots(int offsetBase)
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            _player.Session.PacketBuilder.SendInterfaceOffset(
+                i < SpecialAmount ? 500 : 0,
+                0,
+                offsetBase + i
+            );
         }
     }
 

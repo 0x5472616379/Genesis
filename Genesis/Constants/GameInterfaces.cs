@@ -38,4 +38,14 @@ public class GameInterfaces
     public static int SettingsInterface { get; } = 4445;
     public static int PlayerControlsInterface { get; } = 147;
     public static int MusicInterface { get; } = 6299;
+    
+    public static int WhipDefaultSpecialBar { get; } = 12323;
+    public static int MsbDefaultSpecialBar { get; } = 7549;
+    public static int DragonScimitarDefaultSpecialBar { get; } = 7599;
+    public static int DragonHalberdDefaultSpecialBar { get; } = 8493;
+    public static int DragonBattleAxeDefaultSpecialBar { get; } = 7499;
+    public static int GraniteMaulDefaultSpecialBar { get; } = 7474;
+    public static int DragonSpearDefaultSpecialBar { get; } = 7674;
+    public static int DragonDaggerDefaultSpecialBar { get; } = 7574;
+    public static int DragonMaceDefaultSpecialBar { get; } = 7624;
 }

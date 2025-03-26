@@ -17,6 +17,19 @@ public class EquipItemPacket : IPacket
     private readonly int _fromIndex;
     private readonly int _interfaceId;
 
+    private readonly Dictionary<int, int> _weaponSpecialBars = new()
+    {
+        { 4151, GameInterfaces.WhipDefaultSpecialBar },
+        { 861, GameInterfaces.MsbDefaultSpecialBar },
+        { 859, GameInterfaces.MsbDefaultSpecialBar },
+        { 1215, GameInterfaces.DragonDaggerDefaultSpecialBar },
+        { 1231, GameInterfaces.DragonDaggerDefaultSpecialBar },
+        { 5680, GameInterfaces.DragonDaggerDefaultSpecialBar },
+        { 5698, GameInterfaces.DragonDaggerDefaultSpecialBar },
+        { 4587, GameInterfaces.DragonScimitarDefaultSpecialBar }
+    };
+
+
     public EquipItemPacket(PacketParameters parameters)
     {
         _player = parameters.Player;
@@ -43,11 +56,12 @@ public class EquipItemPacket : IPacket
                 if (slot == EquipmentSlot.Weapon)
                 {
                     WeaponInterfaceManager.Refresh(_player);
-                    // WeaponSpeedLookup.GetWeaponInfo(ItemDefinition.Lookup(_itemId).Name);
-                    _player.Session.PacketBuilder.DisplayHiddenInterface(0, 7574); /* 7561 Spec bar */
-
-                    for (int i = 0; i < 10; i++)
-                        _player.Session.PacketBuilder.SendInterfaceOffset(i < _player.CombatHelper.SpecialAmount ? 500 : 0, 0, 7551 + i);
+                    _player.CombatHelper.SpecialAttack = null;
+                    if (_weaponSpecialBars.TryGetValue(_itemId, out int specialBarInterface))
+                    {
+                        _player.Session.PacketBuilder.DisplayHiddenInterface(0, specialBarInterface);
+                        _player.CombatHelper.UpdateSpecialAttack(specialBarInterface);
+                    }
                 }
 
                 _player.BonusManager.Reset();
