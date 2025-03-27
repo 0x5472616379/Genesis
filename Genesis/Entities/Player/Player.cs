@@ -49,6 +49,8 @@ public class Player : Entity
     // public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
 
     public FightMode FightMode { get; set; } = FightMode.ACCURATE;
+
+    public bool EquippedItem { get; set; }
     
     public Player()
     {

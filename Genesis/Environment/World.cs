@@ -1,4 +1,5 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Configuration;
+using Genesis.Entities;
 using Genesis.Managers;
 
 namespace Genesis.Environment;
@@ -11,11 +12,6 @@ public class World
 
     public static void Process()
     {
-        // foreach (var p in Players)
-        // {
-        //     if (p == null) continue;
-        //     p.Session.PacketBuilder.SendMessage($"Start Tick #{CurrentTick}");
-        // }
         /* 1. Fetch Data */
         CollectPlayerPackets();
         ProcessPackets();
@@ -23,18 +19,12 @@ public class World
         /* 2. Pre-process state */
         PreProcessTick();
 
+        /* 3 Actions, Movement, Interactions */
         BulkPlayerProcess();
-
 
         /* 5. Client Visual Updates */
         PlayerUpdateManager.Update();
 
-        // foreach (var p in Players)
-        // {
-        //     if (p == null) continue;
-        //     p.Session.PacketBuilder.SendMessage($"End Tick #{CurrentTick}");
-        // }
-        
         /* 6. Flush */
         FlushAllPlayers();
 
@@ -53,11 +43,11 @@ public class World
             var player = Players[i];
             if (player == null) continue;
 
-            /* Actions (Queues) */
-            player.ActionHandler.ProcessActionPipeline();
-
             /* Movement */
             player.ProcessMovement();
+            
+            /* Actions (Queues) */
+            player.ActionHandler.ProcessActionPipeline();
 
             /* Interactions */
             if (player.CurrentInteraction != null)

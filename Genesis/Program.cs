@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics;
 using Genesis;
 using Genesis.Cache;
-using Genesis.Configuration;
 using Genesis.Definitions;
 using Genesis.Environment;
-using Genesis.Shops;
 
 Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, @"..\..\.."));
+// Directory.SetCurrentDirectory("/home/engineer/Documents/Genesis/Genesis");
+
 
 string DataDirectory = "./Data/cache";
 var ifs = new IndexedFileSystem(DataDirectory, true);

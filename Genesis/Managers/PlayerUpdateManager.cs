@@ -15,6 +15,16 @@ public class PlayerUpdateManager
 
     public static void Update()
     {
+        foreach (var player in World.GetPlayers())
+        {
+            if (player == null) continue;
+            if (player.EquippedItem)
+            {
+                player.Inventory.RefreshContainer(player, GameInterfaces.DefaultInventoryContainer);
+                player.Flags |= PlayerUpdateFlags.Appearance;
+            }
+        }
+        
         for (int i = 0; i < World.GetPlayers().Length; i++)
         {
             var player = World.GetPlayers()[i];
