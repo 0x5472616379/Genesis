@@ -23,8 +23,7 @@ public class Player : Entity
     public bool MovedThisTick { get; set; }
     public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
 
-    public FoodManager FoodManager { get; set; }
-    
+    public ConsumeManager ConsumeManager { get; set; }
     public CombatHelper CombatHelper { get; set; }
 
     public NetworkSession Session { get; set; }
@@ -36,19 +35,16 @@ public class Player : Entity
     public ActionHandler ActionHandler { get; set; }
 
     public PlayerAttributes Attributes { get; set; }
-    // public EquipmentManager EquipmentManager { get; set; }
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public SkillManager SkillManager { get; set; }
     public RSInteraction CurrentInteraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
     public BonusManager BonusManager { get; set; }
-    // public Player Following { get; set; }
 
     public EquipmentContainer Equipment { get; set; } = new EquipmentContainer(11);
     public RSContainer BankContainer { get; set; } = new BankContainer(ServerConfig.BANK_SIZE);
     public InventoryContainer Inventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
-    // public RSContainer WindowInventory { get; } = new InventoryContainer(ServerConfig.INVENTORY_SIZE);
 
     public FightMode FightMode { get; set; } = FightMode.ACCURATE;
 
@@ -74,7 +70,7 @@ public class Player : Entity
         DialogueManager = new DialogueManager(this);
         ActionHandler = new ActionHandler(this);
         BonusManager = new BonusManager(this);
-        FoodManager = new FoodManager(this);
+        ConsumeManager = new ConsumeManager(this);
         
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
@@ -90,26 +86,10 @@ public class Player : Entity
         // Update movement history
         MovedLastTick = MovedThisTick;
         MovedThisTick = false;
-        
-        FoodManager.ProcessFoodActions();
     }
 
     public void ProcessMovement()
     {
-        // if (CurrentInteraction != null && InteractingEntity != null)
-        // {
-        //     // if (InteractingEntity is Player player)
-        //     // {
-        //     //     PlayerMovementHandler.Reset();
-        //     //     RSPathfinder.FindPath(this, player.Location.X, player.Location.Y, true, 1, 1);
-        //     //     PlayerMovementHandler.Finish();
-        //     // }
-        // }
-        // else
-        // {
-        //     PlayerMovementHandler.Process();
-        // }
-        
         PlayerMovementHandler.Process();
     }
 

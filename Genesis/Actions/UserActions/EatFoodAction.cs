@@ -11,7 +11,6 @@ public class EatFoodAction : RSAction
     private readonly int _health;
     private readonly int _index;
     private readonly int _itemId;
-    private EatState _currentState;
 
     public EatFoodAction(Player player, int health, int index, int itemId)
     {
@@ -28,20 +27,9 @@ public class EatFoodAction : RSAction
         if (_player.CurrentHealth <= 0)
             return true;
 
-        switch (_currentState)
-        {
-            case EatState.Eat:
-                StartEating();
-                ScheduleNext(2);
-                _currentState = EatState.Delay;
-                return false;
-
-            case EatState.Delay:
-                return true;
-
-            default:
-                return true;
-        }
+        StartEating();
+        
+        return true;
     }
 
     private void StartEating()
@@ -54,16 +42,5 @@ public class EatFoodAction : RSAction
         _player.Session.PacketBuilder.SendMessage("You eat the food.");
         _player.Inventory.ClearSlot(_index);
         _player.Inventory.RefreshSlot(_player, _index, -1, 0, GameInterfaces.DefaultInventoryContainer);
-    }
-
-    private void ScheduleNext(int ticks)
-    {
-        ScheduledTick = World.CurrentTick + ticks; // Schedule the action for the next phase
-    }
-
-    private enum EatState
-    {
-        Eat, // Represents the initial dig action
-        Delay // Represents the action of burying the bones
     }
 }

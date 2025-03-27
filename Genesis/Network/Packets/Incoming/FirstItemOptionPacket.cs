@@ -43,11 +43,11 @@ public class FirstItemOptionPacket : IPacket
             _player.ActionHandler.AddAction(new BuryAction(_player));
         }
         
-        if (FoodManager.HardFoods.Contains(_itemId) || FoodManager.ComboFoods.Contains(_itemId))
+        if (ConsumeManager.HardFoods.Contains(_itemId) || ConsumeManager.ComboFoods.Contains(_itemId) 
+                                                       || ConsumeManager.Potions.Contains(_itemId))
         {
-            _player.FoodManager.QueueFood(_itemId, _index);
+            _player.ConsumeManager.Consume(_itemId, _index);
             return;
         }
-        
     }
 }
