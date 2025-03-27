@@ -23,6 +23,8 @@ public class Player : Entity
     public bool MovedThisTick { get; set; }
     public bool IsDelayed => ArriveDelayTicks > 0 || NormalDelayTicks > 0;
 
+    public FoodManager FoodManager { get; set; }
+    
     public CombatHelper CombatHelper { get; set; }
 
     public NetworkSession Session { get; set; }
@@ -72,7 +74,8 @@ public class Player : Entity
         DialogueManager = new DialogueManager(this);
         ActionHandler = new ActionHandler(this);
         BonusManager = new BonusManager(this);
-
+        FoodManager = new FoodManager(this);
+        
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
@@ -87,6 +90,8 @@ public class Player : Entity
         // Update movement history
         MovedLastTick = MovedThisTick;
         MovedThisTick = false;
+        
+        FoodManager.ProcessFoodActions();
     }
 
     public void ProcessMovement()

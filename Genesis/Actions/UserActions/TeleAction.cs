@@ -47,7 +47,7 @@ public class TeleAction : RSAction
     private void StartTeleport()
     {
         _player.SetCurrentAnimation(714);
-        _player.SetCurrentGfx(new Gfx(301, 0,0));
+        _player.SetCurrentGfx(new Gfx(301, 95,0));
         _player.PlayerMovementHandler.Reset();
         _player.NormalDelayTicks = 4; /* Should be 3 according to docs, but 4 looks and feels better */
     }

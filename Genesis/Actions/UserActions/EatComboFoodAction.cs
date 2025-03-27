@@ -5,7 +5,7 @@ using Genesis.Skills;
 
 namespace ArcticRS.Actions;
 
-public class EatFoodAction : RSAction
+public class EatComboFoodAction : RSAction
 {
     private readonly Player _player;
     private readonly int _health;
@@ -13,7 +13,7 @@ public class EatFoodAction : RSAction
     private readonly int _itemId;
     private EatState _currentState;
 
-    public EatFoodAction(Player player, int health, int index, int itemId)
+    public EatComboFoodAction(Player player, int health, int index, int itemId)
     {
         _player = player;
         _health = health;

@@ -1,6 +1,7 @@
 ﻿using ArcticRS.Actions;
 using Genesis.Entities;
 using Genesis.Environment;
+using Genesis.Managers;
 
 namespace Genesis.Packets.Incoming;
 
@@ -41,26 +42,12 @@ public class FirstItemOptionPacket : IPacket
 
             _player.ActionHandler.AddAction(new BuryAction(_player));
         }
-
-        if (_itemId == 385)
+        
+        if (FoodManager.HardFoods.Contains(_itemId) || FoodManager.ComboFoods.Contains(_itemId))
         {
-            if (_player.ActionHandler.ActionPipeline.Any(x => x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
-            {
-                return;
-            }
-
-            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20, _index, _itemId, false));
+            _player.FoodManager.QueueFood(_itemId, _index);
+            return;
         }
-
-        if (_itemId == 3144)
-        {
-            if (_player.ActionHandler.ActionPipeline.Any(x =>
-                    x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
-            {
-                return;
-            }
-
-            _player.ActionHandler.AddAction(new EatFoodAction(_player, 20, _index, _itemId, true));
-        }
+        
     }
 }
