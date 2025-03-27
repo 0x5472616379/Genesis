@@ -1,26 +1,24 @@
-﻿using Genesis;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 
 static class Kernel
 {
-    [DllImport("Kernel32.dll")]
-    private static extern bool QueryPerformanceCounter(out long lpPerformanceCount);
-
-    [DllImport("Kernel32.dll")]
-    private static extern bool QueryPerformanceFrequency(out long lpFrequency);
-
-    private static long _frequency;
+    private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
     private static long _ticksPerTickRate;
     private static long _startTicks;
 
     public static bool TryGetFrequency(out long frequency)
     {
-        return QueryPerformanceFrequency(out frequency);
+        if (Stopwatch.IsHighResolution)
+        {
+            frequency = Stopwatch.Frequency;
+            return true;
+        }
+        frequency = 0;
+        return false;
     }
 
     public static void InitializeTick(long frequency, int tickRateMs)
     {
-        _frequency = frequency;
         _ticksPerTickRate = (frequency / 1000) * tickRateMs;
     }
 
@@ -43,10 +41,10 @@ static class Kernel
         }
     }
 
-    public static void WarnIfTickExceeded()
+    public static void WarnIfTickExceeded(int tickRate)
     {
         double tickDuration = GetLastTickDurationMs();
-        if ((int)tickDuration > ServerConfig.TICK_RATE)
+        if ((int)tickDuration > tickRate)
         {
             Console.WriteLine($"Warning: Tick duration exceeded! Took {tickDuration:F2} ms.");
         }
@@ -60,12 +58,11 @@ static class Kernel
     public static double GetLastTickDurationMs()
     {
         long currentTicks = GetPerformanceCounter();
-        return (currentTicks - _startTicks) * 1000.0 / _frequency;
+        return (currentTicks - _startTicks) * 1000.0 / Stopwatch.Frequency;
     }
 
     public static long GetPerformanceCounter()
     {
-        QueryPerformanceCounter(out long performanceCount);
-        return performanceCount;
+        return _stopwatch.ElapsedTicks;
     }
 }

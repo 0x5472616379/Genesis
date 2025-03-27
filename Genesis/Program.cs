@@ -19,9 +19,6 @@ Benchmark(ItemParser.Initialize, "Loaded Item Info");
 RSServer server = new RSServer();
 server.Run();
 
-
-
-
 void Benchmark(Action action, string benchmarkText)
 {
     var stopwatch = new Stopwatch();

@@ -44,8 +44,7 @@ public class FirstItemOptionPacket : IPacket
 
         if (_itemId == 385)
         {
-            if (_player.ActionHandler.ActionPipeline.Any(x =>
-                    x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
+            if (_player.ActionHandler.ActionPipeline.Any(x => x is EatFoodAction eatFoodAction && eatFoodAction.IsCombo))
             {
                 return;
             }

@@ -28,7 +28,8 @@ public class RSServer
             World.Process();
 
             Kernel.WaitForNextTick();
-            Kernel.WarnIfTickExceeded();
+            Kernel.WarnIfTickExceeded(600);
+            // Kernel.PrintTickDuration();
         }
     }
 }
