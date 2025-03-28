@@ -16,6 +16,8 @@ public class World
         CollectPlayerPackets();
         ProcessPackets();
 
+        WorldDropManager.Process();
+        
         /* 2. Pre-process state */
         PreProcessTick();
 

@@ -229,6 +229,13 @@ public class PacketBuilder
         _player.Session.Writer.WriteByteC(y);
         _player.Session.Writer.WriteByteS(x);
     }
+    
+    public void RemoveGroundItem(int x, int y, int itemId)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.FLOORITEM_REMOVE);
+        _player.Session.Writer.WriteByteA(((x & 0x7) << 4) | (y & 0x7));
+        _player.Session.Writer.WriteWord(itemId);
+    }
 
     /// <summary>
     /// Sends the SW X/Y of the Chunk that we will send edits to
@@ -242,6 +249,15 @@ public class PacketBuilder
     }
 
     public void SendGroundItem(Item item, int xInZone, int yInZone)
+    {
+        _player.Session.Writer.CreateFrame(ServerOpCodes.FLOORITEM_ADD);
+        _player.Session.Writer.WriteWordBigEndianA(item.Id);
+        _player.Session.Writer.WriteWord(item.Amount);
+
+        _player.Session.Writer.WriteByteA(((xInZone & 0x7) << 4) | (yInZone & 0x7));
+    }
+    
+    public void DisplayGroundItem(Item item, int xInZone, int yInZone)
     {
         _player.Session.Writer.CreateFrame(ServerOpCodes.FLOORITEM_ADD);
         _player.Session.Writer.WriteWordBigEndianA(item.Id);
