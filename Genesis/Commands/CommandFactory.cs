@@ -14,6 +14,7 @@ public class CommandFactory
             "pure" => new LoadoutCommand(player, _commandArgs),
             "zerker" => new LoadoutCommand(player, _commandArgs),
             "getfood" => new GetFoodCommand(player, _commandArgs),
+            "spec" => new RegenSpecCommand(player, _commandArgs),
             "tele" => new TeleportCommand(player, _commandArgs),
             "bonuses" => new UpdateBonusesCommand(player, _commandArgs),
             "setlvl" => new SetLevelCommand(player, _commandArgs),

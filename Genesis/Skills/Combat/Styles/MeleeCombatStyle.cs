@@ -25,7 +25,7 @@ public class MeleeCombatStyle : ICombatStyle
         player.SetCurrentAnimation(weaponData.AttackerAnim);
 
         var damage = CalculateDamage(player, target);
-        target.ActionHandler.AddAction(new DamageAction(target, damage, 0));
+        target.ActionHandler.AddAction(new DamageAction(target, player, damage, 0));
 
         player.CombatHelper.UpdateAttackState(currentTick, weaponData);
     }

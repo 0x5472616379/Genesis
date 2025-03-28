@@ -32,11 +32,11 @@ public class RangedCombatStyle : ICombatStyle
 
         player.SetCurrentAnimation(weaponData.AttackerAnim);
         player.SetCurrentGfx(new Gfx(GameConstants.GetArrowPullbackGfx(arrow.ItemId), 90, 0));
-        ProjectileCreator.CreateProjectile(player, target, GameConstants.GetArrowProjectile(arrow.ItemId));
+        ProjectileCreator.CreateProjectile(player, target, GameConstants.GetArrowProjectile(arrow.ItemId), sY:100);
 
         var damage = CalculateDamage(player, target);
 
-        target.ActionHandler.AddAction(new DamageAction(target, damage, CalculateDelay(player, target)));
+        target.ActionHandler.AddAction(new DamageAction(target, player, damage, CalculateDelay(player, target)));
         player.CombatHelper.UpdateAttackState(currentTick, weaponData);
     }
 

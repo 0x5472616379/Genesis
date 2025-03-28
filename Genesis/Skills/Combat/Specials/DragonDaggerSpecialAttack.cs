@@ -12,14 +12,12 @@ public class DragonDaggerSpecialAttack : ISpecialAttack
         player.SetCurrentAnimation(1062);
         player.SetCurrentGfx(new Gfx(252, 70, 0));
 
-        for (int i = 0; i < 2; i++)
-        {
-            var damage0 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
-            var damage1 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
-            
-            target.ActionHandler.AddAction(new DamageAction(target, damage0));
-            target.ActionHandler.AddAction(new DoubleDamageAction(target, damage1));
-        }
+
+        var damage0 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
+        var damage1 = player.CombatHelper.MeleeCombatStyle.CalculateDamage(player, target);
+
+        target.ActionHandler.AddAction(new DamageAction(target, player, damage0));
+        target.ActionHandler.AddAction(new DoubleDamageAction(target, player, damage1));
 
         /* Update the player's special attack state */
         player.CombatHelper.SpecialAmount -= 2.5; /* DDS uses 25% energy */

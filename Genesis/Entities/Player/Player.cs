@@ -49,7 +49,7 @@ public class Player : Entity
     public FightMode FightMode { get; set; } = FightMode.ACCURATE;
 
     public bool EquippedItem { get; set; }
-    
+
     public Player()
     {
         Session = new NetworkSession(this);
@@ -71,7 +71,7 @@ public class Player : Entity
         ActionHandler = new ActionHandler(this);
         BonusManager = new BonusManager(this);
         ConsumeManager = new ConsumeManager(this);
-        
+
         ColorManager = new ColorManager();
         AnimationManager = new AnimationManager();
         Attributes = new PlayerAttributes();
@@ -134,6 +134,7 @@ public class Player : Entity
         Flags |= PlayerUpdateFlags.Animation;
     }
 
+    public Dictionary<int, int> DamageTable { get; set; } = new Dictionary<int, int>();
     public Damage RecentDamage { get; set; }
     public Damage RecentDamage1 { get; set; }
 
@@ -142,11 +143,16 @@ public class Player : Entity
         RecentDamage = damage;
         SetCurrentAnimation(424); /* Block animation */
 
+        Session.PacketBuilder.SendMessage("Single: " + damage.Amount);
+        
         // SetCurrentGfx(damage.Gfx);
         if (CurrentHealth - damage.Amount <= 0)
         {
             CurrentHealth = 0;
-            ActionHandler.AddAction(new RespawnAction(this));
+            if (!ActionHandler.ActionPipeline.Any(x => x is RespawnAction))
+            {
+                ActionHandler.AddAction(new RespawnAction(this));
+            }
         }
         else
         {
@@ -159,14 +165,19 @@ public class Player : Entity
 
     public void SetDoubleDamage(Damage damage1)
     {
+        Session.PacketBuilder.SendMessage("Double: " + damage1.Amount);
+
         var totalDamage = damage1.Amount;
-        
+
         RecentDamage1 = damage1;
         SetCurrentAnimation(424); /* Block animation */
         if (CurrentHealth - totalDamage <= 0)
         {
             CurrentHealth = 0;
-            ActionHandler.AddAction(new RespawnAction(this));
+            if (!ActionHandler.ActionPipeline.Any(x => x is RespawnAction))
+            {
+                ActionHandler.AddAction(new RespawnAction(this));
+            }
         }
         else
         {
@@ -180,7 +191,7 @@ public class Player : Entity
     public override void SetCurrentGfx(Gfx gfx)
     {
         if (gfx == null) return;
-        
+
         CurrentGfx = gfx;
         Flags |= PlayerUpdateFlags.Graphics;
     }
@@ -205,8 +216,8 @@ public class Player : Entity
         CurrentFaceY = y;
         Flags |= PlayerUpdateFlags.FaceDirection;
     }
-    
-    
+
+
     public void ClearInteraction() => CurrentInteraction = null;
 
     public void Reset()
