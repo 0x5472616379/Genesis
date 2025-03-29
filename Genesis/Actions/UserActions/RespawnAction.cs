@@ -1,4 +1,6 @@
-﻿using Genesis.Entities;
+﻿using Genesis;
+using Genesis.Configuration;
+using Genesis.Entities;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Skills;
@@ -61,61 +63,15 @@ public class RespawnAction : RSAction
 
         if (!_droppedItems)
         {
-            int playerIdx = _player.DamageTable
-                .OrderByDescending(kvp => kvp.Value) // Order by value in descending order
-                .First().Key;
+            DropItems();
 
-            var player = World.GetPlayers().FirstOrDefault(x => x.Session.Index == playerIdx);
-            
-            
-            
-            WorldDropManager.AddDrop(new WorldDrop
-            {
-                Id = 995,
-                Amount = 10000,
-                X = _fromX,
-                Y = _fromY,
-                Z = _fromZ,
-                Delay = 30,
-                VisibleTo = player
-            });
-
-            WorldDropManager.AddDrop(new WorldDrop
-            {
-                Id = 4675,
-                Amount = 1,
-                X = _fromX,
-                Y = _fromY,
-                Z = _fromZ,
-                Delay = 30,
-                VisibleTo = player
-            });
-            
-            WorldDropManager.AddDrop(new WorldDrop
-            {
-                Id = 4151,
-                Amount = 1,
-                X = _fromX,
-                Y = _fromY,
-                Z = _fromZ,
-                Delay = 30,
-                VisibleTo = player
-            });
-
-            WorldDropManager.AddDrop(new WorldDrop
-            {
-                Id = 526,
-                Amount = 1,
-                X = _fromX,
-                Y = _fromY,
-                Z = _fromZ,
-                Delay = 30,
-                VisibleTo = player
-            });
-            
             _droppedItems = true;
         }
 
+        _player.Inventory.Clear();
+        _player.Equipment.ClearAll();
+        _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
+        
         _player.DamageTable = new Dictionary<int, int>();
     }
 
@@ -137,5 +93,56 @@ public class RespawnAction : RSAction
         Fall,
         DropItems,
         Spawn,
+    }
+
+    private void DropItems()
+    {
+        int playerIdx = _player.DamageTable
+            .OrderByDescending(kvp => kvp.Value) // Order by value in descending order
+            .First().Key;
+
+        var player = World.GetPlayers().FirstOrDefault(x => x.Session.Index == playerIdx);
+
+        var inventoryItems = _player.Inventory.GetAllItems();
+        var equipmentItems = _player.Equipment.GetAllItems();
+
+        foreach (var item in inventoryItems)
+        {
+            WorldDropManager.AddDrop(new WorldDrop
+            {
+                Id = item.ItemId,
+                Amount = item.Quantity,
+                X = _fromX,
+                Y = _fromY,
+                Z = _fromZ,
+                Delay = 30,
+                VisibleTo = player
+            });
+        }
+
+        foreach (var item in equipmentItems)
+        {
+            WorldDropManager.AddDrop(new WorldDrop
+            {
+                Id = item.ItemId,
+                Amount = item.Quantity,
+                X = _fromX,
+                Y = _fromY,
+                Z = _fromZ,
+                Delay = 30,
+                VisibleTo = player
+            });
+        }
+
+        WorldDropManager.AddDrop(new WorldDrop
+        {
+            Id = 526,
+            Amount = 1,
+            X = _fromX,
+            Y = _fromY,
+            Z = _fromZ,
+            Delay = 30,
+            VisibleTo = player
+        });
     }
 }

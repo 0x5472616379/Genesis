@@ -256,4 +256,6 @@ public class RSContainer
     {
         return _slots.FindIndex(s => s.ItemId == itemId);
     }
+
+    
 }

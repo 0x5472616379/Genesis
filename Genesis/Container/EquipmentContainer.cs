@@ -309,4 +309,9 @@ public class EquipmentContainer : RSContainer
         // ItemParser.GetBonusValue(4151, BonusType.MeleeStrength);
         return 0;
     }
+    
+    public List<ItemSlot> GetAllItems()
+    {
+        return _slots.Where(x => x.ItemId != 0 && x.ItemId != -1).ToList();
+    }
 }

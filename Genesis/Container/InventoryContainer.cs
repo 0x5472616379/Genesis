@@ -60,4 +60,9 @@ public class InventoryContainer : RSContainer
         return added == quantity;
     }
     
+    public List<ItemSlot> GetAllItems()
+    {
+        return _slots.Where(x => x.ItemId != 0 && x.ItemId != -1).ToList();
+    }
+    
 }
