@@ -39,6 +39,8 @@ public static class PacketFactory
                 return new CloseWindowPacket(parameters);
             case 192:
                 return new ItemOnWorldObjectPacket(parameters);
+            case 236:
+                return new PickupItemPacket(parameters);
             case 117:
                 return new WithdrawSecondOptionFromContainerPacket(parameters);
             case 43:

@@ -39,7 +39,7 @@ public class SpawnGroundItemCommand : RSCommand
          {
              Id = 995,
              Amount = 10000,
-             Delay = 20,
+             Delay = 50,
              X = Player.Location.X,
              Y = Player.Location.Y,
              Z = Player.Location.Z

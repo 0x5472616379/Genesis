@@ -130,6 +130,78 @@ public class RSContainer
         return (added, destIndex);
     }
 
+
+    public (bool Success, int Index) TryPickupItem(int itemId, int quantity)
+    {
+        if (quantity <= 0)
+            return (false, -1);
+
+        var itemDef = ItemDefinition.Lookup(itemId);
+        bool isStackable = AlwaysStack || (itemDef?.Stackable == true) || (itemDef?.IsNote() == true);
+
+        return isStackable
+            ? TryPickupStackableItem(itemId, quantity)
+            : TryPickupNonStackableItem(itemId, quantity);
+    }
+
+    private (bool Success, int Index) TryPickupStackableItem(int itemId, int quantity)
+    {
+        // Check if we can add to existing stack
+        var existingSlot = FindExistingStack(itemId);
+        if (existingSlot != null)
+        {
+            int slotIndex = _slots.IndexOf(existingSlot);
+            long potentialTotal = (long)existingSlot.Quantity + quantity;
+            if (potentialTotal > int.MaxValue)
+            {
+                // Would exceed max stack size - don't add anything
+                return (false, -1);
+            }
+
+            // We can safely add to existing stack
+            existingSlot.Quantity += quantity;
+            return (true, slotIndex);
+        }
+
+        // No existing stack - check if we have space for a new stack
+        if (FreeSlots == 0)
+        {
+            return (false, -1);
+        }
+
+        // We have space - add new stack
+        var emptySlot = _slots.First(s => s.IsEmpty);
+        int newSlotIndex = _slots.IndexOf(emptySlot);
+        emptySlot.ItemId = itemId;
+        emptySlot.Quantity = quantity;
+        return (true, newSlotIndex);
+    }
+
+    private (bool Success, int Index) TryPickupNonStackableItem(int itemId, int quantity)
+    {
+        // For non-stackable items, quantity represents number of items to add
+        if (FreeSlots < quantity)
+        {
+            return (false, -1);
+        }
+
+        // We have enough space - add all items
+        int firstAddedIndex = -1;
+        foreach (var slot in _slots.Where(s => s.IsEmpty).Take(quantity))
+        {
+            int currentIndex = _slots.IndexOf(slot);
+            if (firstAddedIndex == -1)
+            {
+                firstAddedIndex = currentIndex;
+            }
+
+            slot.ItemId = itemId;
+            slot.Quantity = 1;
+        }
+
+        return (true, firstAddedIndex);
+    }
+
     public virtual int RemoveAt(int index, int quantity = int.MaxValue)
     {
         if (index < 0 || index >= _slots.Count)
@@ -256,6 +328,4 @@ public class RSContainer
     {
         return _slots.FindIndex(s => s.ItemId == itemId);
     }
-
-    
 }

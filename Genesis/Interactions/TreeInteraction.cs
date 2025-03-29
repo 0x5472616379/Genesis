@@ -123,9 +123,7 @@ public class TreeInteraction : RSInteraction
         _player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
         
         
-        if (_player.CurrentInteraction != null && 
-            (_player.MovedThisTick || _player.MovedLastTick) && 
-            distance <= 1)
+        if (_player.CurrentInteraction != null && (_player.MovedThisTick || _player.MovedLastTick) && distance <= 1)
         {
             _player.ArriveDelayTicks = 1;
         }

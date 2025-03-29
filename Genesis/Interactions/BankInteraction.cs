@@ -52,8 +52,7 @@ public class BankInteraction : RSInteraction
             _worldObject.GetSize()[0], _worldObject.GetSize()[1]);
         _player.Session.PacketBuilder.SendMessage($"Distance: {distance}");
 
-        if (_player.CurrentInteraction != null &&
-            (_player.MovedThisTick || _player.MovedLastTick) &&
+        if (_player.CurrentInteraction != null && (_player.MovedThisTick || _player.MovedLastTick) &&
             distance <= 1)
         {
             // _player.ArriveDelayTicks = 1;

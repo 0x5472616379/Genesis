@@ -71,6 +71,7 @@ public class RespawnAction : RSAction
         _player.Inventory.Clear();
         _player.Equipment.ClearAll();
         _player.Equipment.RefreshContainer(_player, GameInterfaces.EquipmentContainer);
+        _player.Equipment.RefreshContainer(_player, GameInterfaces.DefaultInventoryContainer);
         
         _player.DamageTable = new Dictionary<int, int>();
     }
