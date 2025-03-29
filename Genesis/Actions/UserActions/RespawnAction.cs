@@ -67,6 +67,8 @@ public class RespawnAction : RSAction
 
             var player = World.GetPlayers().FirstOrDefault(x => x.Session.Index == playerIdx);
             
+            
+            
             WorldDropManager.AddDrop(new WorldDrop
             {
                 Id = 995,
@@ -100,6 +102,17 @@ public class RespawnAction : RSAction
                 VisibleTo = player
             });
 
+            WorldDropManager.AddDrop(new WorldDrop
+            {
+                Id = 526,
+                Amount = 1,
+                X = _fromX,
+                Y = _fromY,
+                Z = _fromZ,
+                Delay = 30,
+                VisibleTo = player
+            });
+            
             _droppedItems = true;
         }
 

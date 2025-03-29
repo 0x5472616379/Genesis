@@ -6,11 +6,11 @@ namespace Genesis.Commands;
 
 public class RegenSpecCommand : RSCommand
 {
+    protected override PlayerRights RequiredRights { get; }
     public RegenSpecCommand(Player player, string[] args) : base(player, args)
     {
     }
 
-    protected override PlayerRights RequiredRights { get; }
     public override bool Validate()
     {
         return true;
