@@ -37,7 +37,7 @@ public static class CompressionUtil
     {
         var newCompressed = new byte[compressed.Length + 4];
         BZipHeader().CopyTo(newCompressed);
-        Array.Copy(compressed, 0, newCompressed, 4, compressed.Length);
+        compressed.CopyTo(newCompressed, 4);
 
         using var memStream = new MemoryStream(newCompressed);
         using var isStream = new BZip2InputStream(memStream);
