@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Commands;
 using ArcticRS.Constants;
 using Genesis.Cache;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Managers;
 

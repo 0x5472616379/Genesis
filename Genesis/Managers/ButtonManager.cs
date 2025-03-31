@@ -2,7 +2,7 @@
 using ArcticRS.Commands;
 using Genesis.Configuration;
 using Genesis.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Skills.Combat;
 using Genesis.Skills.Combat.Specials;

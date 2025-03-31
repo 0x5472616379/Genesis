@@ -1,6 +1,6 @@
 ﻿using ArcticRS.Commands;
 using Genesis.Commands;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 
 namespace ArcticRS.Factories;
 

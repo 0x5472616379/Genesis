@@ -1,5 +1,5 @@
 ﻿using ArcticRS.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Skills;
 
 namespace Genesis.Commands;

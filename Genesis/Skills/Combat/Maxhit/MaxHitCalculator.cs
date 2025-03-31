@@ -1,5 +1,5 @@
 ﻿using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Managers;
 
 namespace Genesis.Skills.Combat.Maxhit;

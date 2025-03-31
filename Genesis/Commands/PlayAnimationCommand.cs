@@ -1,6 +1,6 @@
 ﻿using ArcticRS.Commands;
 using ArcticRS.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 
 namespace Genesis.Commands;
 

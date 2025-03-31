@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Constants;
 using Genesis.Commands;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 
 namespace ArcticRS.Commands;

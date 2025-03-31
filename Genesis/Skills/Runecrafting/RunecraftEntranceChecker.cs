@@ -1,6 +1,6 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Commands;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Packets.Incoming;
 

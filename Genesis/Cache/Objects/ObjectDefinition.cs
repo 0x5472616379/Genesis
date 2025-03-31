@@ -1,15 +1,10 @@
-﻿namespace Genesis.Cache;
+﻿namespace Genesis.Cache.Objects;
 
-public class ObjectDefinition
+public class ObjectDefinition(int id)
 {
-    public ObjectDefinition(int id)
-    {
-        Id = id;
-    }
-
-    public int Id { get; }
-    public string Name { get; set; }
-    public string Description { get; set; }
+    public int Id { get; } = id;
+    public string? Name { get; set; }
+    public string? Description { get; set; }
     public bool Wall { get; set; }
     public bool IsInteractive { get; set; }
     public bool IsObstructive { get; set; }
@@ -18,10 +13,10 @@ public class ObjectDefinition
     public bool IsClipped { get; set; } = true;
     public int Width { get; set; } = 1;
     public int Length { get; set; } = 1;
-    public int Face { get; set; }
-    public string[] MenuActions { get; set; }
+    public int? Face { get; set; }
+    public string[]? MenuActions { get; set; }
 
-    public static ObjectDefinition[] Definitions { get; private set; }
+    public static ObjectDefinition[] Definitions { get; private set; } = [];
 
     public static int Count => Definitions.Length;
 
@@ -36,15 +31,9 @@ public class ObjectDefinition
 
     public static ObjectDefinition Lookup(int id)
     {
-        if (id < 0 || id >= Definitions.Length) throw new IndexOutOfRangeException("Id out of bounds.");
+        if (id >= Definitions.Length) 
+            throw new IndexOutOfRangeException("Id out of bounds.");
 
-        if (Definitions[id] == null)
-        {
-            return null;
-        }
-        else
-        {
-            return Definitions[id];
-        }
+        return Definitions[id];
     }
 }

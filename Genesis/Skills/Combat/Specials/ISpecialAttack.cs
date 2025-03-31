@@ -1,4 +1,4 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Entities.Player;
 using Genesis.Model;
 
 namespace Genesis.Skills.Combat.Specials;

@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Appearance;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;

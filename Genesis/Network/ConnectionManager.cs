@@ -1,19 +1,19 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using Genesis.Client;
-using Genesis.Entities;
+using Genesis.Configuration;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 
-namespace Genesis;
+namespace Genesis.Network;
 
-public class ConnectionManager
+public static class ConnectionManager
 {
     private const int MaxClientsPerCycle = 10;
-    private static TcpListener _listener;
+    private static readonly TcpListener _listener = new(IPAddress.Loopback, ServerConfig.PORT);
 
     public static void Initialize()
     {
-        _listener = new TcpListener(IPAddress.Loopback, ServerConfig.PORT);
         _listener.Start(200);
     }
 

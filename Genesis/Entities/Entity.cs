@@ -1,4 +1,5 @@
-﻿using Genesis.Environment;
+﻿using Genesis.Configuration;
+using Genesis.Environment;
 using Genesis.Model;
 using Genesis.Movement;
 

@@ -1,9 +1,10 @@
 ﻿using Genesis.Cache;
+using Genesis.Cache.Objects;
 using Genesis.Movement;
 
 namespace Genesis.Environment;
 
-public class Region
+public class Region(int id, bool members)
 {
     public const int PROJECTILE_NORTH_WEST_BLOCKED = 0x200;
     public const int PROJECTILE_NORTH_BLOCKED = 0x400;
@@ -19,20 +20,13 @@ public class Region
     public const int UNLOADED_TILE = 0x1000000;
     public const int OCEAN_TILE = 2097152;
     private static int i = 0;
+    private readonly int[][][] _clips = new int[4][][];
+    private readonly int[][][] _projectileClips = new int[4][][];
+    private readonly List<WorldObject> _realObjects = [];
 
-    public Region(int id, bool members)
-    {
-        Id = id;
-        Members = members;
-    }
+    public int Id { get; } = id;
 
-    private int[][][] _clips { get; } = new int[4][][];
-    private int[][][] _projectileClips { get; } = new int[4][][];
-    private List<WorldObject> _realObjects { get; } = new();
-
-    public int Id { get; }
-
-    public bool Members { get; }
+    public bool Members { get; } = members;
 
     public static Region GetRegion(int x, int y)
     {
@@ -487,45 +481,45 @@ public class Region
 
         if (direction != 1 && direction != 3)
         {
-            xLength = ObjectDefinition.Lookup(objectId).Width;
-            yLength = ObjectDefinition.Lookup(objectId).Length;
+            xLength = item.Width;
+            yLength = item.Length;
         }
         else
         {
-            xLength = ObjectDefinition.Lookup(objectId).Length;
-            yLength = ObjectDefinition.Lookup(objectId).Width;
+            xLength = item.Length;
+            yLength = item.Width;
         }
 
         if (type == 22)
         {
-            if (ObjectDefinition.Lookup(objectId).IsInteractive && ObjectDefinition.Lookup(objectId).IsSolid)
+            if (item.IsInteractive && item.IsSolid)
             {
                 AddClipping(x, y, height, 0x200000);
 
-                if (ObjectDefinition.Lookup(objectId).IsImpenetrable) AddProjectileClipping(x, y, height, 0x200000);
+                if (item.IsImpenetrable) AddProjectileClipping(x, y, height, 0x200000);
             }
         }
         else if (type >= 9)
         {
-            if (ObjectDefinition.Lookup(objectId).IsSolid)
+            if (item.IsSolid)
             {
-                AddClippingForSolidObject(x, y, height, xLength, yLength, ObjectDefinition.Lookup(objectId).IsClipped);
+                AddClippingForSolidObject(x, y, height, xLength, yLength, item.IsClipped);
 
-                if (ObjectDefinition.Lookup(objectId).IsImpenetrable)
+                if (item.IsImpenetrable)
                     AddProjectileClippingForSolidObject(x, y, height, xLength, yLength,
-                        ObjectDefinition.Lookup(objectId).IsClipped);
+                        item.IsClipped);
             }
         }
         else if (type >= 0 && type <= 3)
         {
-            if (ObjectDefinition.Lookup(objectId).IsSolid)
+            if (item.IsSolid)
             {
                 AddClippingForVariableObject(x, y, height, type, direction,
-                    ObjectDefinition.Lookup(objectId).IsClipped);
+                    item.IsClipped);
 
-                if (ObjectDefinition.Lookup(objectId).IsImpenetrable)
+                if (item.IsImpenetrable)
                     AddProjectileClippingForVariableObject(x, y, height, type, direction,
-                        ObjectDefinition.Lookup(objectId).IsClipped);
+                        item.IsClipped);
             }
         }
 
@@ -786,7 +780,7 @@ public class Region
         return null; // No matching object found
     }
 
-    public WorldObject GetRealObject(Region region, int x, int y, int z, int objId)
+    public static WorldObject GetRealObject(Region region, int x, int y, int z, int objId)
     {
         var r = region;
         if (r == null)

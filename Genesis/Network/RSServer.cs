@@ -1,4 +1,6 @@
-﻿using Genesis.Environment;
+﻿using Genesis.Configuration;
+using Genesis.Environment;
+using Genesis.Network;
 
 namespace Genesis;
 
@@ -8,8 +10,6 @@ public class RSServer
 
     public void Run()
     {
-        _isRunning = true;
-        ConnectionManager.Initialize();
 
         if (!Kernel.TryGetFrequency(out long frequency))
         {
@@ -17,7 +17,11 @@ public class RSServer
             return;
         }
 
+        ConnectionManager.Initialize();
+
         Kernel.InitializeTick(frequency, ServerConfig.TICK_RATE);
+
+        _isRunning = true;
 
         while (_isRunning)
         {

@@ -1,6 +1,6 @@
 ﻿using ArcticRS.Actions;
 using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Movement;
 using Genesis.Skills.Combat.Maxhit;
 

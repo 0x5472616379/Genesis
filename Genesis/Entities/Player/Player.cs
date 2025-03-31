@@ -11,7 +11,7 @@ using Genesis.Shops;
 using Genesis.Skills;
 using Genesis.Skills.Combat;
 
-namespace Genesis.Entities;
+namespace Genesis.Entities.Player;
 
 public class Player : Entity
 {
@@ -38,7 +38,7 @@ public class Player : Entity
     public ColorManager ColorManager { get; set; }
     public AnimationManager AnimationManager { get; set; }
     public SkillManager SkillManager { get; set; }
-    public RSInteraction CurrentInteraction { get; set; }
+    public RSInteraction? CurrentInteraction { get; set; }
     public DialogueManager DialogueManager { get; set; }
     public BonusManager BonusManager { get; set; }
 
@@ -196,10 +196,10 @@ public class Player : Entity
         Flags |= PlayerUpdateFlags.Graphics;
     }
 
-    public Entity InteractingEntity { get; set; }
+    public Entity? InteractingEntity { get; set; }
     public Shop OpenShop { get; set; }
 
-    public void SetFacingEntity(Entity entity)
+    public void SetFacingEntity(Entity? entity)
     {
         InteractingEntity = entity;
         Flags |= PlayerUpdateFlags.InteractingEntity;

@@ -1,23 +1,17 @@
-﻿namespace Genesis.Cache;
+﻿namespace Genesis.Cache.Idx;
 
 /// <summary>
 ///     Represents an index pointing to a file in the main_file_cache.dat file.
 /// </summary>
-public class Index
+/// <remarks>
+///     Creates a new instance of the Index class.
+/// </remarks>
+/// <param name="size">The size of the file.</param>
+/// <param name="block">The first block of the file.</param>
+public class Index(int size, int block)
 {
-    private readonly int block; // The first block of the file.
-    private readonly int size; // The size of the file.
-
-    /// <summary>
-    ///     Creates a new instance of the Index class.
-    /// </summary>
-    /// <param name="size">The size of the file.</param>
-    /// <param name="block">The first block of the file.</param>
-    public Index(int size, int block)
-    {
-        this.size = size;
-        this.block = block;
-    }
+    private readonly int block = block; // The first block of the file.
+    private readonly int size = size; // The size of the file.
 
     /// <summary>
     ///     Decodes a buffer into an Index object.
@@ -29,8 +23,8 @@ public class Index
     {
         if (buffer.Length != FileSystemConstants.IndexSize) throw new ArgumentException("Incorrect buffer length.");
 
-        var size = ((buffer[0] & 0xFF) << 16) | ((buffer[1] & 0xFF) << 8) | (buffer[2] & 0xFF);
-        var block = ((buffer[3] & 0xFF) << 16) | ((buffer[4] & 0xFF) << 8) | (buffer[5] & 0xFF);
+        var size = buffer[0] << 16 | buffer[1] << 8 | buffer[2];
+        var block = buffer[3] << 16 | buffer[4] << 8 | buffer[5];
 
         return new Index(size, block);
     }
@@ -39,17 +33,11 @@ public class Index
     ///     Gets the first block of the file.
     /// </summary>
     /// <returns>The first block of the file.</returns>
-    public int GetBlock()
-    {
-        return block;
-    }
+    public int GetBlock() => block;
 
     /// <summary>
     ///     Gets the size of the file.
     /// </summary>
     /// <returns>The size of the file.</returns>
-    public int GetSize()
-    {
-        return size;
-    }
+    public int GetSize() => size;
 }

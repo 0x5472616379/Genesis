@@ -1,7 +1,8 @@
 ﻿using System.Net.Sockets;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
+using Genesis.Network;
 
 namespace Genesis.Client;
 

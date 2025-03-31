@@ -1,4 +1,6 @@
-﻿namespace Genesis.Cache;
+﻿using Genesis.Cache.Objects;
+
+namespace Genesis.Cache;
 
 public class WorldObject
 {

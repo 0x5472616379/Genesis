@@ -1,6 +1,6 @@
 ﻿using Genesis.Packets.Incoming;
 
-namespace Genesis;
+namespace Genesis.Network;
 
 public interface IPacket
 {
@@ -9,54 +9,29 @@ public interface IPacket
 
 public static class PacketFactory
 {
-    public static IPacket? CreateClientPacket(int opcode, PacketParameters parameters)
-    {
-        switch (opcode)
+    public static IPacket? CreateClientPacket(int opcode, PacketParameters parameters) =>
+        opcode switch
         {
             /* Regular Walk */
-            case 98:
-            case 164:
-            case 248:
-                return new WalkPacket(parameters);
+            98 or 164 or 248 => new WalkPacket(parameters),
             /* Walk To Interaction Object */
-            case 41:
-                return new EquipItemPacket(parameters);
-            case 103:
-                return new PlayerCommandPacket(parameters);
-            case 122:
-                return new FirstItemOptionPacket(parameters);
-            case 132:
-                return new InteractFirstOptionPacket(parameters);
-            case 73:
-                return new AttackPlayerPacket(parameters);
-            case 249:
-                return new SpellOnPlayer(parameters);
-            case 39:
-                return new FollowPlayerPacket(parameters);
-            case 40:
-                return new DialogueClickPacket(parameters);
-            case 130:
-                return new CloseWindowPacket(parameters);
-            case 192:
-                return new ItemOnWorldObjectPacket(parameters);
-            case 236:
-                return new PickupItemPacket(parameters);
-            case 117:
-                return new WithdrawSecondOptionFromContainerPacket(parameters);
-            case 43:
-                return new WithdrawThirdFromContainerPacket(parameters);
-            case 129:
-                return new WithdrawFourthFromContainerPacket(parameters);
-            case 145:
-                return new WithdrawFirstOptionFromContainerPacket(parameters);
-            case 214:
-                return new MoveItemInContainerPacket(parameters);
-            case 185:
-                return new ButtonClickPacket(parameters);
-
-            default:
-                Console.WriteLine($"No packet class implementation for opcode {opcode}.");
-                return null;
-        }
-    }
+            41 => new EquipItemPacket(parameters),
+            103 => new PlayerCommandPacket(parameters),
+            122 => new FirstItemOptionPacket(parameters),
+            132 => new InteractFirstOptionPacket(parameters),
+            73 => new AttackPlayerPacket(parameters),
+            249 => new SpellOnPlayer(parameters),
+            39 => new FollowPlayerPacket(parameters),
+            40 => new DialogueClickPacket(parameters),
+            130 => new CloseWindowPacket(parameters),
+            192 => new ItemOnWorldObjectPacket(parameters),
+            236 => new PickupItemPacket(parameters),
+            117 => new WithdrawSecondOptionFromContainerPacket(parameters),
+            43 => new WithdrawThirdFromContainerPacket(parameters),
+            129 => new WithdrawFourthFromContainerPacket(parameters),
+            145 => new WithdrawFirstOptionFromContainerPacket(parameters),
+            214 => new MoveItemInContainerPacket(parameters),
+            185 => new ButtonClickPacket(parameters),
+            _ => throw new InvalidOperationException($"Unrecognized opcode found: {opcode}."),
+        };
 }

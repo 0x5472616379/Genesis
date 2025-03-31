@@ -1,16 +1,12 @@
 ﻿
+using Genesis.Cache.Idx;
+using Genesis.Cache.Objects;
+
 namespace Genesis.Cache;
 
-public sealed class ObjectDefinitionDecoder
+public static class ObjectDefinitionDecoder
 {
-    private readonly IndexedFileSystem fs;
-
-    public ObjectDefinitionDecoder(IndexedFileSystem fs)
-    {
-        this.fs = fs ?? throw new ArgumentNullException(nameof(fs));
-    }
-
-    public void Run()
+   public static void Load(IndexedFileSystem fs)
     {
         try
         {
@@ -18,29 +14,29 @@ public sealed class ObjectDefinitionDecoder
             var data = config.GetEntry("loc.dat").GetBuffer();
             var idx = config.GetEntry("loc.idx").GetBuffer();
 
-            using (var msData = new MemoryStream(data))
-            using (var msIdx = new MemoryStream(idx))
-            using (var dataReader = new BinaryReader(msData))
-            using (var idxReader = new BinaryReader(msIdx))
+            using var msData = new MemoryStream(data);
+            using var dataReader = new BinaryReader(msData);
+
+            using var msIdx = new MemoryStream(idx);
+            using var idxReader = new BinaryReader(msIdx);
+
+            int count = idxReader.ReadInt16BigEndian();
+            var index = 2;
+            var indices = new int[count];
+            for (var i = 0; i < count; i++)
             {
-                int count = idxReader.ReadInt16BigEndian();
-                var index = 2;
-                var indices = new int[count];
-                for (var i = 0; i < count; i++)
-                {
-                    indices[i] = index;
-                    index += idxReader.ReadInt16BigEndian();
-                }
-
-                var definitions = new ObjectDefinition[count];
-                for (var i = 0; i < count; i++)
-                {
-                    dataReader.BaseStream.Position = indices[i];
-                    definitions[i] = Decode(i, dataReader);
-                }
-
-                ObjectDefinition.Init(definitions);
+                indices[i] = index;
+                index += idxReader.ReadInt16BigEndian();
             }
+
+            var definitions = new ObjectDefinition[count];
+            for (var i = 0; i < count; i++)
+            {
+                dataReader.BaseStream.Position = indices[i];
+                definitions[i] = Decode(i, dataReader);
+            }
+
+            ObjectDefinition.Init(definitions);
         }
         catch (IOException e)
         {
@@ -48,11 +44,11 @@ public sealed class ObjectDefinitionDecoder
         }
     }
 
-    private ObjectDefinition Decode(int id, BinaryReader data)
+    private static ObjectDefinition Decode(int id, BinaryReader data)
     {
         var actions = false;
-        int[] modelId = null;
-        int[] modelType = null;
+        int[]? modelId = null;
+        int[]? modelType = null;
 
         var definition = new ObjectDefinition(id);
 
@@ -146,7 +142,7 @@ public sealed class ObjectDefinitionDecoder
                 case >= 30 and < 39:
                     actions = true;
                     var strings = definition.MenuActions;
-                    if (strings == null) strings = new string[10];
+                    strings ??= new string[10];
                     var action = BufferUtil.ReadString(data);
                     strings[opcode - 30] = action;
                     definition.MenuActions = strings;

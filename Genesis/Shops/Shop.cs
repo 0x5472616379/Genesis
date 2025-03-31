@@ -1,7 +1,7 @@
 ﻿using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Container;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Model;
 

@@ -1,5 +1,6 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Entities.Player;
 using Genesis.Managers;
+using Genesis.Network;
 
 namespace Genesis.Packets.Incoming;
 

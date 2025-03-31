@@ -2,7 +2,7 @@
 using ArcticRS.Constants;
 using Genesis.Cache;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 
 namespace Genesis.Commands;

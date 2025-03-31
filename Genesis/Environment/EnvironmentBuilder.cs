@@ -1,4 +1,4 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Entities.Player;
 
 namespace Genesis.Environment;
 

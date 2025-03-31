@@ -2,7 +2,7 @@
 using Genesis.Cache;
 using Genesis.Commands;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 
 public class SpawnItemCommand : RSCommand
 {

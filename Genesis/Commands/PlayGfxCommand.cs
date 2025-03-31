@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using ArcticRS.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Model;
 
 namespace Genesis.Commands;

@@ -1,5 +1,7 @@
 ﻿
 
+using Genesis.Util;
+
 namespace Genesis.Cache;
 
 public sealed class Archive

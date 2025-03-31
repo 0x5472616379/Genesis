@@ -1,6 +1,7 @@
 ﻿using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Model;
+using Genesis.Network;
 using Genesis.Shops;
 
 namespace Genesis.Packets.Incoming;

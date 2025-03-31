@@ -1,8 +1,9 @@
-﻿using Genesis.Entities;
+﻿using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Model;
 using Genesis.Movement;
+using Genesis.Network;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;

@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Appearance;
 using Genesis.Cache;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 
 namespace Genesis.Managers;
 

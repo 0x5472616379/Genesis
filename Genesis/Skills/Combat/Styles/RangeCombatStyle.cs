@@ -2,7 +2,7 @@
 using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Model;
 using Genesis.Movement;
 using Genesis.Skills.Combat.Maxhit;

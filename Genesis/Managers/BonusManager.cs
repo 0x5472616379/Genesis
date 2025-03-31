@@ -1,5 +1,6 @@
 ﻿using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Definitions.Items;
+using Genesis.Entities.Player;
 
 namespace Genesis.Managers;
 

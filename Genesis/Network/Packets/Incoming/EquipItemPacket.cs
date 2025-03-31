@@ -3,8 +3,9 @@ using ArcticRS.Appearance;
 using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Managers;
+using Genesis.Network;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;

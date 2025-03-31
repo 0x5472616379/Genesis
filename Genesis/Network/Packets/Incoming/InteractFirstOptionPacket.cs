@@ -1,7 +1,8 @@
 ﻿using Genesis.Cache;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Interactions;
+using Genesis.Network;
 using Genesis.Skills.Runecrafting;
 using Genesis.Skills.Woodcutting;
 

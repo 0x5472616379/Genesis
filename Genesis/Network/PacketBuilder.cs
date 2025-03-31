@@ -2,7 +2,7 @@
 using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;

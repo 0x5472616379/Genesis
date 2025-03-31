@@ -1,5 +1,5 @@
 ﻿using Genesis.Cache;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Managers;
 
 namespace Genesis.Skills.Combat;

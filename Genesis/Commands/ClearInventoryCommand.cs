@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Commands;
 using ArcticRS.Constants;
 using Genesis.Configuration;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Skills.Runecrafting;
 
 namespace Genesis.Commands;

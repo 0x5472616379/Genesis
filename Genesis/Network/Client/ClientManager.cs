@@ -2,8 +2,8 @@
 using ArcticRS.Appearance;
 using Genesis.Configuration;
 using Genesis.Constants;
-using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Definitions.Items;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Managers;
 using Genesis.Model;

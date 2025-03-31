@@ -1,7 +1,7 @@
 ﻿using System.IO.Compression;
 using ICSharpCode.SharpZipLib.BZip2;
 
-namespace Genesis;
+namespace Genesis.Util;
 
 /// <summary>
 ///     A utility class for performing compression/decompression.
@@ -16,19 +16,16 @@ public static class CompressionUtil
     /// <exception cref="IOException">If there is an error compressing the array.</exception>
     public static byte[] Bzip2(byte[] uncompressed)
     {
-        using (var memStream = new MemoryStream())
-        {
-            using (var os = new BZip2OutputStream(memStream))
-            {
-                os.Write(uncompressed, 0, uncompressed.Length);
-            }
+        using var memStream = new MemoryStream();
+        using var os = new BZip2OutputStream(memStream);
 
-            var compressed = memStream.ToArray();
-            var newCompressed = new byte[compressed.Length - 4]; // Strip the header
-            Array.Copy(compressed, 4, newCompressed, 0, newCompressed.Length);
-            return newCompressed;
-        }
+        os.Write(uncompressed);
+
+        var compressed = memStream.ToArray();
+        return compressed[4..]; // Strip the header
     }
+
+    private static ReadOnlySpan<byte> BZipHeader() => [ (byte)'B', (byte)'Z', (byte)'h', (byte)'1'];
 
     /// <summary>
     ///     Debzip2s the compressed array and places the result into the decompressed array.
@@ -39,19 +36,13 @@ public static class CompressionUtil
     public static void Debzip2(byte[] compressed, byte[] decompressed)
     {
         var newCompressed = new byte[compressed.Length + 4];
-        newCompressed[0] = (byte)'B';
-        newCompressed[1] = (byte)'Z';
-        newCompressed[2] = (byte)'h';
-        newCompressed[3] = (byte)'1';
+        BZipHeader().CopyTo(newCompressed);
         Array.Copy(compressed, 0, newCompressed, 4, compressed.Length);
 
-        using (var memStream = new MemoryStream(newCompressed))
-        {
-            using (var isStream = new BZip2InputStream(memStream))
-            {
-                isStream.Read(decompressed, 0, decompressed.Length);
-            }
-        }
+        using var memStream = new MemoryStream(newCompressed);
+        using var isStream = new BZip2InputStream(memStream);
+        
+        isStream.Read(decompressed);
     }
 
     /// <summary>
@@ -62,26 +53,44 @@ public static class CompressionUtil
     /// <exception cref="IOException">If an I/O error occurs.</exception>
     public static void Degzip(byte[] compressed, byte[] decompressed)
     {
-        using (var memStream = new MemoryStream(compressed))
-        {
-            using (var isStream = new GZipStream(memStream, CompressionMode.Decompress))
-            {
-                isStream.Read(decompressed, 0, decompressed.Length);
-            }
-        }
+        using var memStream = new MemoryStream(compressed);
+        using var isStream = new GZipStream(memStream, CompressionMode.Decompress);
+        
+        isStream.Read(decompressed);
     }
 
     public static byte[] Degzip(byte[] compressed)
     {
-        using (var ms = new MemoryStream(compressed))
-        using (var gzs = new GZipStream(ms, CompressionMode.Decompress))
-        using (var result = new MemoryStream())
-        {
-            var buffer = new byte[1024];
-            int read;
-            while ((read = gzs.Read(buffer, 0, buffer.Length)) > 0) result.Write(buffer, 0, read);
+        using var ms = new MemoryStream(compressed);
+        using var gzs = new GZipStream(ms, CompressionMode.Decompress);
+        using var result = new MemoryStream();
+        
+        var buffer = new byte[1024];
+        int read;
+        while ((read = gzs.Read(buffer)) > 0) 
+            result.Write(buffer, 0, read);
 
-            return result.ToArray();
-        }
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Inflates a GZip deflated stream.
+    /// </summary>
+    /// <param name="deflatedStream">Input deflated stream</param>
+    /// <param name="inflatedStream">Inflate stream buffer to write to. Position is reset to 0 when function returns.</param>
+    /// <returns>The number of bytes written to the inflated stream.</returns>
+    public static long InflateToStream(in MemoryStream deflatedStream, in MemoryStream inflatedStream)
+    {
+        using var gzs = new GZipStream(deflatedStream, CompressionMode.Decompress);
+
+        var buffer = new byte[1024];
+        int read;
+        while ((read = gzs.Read(buffer)) > 0)
+            inflatedStream.Write(buffer, 0, read);
+
+        var len = inflatedStream.Position;
+        inflatedStream.Position = 0;
+
+        return len;
     }
 }

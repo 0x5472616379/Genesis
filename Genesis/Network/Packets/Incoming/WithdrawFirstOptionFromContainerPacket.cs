@@ -2,10 +2,11 @@
 using Genesis.Cache;
 using Genesis.Configuration;
 using Genesis.Container;
-using Genesis.Definitions;
-using Genesis.Entities;
+using Genesis.Definitions.Items;
+using Genesis.Entities.Player;
 using Genesis.Managers;
 using Genesis.Model;
+using Genesis.Network;
 
 namespace Genesis.Packets.Incoming;
 

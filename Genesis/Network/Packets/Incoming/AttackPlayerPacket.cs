@@ -1,8 +1,9 @@
 ﻿using ArcticRS.Appearance;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Interactions;
 using Genesis.Model;
+using Genesis.Network;
 using Genesis.Skills.Combat;
 
 namespace Genesis.Packets.Incoming;

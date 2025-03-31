@@ -1,6 +1,6 @@
 ﻿using Genesis.Configuration;
 using Genesis.Constants;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Movement;
 using Genesis.Skills;

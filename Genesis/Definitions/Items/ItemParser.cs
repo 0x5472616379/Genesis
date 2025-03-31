@@ -1,102 +1,74 @@
-﻿using System.Text.Json;
-
-namespace Genesis.Definitions;
+﻿namespace Genesis.Definitions.Items;
 
 public static class ItemParser
 {
-    private static DataManager<ItemBonuses> _bonusesManager;
-    private static DataManager<ItemRequirements> _requirementsManager;
-    private static DataManager<ItemAnimations> _animationsManager;
-    private static DataManager<ItemWeights> _weightsManager;
-    private static DataManager<ItemAlchs> _alchsManager;
-    private static DataManager<ItemSellableTradable> _sellableManager;
+    private static readonly DataManager<ItemBonuses> _bonusesManager;
+    private static readonly DataManager<ItemRequirements> _requirementsManager;
+    private static readonly DataManager<ItemAnimations> _animationsManager;
+    private static readonly DataManager<ItemWeights> _weightsManager;
+    private static readonly DataManager<ItemAlchs> _alchsManager;
+    private static readonly DataManager<ItemSellableTradable> _sellableManager;
 
-    private static bool _isInitialized = false;
+    private const string _dataDirectory = "./Data";
+    private static bool _initialize;
 
-    // private static string DataDirectory => "../../../Data";
-    private static string DataDirectory => "./Data";
-
-    public static void Initialize()
+    static ItemParser()
     {
-        if (_isInitialized)
-        {
-            Console.WriteLine("ItemParser is already initialized.");
-            return;
-        }
-
         // Initialize data managers
-        _bonusesManager = new DataManager<ItemBonuses>(Path.Combine(DataDirectory, "ItemBonuses.json")
+        _bonusesManager = new(Path.Combine(_dataDirectory, "ItemBonuses.json")
             , item => item.Id);
         Console.WriteLine("Loaded item bonuses.");
 
-        _requirementsManager = new DataManager<ItemRequirements>(Path.Combine(DataDirectory, "ItemRequirements.json")
+        _requirementsManager = new(Path.Combine(_dataDirectory, "ItemRequirements.json")
             , item => item.Id);
         Console.WriteLine("Loaded item requirements.");
 
-        _animationsManager = new DataManager<ItemAnimations>(Path.Combine(DataDirectory, "ItemAnimations.json")
+        _animationsManager = new(Path.Combine(_dataDirectory, "ItemAnimations.json")
             , item => item.Id);
         Console.WriteLine("Loaded item animations.");
 
-        _weightsManager = new DataManager<ItemWeights>(Path.Combine(DataDirectory, "ItemWeights.json")
+        _weightsManager = new(Path.Combine(_dataDirectory, "ItemWeights.json")
             , item => item.Id);
         Console.WriteLine("Loaded item weights.");
 
-        _alchsManager = new DataManager<ItemAlchs>(Path.Combine(DataDirectory, "ItemAlchs.json")
+        _alchsManager = new(Path.Combine(_dataDirectory, "ItemAlchs.json")
             , item => item.Id);
         Console.WriteLine("Loaded item alchemy values.");
 
-        _sellableManager = new DataManager<ItemSellableTradable>(
-            Path.Combine(DataDirectory, "ItemSellableTradable.json")
+        _sellableManager = new(
+            Path.Combine(_dataDirectory, "ItemSellableTradable.json")
             , item => item.Id);
         Console.WriteLine("Loaded sellable and tradable statuses.");
-
-        _isInitialized = true;
     }
 
-    public static ItemBonuses GetBonusesById(int id)
+    public static void Initialize()
     {
-        EnsureInitialized();
-        return _bonusesManager.GetById(id);
+        if (_initialize)
+        {
+            throw new InvalidOperationException($"Cannot call {nameof(Initialize)} after {nameof(Initialize)} has been called already.");
+        }
+
+        _initialize = true;
     }
 
-    public static ItemRequirements GetRequirementsById(int id)
-    {
-        EnsureInitialized();
-        return _requirementsManager.GetById(id);
-    }
+    public static ItemBonuses GetBonusesById(int id) =>
+        _bonusesManager.GetById(id);
 
-    public static ItemAnimations GetAnimationsById(int id)
-    {
-        EnsureInitialized();
-        return _animationsManager.GetById(id);
-    }
+    public static ItemRequirements GetRequirementsById(int id) =>
+        _requirementsManager.GetById(id);
 
-    public static ItemWeights GetWeightById(int id)
-    {
-        EnsureInitialized();
-        return _weightsManager.GetById(id);
-    }
+    public static ItemAnimations GetAnimationsById(int id) =>
+        _animationsManager.GetById(id);
 
-    public static ItemAlchs GetAlchsById(int id)
-    {
-        EnsureInitialized();
-        return _alchsManager.GetById(id);
-    }
+    public static ItemWeights GetWeightById(int id) =>
+        _weightsManager.GetById(id);
 
-    public static ItemSellableTradable GetSellableInfoById(int id)
-    {
-        EnsureInitialized();
-        return _sellableManager.GetById(id);
-    }
+    public static ItemAlchs GetAlchsById(int id) =>
+        _alchsManager.GetById(id);
 
-    public static double GetBonusValue(int itemId, BonusType type)
-    {
-        return _bonusesManager.GetById(itemId).Bonuses.ElementAtOrDefault((int)type);
-    }
+    public static ItemSellableTradable GetSellableInfoById(int id) =>
+        _sellableManager.GetById(id);
 
-    private static void EnsureInitialized()
-    {
-        if (!_isInitialized)
-            throw new InvalidOperationException("ItemParser has not been initialized. Call Initialize() first.");
-    }
+    public static double GetBonusValue(int itemId, BonusType type) =>
+        _bonusesManager.GetById(itemId).Bonuses.ElementAtOrDefault((int)type);
 }

@@ -1,7 +1,7 @@
 ﻿using ArcticRS.Actions;
 using ArcticRS.Commands;
 using Genesis.Cache;
-using Genesis.Entities;
+using Genesis.Entities.Player;
 using Genesis.Environment;
 using Genesis.Movement;
 using Genesis.Packets.Incoming;
