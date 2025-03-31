@@ -1,4 +1,5 @@
-﻿using Genesis.Packets.Incoming;
+﻿using Genesis.Network.Packets.Incoming;
+using Genesis.Packets.Incoming;
 
 namespace Genesis.Network;
 
@@ -9,9 +10,11 @@ public interface IPacket
 
 public static class PacketFactory
 {
+    internal static bool ThrowOnUnknownPacket = false;
     public static IPacket? CreateClientPacket(int opcode, PacketParameters parameters) =>
         opcode switch
         {
+            3 => new WindowFocusPacket(parameters),
             /* Regular Walk */
             98 or 164 or 248 => new WalkPacket(parameters),
             /* Walk To Interaction Object */
@@ -32,6 +35,8 @@ public static class PacketFactory
             145 => new WithdrawFirstOptionFromContainerPacket(parameters),
             214 => new MoveItemInContainerPacket(parameters),
             185 => new ButtonClickPacket(parameters),
-            _ => throw new InvalidOperationException($"Unrecognized opcode found: {opcode}."),
+            210 => new MapRebuildAckPacket(parameters),
+            241 => new UnusedPacket(), // new MouseInputPacket(parameters),
+            _ => ThrowOnUnknownPacket ? throw new InvalidOperationException($"Unrecognized opcode found: {opcode}.") : new UnusedPacket(),
         };
 }

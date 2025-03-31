@@ -8,7 +8,7 @@ namespace Genesis;
 public static class BufferUtil
 {
     public const int StringTerminator = 10;
-    private static byte[] _buffer = new byte[sizeof(int)];
+    private static readonly byte[] _buffer = new byte[sizeof(int)];
 
     public static int ReadSmart(MemoryStream stream)
     {
@@ -53,7 +53,8 @@ public static class BufferUtil
 
     public static void Skip(this MemoryStream ms, int count)
     {
-        ms.Seek(count, SeekOrigin.Current);
+        // ms.Seek(count, SeekOrigin.Current);
+        ms.Position += count;
     }
 
 

@@ -238,6 +238,8 @@ public class RSStream
         return Encoding.Default.GetString(Buffer, i, CurrentOffset - i - 1);
     }
 
+    public byte ReadByte() => Buffer[CurrentOffset++];
+
     /// <summary>
     ///     Need to AND since Java doesn't have unsigned bytes.
     /// </summary>
