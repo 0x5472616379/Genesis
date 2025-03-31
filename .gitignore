@@ -1,0 +1,8 @@
+.vs/
+[Bb]uild/
+[Oo]bj/
+[Bb]in/
+launchSettings.json
+
+# Cache Files
+Genesis/Data/cache/
